@@ -80,16 +80,37 @@
     .nav .gh-btn:active { transform: scale(.95); }
 
     /* ---------- Tile system ---------- */
-    .tile { padding: 96px 32px; }
+    .tile { padding: 96px 32px; position: relative; }
     .tile-light { background: var(--canvas); }
-    .tile-parchment { background: var(--parchment); }
-    .tile-dark { background: var(--tile-1); color: #fff; }
-    .tile-dark-2 { background: var(--tile-2); color: #fff; }
+    .tile-parchment {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 102, 204, 0.025) 0%, transparent 60%),
+        var(--parchment);
+    }
+    .tile-dark {
+      background:
+        radial-gradient(ellipse 90% 80% at 50% 30%, #313134 0%, #272729 55%, #1f1f21 100%),
+        var(--tile-1);
+      color: #fff;
+    }
+    .tile-dark-2 {
+      background:
+        radial-gradient(ellipse 90% 80% at 50% 30%, #34343a 0%, #2a2a2c 55%, #232325 100%),
+        var(--tile-2);
+      color: #fff;
+    }
     .container { max-width: 1024px; margin: 0 auto; }
     .narrow { max-width: 760px; margin: 0 auto; }
 
     /* ---------- Hero ---------- */
-    .hero { text-align: center; padding: 112px 32px 96px; }
+    .hero {
+      text-align: center;
+      padding: 112px 32px 96px;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 8%, rgba(0, 102, 204, 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 50% 90%, rgba(0, 102, 204, 0.04) 0%, transparent 60%),
+        var(--canvas);
+    }
     .hero-eyebrow {
       display: inline-block;
       font-size: 14px; font-weight: 600;
@@ -115,16 +136,29 @@
     .btn {
       font: inherit;
       font-size: 17px;
-      padding: 11px 22px;
+      padding: 11px 24px;
       border: 1px solid transparent;
       border-radius: 9999px;
       cursor: pointer;
       display: inline-block;
-      transition: transform .12s ease, background-color .15s ease;
+      transition: transform .15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow .2s ease, background .2s ease;
     }
-    .btn:active { transform: scale(.95); }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-focus); }
+    .btn:active { transform: scale(.96); }
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(180deg, #1e7eff 0%, #0066cc 55%, #0058b3 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 1px 2px rgba(0, 102, 204, 0.18),
+        0 8px 22px -8px rgba(0, 102, 204, 0.55);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(180deg, #2e8aff 0%, #0071e3 55%, #0062c5 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        0 2px 4px rgba(0, 102, 204, 0.22),
+        0 12px 28px -10px rgba(0, 102, 204, 0.65);
+    }
     .btn-ghost {
       background: transparent;
       color: var(--primary);
@@ -136,6 +170,9 @@
 
     /* ---------- Hero constellation ---------- */
     .constellation { margin: 80px auto 0; max-width: 720px; }
+    .constellation svg circle {
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+    }
 
     /* ---------- Stats strip ---------- */
     .stats {
@@ -208,23 +245,54 @@
       border: 1px solid var(--hairline);
       border-radius: 18px;
       overflow: hidden;
-      transition: transform .15s ease;
+      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease;
       display: flex;
       flex-direction: column;
     }
-    .agent-card:hover { transform: translateY(-2px); }
+    .agent-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
+      box-shadow:
+        0 18px 40px -18px color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.18)),
+        0 4px 12px -4px rgba(0, 0, 0, 0.06);
+    }
+    .agent-card:hover .agent-card-orb {
+      transform: scale(1.04);
+    }
     .agent-card-art {
       aspect-ratio: 4 / 3;
-      background: color-mix(in srgb, var(--c) 8%, #ffffff);
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 55%, color-mix(in srgb, var(--c) 18%, white) 0%, color-mix(in srgb, var(--c) 6%, white) 60%, white 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
+      overflow: hidden;
+    }
+    .agent-card-art::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 90%, color-mix(in srgb, var(--c) 14%, transparent) 0%, transparent 50%);
+      pointer-events: none;
     }
     .agent-card-orb {
-      width: 56px; height: 56px;
+      width: 64px; height: 64px;
       border-radius: 9999px;
-      background: var(--c);
+      background:
+        radial-gradient(circle at 32% 28%,
+          color-mix(in srgb, var(--c) 30%, white) 0%,
+          color-mix(in srgb, var(--c) 75%, white) 22%,
+          var(--c) 55%,
+          color-mix(in srgb, var(--c) 70%, black) 100%);
+      box-shadow:
+        0 14px 28px -8px color-mix(in srgb, var(--c) 45%, transparent),
+        0 4px 10px -2px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+        inset 0 -6px 12px -4px color-mix(in srgb, var(--c) 70%, black);
+      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 1;
     }
     .agent-card-body {
       padding: 20px 24px 24px;
@@ -677,13 +745,37 @@
             <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
             </marker>
+            <radialGradient id="orch-grad" cx="0.35" cy="0.3" r="0.9">
+              <stop offset="0%" stop-color="#3a92ff"/>
+              <stop offset="55%" stop-color="#0066cc"/>
+              <stop offset="100%" stop-color="#004a99"/>
+            </radialGradient>
+            <radialGradient id="crit-grad" cx="0.35" cy="0.3" r="0.9">
+              <stop offset="0%" stop-color="#ff5757"/>
+              <stop offset="55%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#9b1b1b"/>
+            </radialGradient>
+            <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="160%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+              <feOffset dx="0" dy="4" result="offsetblur"/>
+              <feComponentTransfer><feFuncA type="linear" slope="0.35"/></feComponentTransfer>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="orb-discovery" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#a5bcd9"/><stop offset="60%" stop-color="#5e81ac"/><stop offset="100%" stop-color="#3d5a7f"/></radialGradient>
+            <radialGradient id="orb-competitive" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#76b0a4"/><stop offset="60%" stop-color="#2c7d6f"/><stop offset="100%" stop-color="#1a574c"/></radialGradient>
+            <radialGradient id="orb-positioner" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f6b15c"/><stop offset="60%" stop-color="#d97706"/><stop offset="100%" stop-color="#a05905"/></radialGradient>
+            <radialGradient id="orb-prioritizer" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e09257"/><stop offset="60%" stop-color="#b45309"/><stop offset="100%" stop-color="#7a3905"/></radialGradient>
+            <radialGradient id="orb-ideation" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#c4a9fa"/><stop offset="60%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#5e37c2"/></radialGradient>
+            <radialGradient id="orb-interaction" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="60%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
+            <radialGradient id="orb-usability" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#6ed393"/><stop offset="60%" stop-color="#16a34a"/><stop offset="100%" stop-color="#0e6e32"/></radialGradient>
+            <radialGradient id="orb-handoff" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#9a9a9a"/><stop offset="60%" stop-color="#525252"/><stop offset="100%" stop-color="#2e2e2e"/></radialGradient>
           </defs>
 
           <rect x="370" y="10" width="140" height="44" rx="11" fill="none" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="4 3"/>
           <text x="440" y="37" text-anchor="middle" fill="#cccccc" font-family="SF Pro Text, system-ui" font-size="13" letter-spacing="-0.224">User goal</text>
           <line x1="440" y1="58" x2="440" y2="86" stroke="#6e6e72" stroke-width="1" marker-end="url(#arrow)"/>
 
-          <rect x="320" y="90" width="240" height="64" rx="14" fill="#0066cc"/>
+          <rect x="320" y="90" width="240" height="64" rx="14" fill="url(#orch-grad)" filter="url(#node-shadow)"/>
           <text x="440" y="120" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Orchestrator</text>
           <text x="440" y="140" text-anchor="middle" fill="#cfe1ff" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">plan · delegate · synthesize</text>
 
@@ -695,44 +787,44 @@
 
           <text x="140" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DISCOVERY</text>
           <rect x="40" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#5e81ac" stroke-width="1.5"/>
-          <circle cx="60" cy="276" r="6" fill="#5e81ac"/>
+          <circle cx="60" cy="276" r="6" fill="url(#orb-discovery)"/>
           <text x="76" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">discovery-researcher</text>
           <text x="76" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">interviews · framing</text>
 
           <rect x="40" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#2c7d6f" stroke-width="1.5"/>
-          <circle cx="60" cy="344" r="6" fill="#2c7d6f"/>
+          <circle cx="60" cy="344" r="6" fill="url(#orb-competitive)"/>
           <text x="76" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">competitive-analyst</text>
           <text x="76" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">patterns · teardowns</text>
 
           <text x="440" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DEFINE</text>
           <rect x="340" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#d97706" stroke-width="1.5"/>
-          <circle cx="360" cy="276" r="6" fill="#d97706"/>
+          <circle cx="360" cy="276" r="6" fill="url(#orb-positioner)"/>
           <text x="376" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">product-positioner</text>
           <text x="376" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">positioning · value props</text>
 
           <rect x="340" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#b45309" stroke-width="1.5"/>
-          <circle cx="360" cy="344" r="6" fill="#b45309"/>
+          <circle cx="360" cy="344" r="6" fill="url(#orb-prioritizer)"/>
           <text x="376" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">feature-prioritizer</text>
           <text x="376" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">RICE · ICE · tradeoffs</text>
 
           <rect x="340" y="384" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#8b5cf6" stroke-width="1.5"/>
-          <circle cx="360" cy="412" r="6" fill="#8b5cf6"/>
+          <circle cx="360" cy="412" r="6" fill="url(#orb-ideation)"/>
           <text x="376" y="407" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">ideation-facilitator</text>
           <text x="376" y="424" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">concept generation</text>
 
           <text x="740" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DELIVER</text>
           <rect x="640" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#ec4899" stroke-width="1.5"/>
-          <circle cx="660" cy="276" r="6" fill="#ec4899"/>
+          <circle cx="660" cy="276" r="6" fill="url(#orb-interaction)"/>
           <text x="676" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">interaction-designer</text>
           <text x="676" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">flows · states · craft</text>
 
           <rect x="640" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#16a34a" stroke-width="1.5"/>
-          <circle cx="660" cy="344" r="6" fill="#16a34a"/>
+          <circle cx="660" cy="344" r="6" fill="url(#orb-usability)"/>
           <text x="676" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">usability-tester</text>
           <text x="676" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">test plans · analysis</text>
 
           <rect x="640" y="384" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#525252" stroke-width="1.5"/>
-          <circle cx="660" cy="412" r="6" fill="#a0a0a0"/>
+          <circle cx="660" cy="412" r="6" fill="url(#orb-handoff)"/>
           <text x="676" y="407" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">handoff-engineer</text>
           <text x="676" y="424" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">dev specs · token audit</text>
 
@@ -741,7 +833,7 @@
           <text x="287" y="332" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
           <text x="587" y="332" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
 
-          <rect x="320" y="490" width="240" height="64" rx="14" fill="#dc2626"/>
+          <rect x="320" y="490" width="240" height="64" rx="14" fill="url(#crit-grad)" filter="url(#node-shadow)"/>
           <text x="440" y="520" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Critique Partner</text>
           <text x="440" y="540" text-anchor="middle" fill="#fde2e2" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">stress-tests every output</text>
 
