@@ -102,35 +102,144 @@
     .container { max-width: 1024px; margin: 0 auto; }
     .narrow { max-width: 760px; margin: 0 auto; }
 
-    /* ---------- Hero ---------- */
+    /* ---------- Hero (dark, technical) ---------- */
     .hero {
-      text-align: center;
-      padding: 112px 32px 96px;
+      text-align: left;
+      padding: 120px 32px 80px;
       background:
-        radial-gradient(ellipse 70% 50% at 50% 8%, rgba(0, 102, 204, 0.08) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 50% 90%, rgba(0, 102, 204, 0.04) 0%, transparent 60%),
-        var(--canvas);
+        radial-gradient(ellipse 70% 50% at 20% 0%, rgba(0, 102, 204, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 60% at 90% 30%, rgba(139, 92, 246, 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(236, 72, 153, 0.06) 0%, transparent 55%),
+        #08080a;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
     }
-    .hero-eyebrow {
-      display: inline-block;
-      font-size: 14px; font-weight: 600;
-      color: var(--primary); letter-spacing: 0.4px;
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+      pointer-events: none;
+    }
+    .hero > .container { position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 14px 6px 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9999px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.78);
       text-transform: uppercase;
-      margin-bottom: 20px;
+      transition: border-color .2s ease, background .2s ease;
     }
-    .hero h1 {
-      font-size: 64px; line-height: 1.05; letter-spacing: -0.5px;
+    .hero-badge:hover {
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
     }
-    .hero .lede {
-      font-size: 28px; line-height: 1.2; font-weight: 400;
-      color: var(--ink-muted-80);
-      max-width: 760px; margin: 24px auto 0;
-      letter-spacing: 0.196px;
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 9999px;
+      background: #2997ff;
+      box-shadow: 0 0 12px rgba(41,151,255,0.8);
     }
-    .hero .ctas {
+    .hero-badge-arrow {
+      color: rgba(255,255,255,0.5);
+      transition: transform .2s ease;
+    }
+    .hero-badge:hover .hero-badge-arrow { transform: translateX(2px); color: #2997ff; }
+
+    .hero-h1 {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: clamp(40px, 7vw, 84px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      font-weight: 600;
+      margin-top: 28px;
+      max-width: 880px;
+    }
+    .hero-h1 em {
+      font-style: italic;
+      font-weight: 500;
+      background: linear-gradient(90deg, #5ba8ff 0%, #b794ff 50%, #ff7eb8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-lede {
+      font-size: 21px;
+      line-height: 1.5;
+      font-weight: 400;
+      color: rgba(255,255,255,0.62);
+      max-width: 620px;
+      margin-top: 28px;
+      letter-spacing: -0.011em;
+    }
+    .hero-ctas {
       margin-top: 40px;
-      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      display: flex; gap: 12px; flex-wrap: wrap;
     }
+
+    /* Terminal hero visual */
+    .hero-terminal {
+      margin-top: 72px;
+      background: linear-gradient(180deg, #16161a 0%, #0e0e12 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.4),
+        0 30px 80px -20px rgba(0, 0, 0, 0.6),
+        0 60px 120px -40px rgba(0, 102, 204, 0.18);
+      max-width: 760px;
+    }
+    .ht-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .ht-dot { width: 12px; height: 12px; border-radius: 9999px; }
+    .ht-r { background: #ff5f57; }
+    .ht-y { background: #febc2e; }
+    .ht-g { background: #28c840; }
+    .ht-title {
+      margin-left: 12px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.42);
+    }
+    .ht-body {
+      padding: 24px 28px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 14px;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.82);
+    }
+    .ht-line { color: rgba(255,255,255,0.94); }
+    .ht-prompt { color: #2997ff; user-select: none; }
+    .ht-cmd { color: #fff; }
+    .ht-out { color: rgba(255,255,255,0.55); }
+    .ht-ok { color: #28c840; margin-right: 4px; }
+    .ht-emp { color: #fff; }
+    .ht-path { color: #2997ff; }
+    .ht-success { color: #28c840; margin-top: 12px; }
+    .ht-cursor {
+      display: inline-block;
+      width: 8px; height: 16px;
+      background: #2997ff;
+      vertical-align: text-bottom;
+      animation: blink 1.05s steps(1) infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
 
     /* ---------- Buttons ---------- */
     .btn {
@@ -210,108 +319,182 @@
     }
     .section-lede-on-dark { color: var(--body-muted); }
 
-    /* ---------- Agents (Apple store-style cards) ---------- */
-    .agents-intro {
-      text-align: center;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .agents-intro .section-eyebrow,
-    .agents-intro .section-lede {
-      display: block;
-      margin-left: auto; margin-right: auto;
-    }
-    .agents-intro .section-head { text-align: center; }
-    .agents-intro .section-lede { text-align: center; margin-top: 16px; }
-
-    .phase-group { margin-top: 96px; }
-    .phase-group:first-of-type { margin-top: 80px; }
-    .phase-group-head {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: 34px;
-      font-weight: 600;
-      line-height: 1.1;
-      letter-spacing: -0.374px;
-      margin-bottom: 36px;
-      color: var(--ink);
-    }
-    .agent-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .agent-card {
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: 18px;
-      overflow: hidden;
-      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    .agent-card:hover {
-      transform: translateY(-4px);
-      border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
-      box-shadow:
-        0 18px 40px -18px color-mix(in srgb, var(--c) 25%, rgba(0, 0, 0, 0.18)),
-        0 4px 12px -4px rgba(0, 0, 0, 0.06);
-    }
-    .agent-card:hover .agent-card-orb {
-      transform: scale(1.04);
-    }
-    .agent-card-art {
-      aspect-ratio: 4 / 3;
+    /* ---------- Agents (dark bento) ---------- */
+    .tile-deep {
       background:
-        radial-gradient(ellipse 70% 60% at 50% 55%, color-mix(in srgb, var(--c) 18%, white) 0%, color-mix(in srgb, var(--c) 6%, white) 60%, white 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        radial-gradient(ellipse 70% 50% at 100% 0%, rgba(139, 92, 246, 0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 0% 100%, rgba(0, 102, 204, 0.10) 0%, transparent 55%),
+        #08080a;
+      color: #fff;
       position: relative;
       overflow: hidden;
     }
-    .agent-card-art::after {
+    .tile-deep::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 90%, color-mix(in srgb, var(--c) 14%, transparent) 0%, transparent 50%);
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
       pointer-events: none;
     }
-    .agent-card-orb {
-      width: 64px; height: 64px;
-      border-radius: 9999px;
+    .tile-deep > .container { position: relative; z-index: 1; }
+
+    .agents-header {
+      max-width: 720px;
+      margin-bottom: 64px;
+    }
+    .section-eyebrow-mono {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .section-head-dark {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: clamp(32px, 4.5vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 14px;
+    }
+    .section-lede-dark {
+      font-size: 19px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.6);
+      margin-top: 18px;
+      max-width: 600px;
+      letter-spacing: -0.011em;
+    }
+
+    .agent-bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(180px, auto);
+      gap: 14px;
+    }
+    .ac {
       background:
-        radial-gradient(circle at 32% 28%,
-          color-mix(in srgb, var(--c) 30%, white) 0%,
-          color-mix(in srgb, var(--c) 75%, white) 22%,
-          var(--c) 55%,
-          color-mix(in srgb, var(--c) 70%, black) 100%);
-      box-shadow:
-        0 14px 28px -8px color-mix(in srgb, var(--c) 45%, transparent),
-        0 4px 10px -2px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-        inset 0 -6px 12px -4px color-mix(in srgb, var(--c) 70%, black);
-      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1);
+        linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%),
+        #101013;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease, background .2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .ac:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--c) 40%, rgba(255,255,255,0.07));
+    }
+    .ac:hover .ac-halo {
+      opacity: 0.32;
+      transform: translate(10px, -10px) scale(1.1);
+    }
+    .ac-halo {
+      position: absolute;
+      top: -90px;
+      right: -90px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--c) 0%, transparent 65%);
+      opacity: 0.22;
+      filter: blur(36px);
+      pointer-events: none;
+      transition: opacity .3s ease, transform .4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .ac-tag {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--c);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 9999px;
+      background: color-mix(in srgb, var(--c) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
+      align-self: flex-start;
       position: relative;
       z-index: 1;
     }
-    .agent-card-body {
-      padding: 20px 24px 24px;
-      flex: 1;
-    }
-    .agent-card-name {
+    .ac h3 {
       font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: 17px;
+      font-size: 22px;
       font-weight: 600;
-      letter-spacing: -0.374px;
-      color: var(--ink);
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
     }
-    .agent-card-role {
-      font-size: 14px;
-      color: var(--ink-muted-80);
-      line-height: 1.43;
+    .ac-role-lead {
+      font-size: 15px;
+      color: color-mix(in srgb, var(--c) 60%, white);
       margin-top: 6px;
-      letter-spacing: -0.224px;
+      font-style: italic;
+      position: relative;
+      z-index: 1;
     }
+    .ac-desc {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.58);
+      margin-top: 12px;
+      letter-spacing: -0.01em;
+      position: relative;
+      z-index: 1;
+    }
+    .ac-meta {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex; flex-wrap: wrap; gap: 16px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.4px;
+      position: relative;
+      z-index: 1;
+    }
+    .ac-meta em {
+      font-style: normal;
+      color: #fff;
+    }
+
+    /* Featured cards */
+    .ac-feature-orch {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .ac-feature-orch h3 { font-size: 36px; }
+    .ac-feature-orch .ac-halo {
+      width: 460px; height: 460px;
+      top: -120px; right: -120px;
+      opacity: 0.28;
+    }
+    .ac-feature-crit {
+      grid-column: span 4;
+    }
+    .ac-feature-crit { flex-direction: row; align-items: flex-start; gap: 40px; }
+    .ac-feature-crit > * { z-index: 1; }
+    .ac-feature-crit .ac-halo { width: 520px; height: 360px; top: -100px; right: -100px; opacity: 0.24; }
+    .ac-feature-crit-left { flex: 0 0 320px; }
+    .ac-feature-crit-right { flex: 1; padding-top: 6px; }
+    .ac-feature-crit h3 { font-size: 32px; margin-top: 18px; }
 
     /* ---------- Flow diagram ---------- */
     .flow-frame {
@@ -503,9 +686,12 @@
     @media (max-width: 833px) {
       .tile { padding: 72px 24px; }
       .hero { padding: 80px 24px 64px; }
-      .hero h1 { font-size: 44px; letter-spacing: -0.4px; }
-      .hero .lede { font-size: 21px; }
+      .hero-lede { font-size: 17px; }
+      .hero-terminal { margin-top: 48px; }
+      .ht-body { padding: 18px 20px; font-size: 12px; }
+      .ht-title { font-size: 11px; }
       .section-head { font-size: 36px; }
+      .section-head-dark { font-size: 32px; }
       .install { grid-template-columns: 1fr; }
       .phases { grid-template-columns: 1fr; }
       .phase { border-right: 0; border-bottom: 1px solid var(--hairline); }
@@ -514,9 +700,19 @@
       .nav ul { gap: 18px; }
       .stat-num { font-size: 44px; }
       .stats { gap: 40px; padding: 48px 24px; }
-      .phase-section { padding: 40px 0; }
-      .agent-list { gap: 32px; }
-      .agent-row-name { font-size: 19px; }
+
+      /* Agent bento collapses to single column on mobile */
+      .agent-bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+      .ac-feature-orch { grid-column: span 1; grid-row: span 1; }
+      .ac-feature-orch h3 { font-size: 28px; }
+      .ac-feature-crit { grid-column: span 1; flex-direction: column; gap: 16px; }
+      .ac-feature-crit-left { flex: none; }
+      .ac-feature-crit h3 { font-size: 26px; }
+    }
+    @media (min-width: 834px) and (max-width: 1023px) {
+      .agent-bento { grid-template-columns: repeat(3, 1fr); }
+      .ac-feature-orch { grid-column: span 2; grid-row: span 2; }
+      .ac-feature-crit { grid-column: span 3; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 36px; }
@@ -540,51 +736,34 @@
     </div>
   </nav>
 
-  <section class="tile tile-light hero">
+  <section class="tile hero">
     <div class="container">
-      <span class="hero-eyebrow">A Claude Code skill · v1</span>
-      <h1 class="display">Ten product designers,<br>one command.</h1>
-      <p class="lede">
-        Agent Harry installs a 10-subagent product design system into any Claude Code project.
-        Discovery, Define, Deliver — plus embedded PM. Version-controlled on GitHub. Refreshable in a sentence.
-      </p>
-      <div class="ctas">
-        <a href="#install" class="btn btn-primary">Install</a>
-        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost">View on GitHub</a>
+      <a class="hero-badge" href="https://github.com/KaungMyatHein/agent-harry">
+        <span class="hero-badge-dot"></span>
+        v1 — Open source on GitHub
+        <span class="hero-badge-arrow">↗</span>
+      </a>
+      <h1 class="hero-h1">The product design team,<br>installed in <em>one command.</em></h1>
+      <p class="hero-lede">A 10-subagent Discovery → Define → Deliver pipeline that drops into any Claude Code project. Version-controlled on GitHub. Refreshable in a sentence. Yours to fork.</p>
+      <div class="hero-ctas">
+        <a href="#install" class="btn btn-primary">Install Agent Harry</a>
+        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost-on-dark">View source →</a>
       </div>
 
-      <div class="constellation">
-        <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g stroke="#e0e0e0" stroke-width="1" fill="none">
-            <path d="M360 50 L160 150" />
-            <path d="M360 50 L360 150" />
-            <path d="M360 50 L560 150" />
-            <path d="M160 200 Q360 290 360 270" />
-            <path d="M360 200 L360 270" />
-            <path d="M560 200 Q360 290 360 270" />
-            <path d="M210 165 L310 165" stroke-dasharray="3 3" />
-            <path d="M410 165 L510 165" stroke-dasharray="3 3" />
-          </g>
-          <circle cx="360" cy="40" r="14" fill="#0066cc"/>
-          <text x="360" y="22" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="11" font-weight="600" letter-spacing="-0.224">Orchestrator</text>
-
-          <circle cx="140" cy="160" r="11" fill="#5e81ac"/>
-          <text x="140" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Discovery</text>
-          <circle cx="180" cy="180" r="11" fill="#2c7d6f"/>
-
-          <circle cx="320" cy="160" r="11" fill="#d97706"/>
-          <text x="360" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Define</text>
-          <circle cx="360" cy="180" r="11" fill="#b45309"/>
-          <circle cx="400" cy="160" r="11" fill="#8b5cf6"/>
-
-          <circle cx="540" cy="160" r="11" fill="#ec4899"/>
-          <text x="580" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Deliver</text>
-          <circle cx="580" cy="180" r="11" fill="#16a34a"/>
-          <circle cx="620" cy="160" r="11" fill="#525252"/>
-
-          <circle cx="360" cy="280" r="13" fill="#dc2626"/>
-          <text x="360" y="312" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Critique Partner</text>
-        </svg>
+      <div class="hero-terminal" role="img" aria-label="Terminal showing the Agent Harry install command running">
+        <div class="ht-bar">
+          <span class="ht-dot ht-r"></span>
+          <span class="ht-dot ht-y"></span>
+          <span class="ht-dot ht-g"></span>
+          <span class="ht-title">~/projects/fintech-app — claude</span>
+        </div>
+        <div class="ht-body">
+          <p class="ht-line"><span class="ht-prompt">claude&gt;</span> <span class="ht-cmd">install Agent Harry</span></p>
+          <p class="ht-out"><span class="ht-ok">✓</span> Detected mode <span class="ht-emp">Bundled</span></p>
+          <p class="ht-out"><span class="ht-ok">✓</span> Copying 10 agents → <span class="ht-path">./.claude/agents/</span></p>
+          <p class="ht-out"><span class="ht-ok">✓</span> Writing <span class="ht-path">SHARED_CONTEXT.md</span> · <span class="ht-path">README.md</span></p>
+          <p class="ht-success">Ready. Try: <span class="ht-emp">"Use the orchestrator to plan a discovery cycle."</span><span class="ht-cursor"></span></p>
+        </div>
       </div>
     </div>
   </section>
@@ -624,106 +803,101 @@
     </div>
   </section>
 
-  <section class="tile tile-parchment" id="agents">
+  <section class="tile tile-deep" id="agents">
     <div class="container">
-      <div class="agents-intro">
-        <span class="section-eyebrow">Meet the agents</span>
-        <h2 class="section-head">The team.</h2>
-        <p class="section-lede">Ten agents, grouped by phase. Each one has a single job.</p>
+      <div class="agents-header">
+        <span class="section-eyebrow-mono">[ 10 / 10 ] · Meet the agents</span>
+        <h2 class="section-head-dark">A team of specialists.</h2>
+        <p class="section-lede-dark">One job each. A strict anti-pattern list. Orchestrated end-to-end.</p>
       </div>
 
-      <div class="phase-group">
-        <h3 class="phase-group-head">Discovery</h3>
-        <div class="agent-grid">
-          <div class="agent-card" style="--c: var(--c-discovery);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">discovery-researcher</h4>
-              <p class="agent-card-role">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</p>
-            </div>
-          </div>
-          <div class="agent-card" style="--c: var(--c-competitive);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">competitive-analyst</h4>
-              <p class="agent-card-role">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="agent-bento">
 
-      <div class="phase-group">
-        <h3 class="phase-group-head">Define</h3>
-        <div class="agent-grid">
-          <div class="agent-card" style="--c: var(--c-positioner);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">product-positioner</h4>
-              <p class="agent-card-role">Crafts the positioning statement and value props. Picks the sharpest angle; defends it.</p>
-            </div>
+        <article class="ac ac-feature-orch" style="--c: var(--c-orchestrator);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Meta · Conductor</span>
+          <h3>Orchestrator</h3>
+          <p class="ac-role-lead">Calm strategist.</p>
+          <p class="ac-desc">Parses the goal into discrete phases, maps each to the right sub-agent, surfaces approval gates the user wants, runs the plan sub-agent by sub-agent, and synthesizes outputs into a final summary you can act on.</p>
+          <div class="ac-meta">
+            <span>routes to <em>all phases</em></span>
+            <span>authority <em>propose</em></span>
           </div>
-          <div class="agent-card" style="--c: var(--c-prioritizer);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">feature-prioritizer</h4>
-              <p class="agent-card-role">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; says what you're giving up.</p>
-            </div>
-          </div>
-          <div class="agent-card" style="--c: var(--c-ideation);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">ideation-facilitator</h4>
-              <p class="agent-card-role">Runs divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        </article>
 
-      <div class="phase-group">
-        <h3 class="phase-group-head">Deliver</h3>
-        <div class="agent-grid">
-          <div class="agent-card" style="--c: var(--c-interaction);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">interaction-designer</h4>
-              <p class="agent-card-role">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at senior IC level.</p>
-            </div>
-          </div>
-          <div class="agent-card" style="--c: var(--c-usability);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">usability-tester</h4>
-              <p class="agent-card-role">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</p>
-            </div>
-          </div>
-          <div class="agent-card" style="--c: var(--c-handoff);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">handoff-engineer</h4>
-              <p class="agent-card-role">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <article class="ac" style="--c: var(--c-discovery);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Discovery</span>
+          <h3>discovery-researcher</h3>
+          <p class="ac-desc">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</p>
+        </article>
 
-      <div class="phase-group">
-        <h3 class="phase-group-head">Meta &amp; Cross-cutting</h3>
-        <div class="agent-grid">
-          <div class="agent-card" style="--c: var(--c-orchestrator);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">orchestrator</h4>
-              <p class="agent-card-role">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs.</p>
+        <article class="ac" style="--c: var(--c-competitive);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Discovery</span>
+          <h3>competitive-analyst</h3>
+          <p class="ac-desc">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-positioner);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Define</span>
+          <h3>product-positioner</h3>
+          <p class="ac-desc">Crafts positioning and value props. Picks the sharpest angle; defends it.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-prioritizer);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Define</span>
+          <h3>feature-prioritizer</h3>
+          <p class="ac-desc">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; says what you're giving up.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-ideation);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Define</span>
+          <h3>ideation-facilitator</h3>
+          <p class="ac-desc">Divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-interaction);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Deliver</span>
+          <h3>interaction-designer</h3>
+          <p class="ac-desc">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at senior IC level.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-usability);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Deliver</span>
+          <h3>usability-tester</h3>
+          <p class="ac-desc">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</p>
+        </article>
+
+        <article class="ac" style="--c: var(--c-handoff);">
+          <div class="ac-halo"></div>
+          <span class="ac-tag">Deliver</span>
+          <h3>handoff-engineer</h3>
+          <p class="ac-desc">Dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</p>
+        </article>
+
+        <article class="ac ac-feature-crit" style="--c: var(--c-critique);">
+          <div class="ac-halo"></div>
+          <div class="ac-feature-crit-left">
+            <span class="ac-tag">Cross-cutting · Always-on</span>
+            <h3>Critique Partner</h3>
+            <p class="ac-role-lead">The contrarian.</p>
+          </div>
+          <div class="ac-feature-crit-right">
+            <p class="ac-desc">Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Operates in Mode B by default — never asks "what do you want to do?", always proposes a sharper alternative.</p>
+            <div class="ac-meta">
+              <span>reviews <em>all phases</em></span>
+              <span>voice <em>devil's advocate</em></span>
+              <span>authority <em>propose</em></span>
             </div>
           </div>
-          <div class="agent-card" style="--c: var(--c-critique);">
-            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
-            <div class="agent-card-body">
-              <h4 class="agent-card-name">critique-partner</h4>
-              <p class="agent-card-role">Reviews any phase output. Surfaces weak reasoning, untested assumptions, missing tradeoffs.</p>
-            </div>
-          </div>
-        </div>
+        </article>
+
       </div>
     </div>
   </section>
