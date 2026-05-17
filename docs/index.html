@@ -17,7 +17,7 @@
       --hairline: #e0e0e0;
       --divider-soft: #f0f0f0;
       --canvas: #ffffff;
-      --parchment: #f5f5f7;
+      --parchment: #f1ece2;
       --pearl: #fafafc;
       --tile-1: #272729;
       --tile-2: #2a2a2c;
@@ -102,144 +102,105 @@
     .container { max-width: 1024px; margin: 0 auto; }
     .narrow { max-width: 760px; margin: 0 auto; }
 
-    /* ---------- Hero (dark, technical) ---------- */
-    .hero {
-      text-align: left;
-      padding: 120px 32px 80px;
-      background:
-        radial-gradient(ellipse 70% 50% at 20% 0%, rgba(0, 102, 204, 0.18) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 60% at 90% 30%, rgba(139, 92, 246, 0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(236, 72, 153, 0.06) 0%, transparent 55%),
-        #08080a;
-      color: #fff;
-      position: relative;
-      overflow: hidden;
+    /* ---------- Hero (editorial / zine) ---------- */
+    .ed-hero {
+      background: #f1ece2;
+      color: #1a1814;
+      padding: 56px 32px 112px;
+      border-bottom: 1px solid rgba(26, 24, 20, 0.12);
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
-      pointer-events: none;
+    .ed-masthead {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding-bottom: 28px;
+      border-bottom: 1px solid rgba(26, 24, 20, 0.18);
+      margin-bottom: 96px;
+      gap: 24px; flex-wrap: wrap;
     }
-    .hero > .container { position: relative; z-index: 1; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 6px 14px 6px 10px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 9999px;
-      font-family: ui-monospace, "SF Mono", monospace;
-      font-size: 12px;
-      letter-spacing: 0.8px;
-      color: rgba(255,255,255,0.78);
-      text-transform: uppercase;
-      transition: border-color .2s ease, background .2s ease;
-    }
-    .hero-badge:hover {
-      border-color: rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.06);
-    }
-    .hero-badge-dot {
-      width: 6px; height: 6px; border-radius: 9999px;
-      background: #2997ff;
-      box-shadow: 0 0 12px rgba(41,151,255,0.8);
-    }
-    .hero-badge-arrow {
-      color: rgba(255,255,255,0.5);
-      transition: transform .2s ease;
-    }
-    .hero-badge:hover .hero-badge-arrow { transform: translateX(2px); color: #2997ff; }
-
-    .hero-h1 {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: clamp(40px, 7vw, 84px);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      font-weight: 600;
-      margin-top: 28px;
-      max-width: 880px;
-    }
-    .hero-h1 em {
-      font-style: italic;
-      font-weight: 500;
-      background: linear-gradient(90deg, #5ba8ff 0%, #b794ff 50%, #ff7eb8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .hero-lede {
-      font-size: 21px;
-      line-height: 1.5;
+    .ed-brand {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: 22px;
       font-weight: 400;
-      color: rgba(255,255,255,0.62);
-      max-width: 620px;
-      margin-top: 28px;
+      letter-spacing: -0.01em;
+      color: #1a1814;
+      display: inline-flex; align-items: baseline; gap: 8px;
+    }
+    .ed-brand-mark { font-style: italic; }
+    .ed-brand-dot {
+      display: inline-block; width: 4px; height: 4px; border-radius: 9999px;
+      background: #1a1814; transform: translateY(-4px);
+    }
+    .ed-edition {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: rgba(26, 24, 20, 0.55);
+    }
+    .ed-title {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: clamp(52px, 9.5vw, 128px);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      font-weight: 400;
+      color: #1a1814;
+      max-width: 1100px;
+    }
+    .ed-em {
+      font-style: italic;
+      font-weight: 400;
+      color: #1a1814;
+    }
+    .ed-em::after {
+      content: '.';
+      font-style: normal;
+    }
+    .ed-deck {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: clamp(20px, 2.2vw, 26px);
+      line-height: 1.4;
+      font-style: italic;
+      color: rgba(26, 24, 20, 0.72);
+      max-width: 640px;
+      margin-top: 48px;
+      font-weight: 400;
+    }
+    .ed-byline {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      margin-top: 56px;
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: rgba(26, 24, 20, 0.55);
+    }
+    .ed-byline strong { color: #1a1814; font-weight: 600; }
+    .ed-divider {
+      display: inline-block; width: 16px; height: 1px;
+      background: rgba(26, 24, 20, 0.3);
+    }
+    .ed-actions {
+      display: flex; gap: 36px; flex-wrap: wrap;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(26, 24, 20, 0.15);
+    }
+    .ed-link {
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      font-weight: 500;
       letter-spacing: -0.011em;
+      color: #1a1814;
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba(26, 24, 20, 0.35);
+      transition: border-color .2s ease, transform .2s ease;
+      display: inline-flex; align-items: baseline; gap: 6px;
     }
-    .hero-ctas {
-      margin-top: 40px;
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-
-    /* Terminal hero visual */
-    .hero-terminal {
-      margin-top: 72px;
-      background: linear-gradient(180deg, #16161a 0%, #0e0e12 100%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(0,0,0,0.4),
-        0 30px 80px -20px rgba(0, 0, 0, 0.6),
-        0 60px 120px -40px rgba(0, 102, 204, 0.18);
-      max-width: 760px;
-    }
-    .ht-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .ht-dot { width: 12px; height: 12px; border-radius: 9999px; }
-    .ht-r { background: #ff5f57; }
-    .ht-y { background: #febc2e; }
-    .ht-g { background: #28c840; }
-    .ht-title {
-      margin-left: 12px;
-      font-family: ui-monospace, "SF Mono", monospace;
-      font-size: 12px;
-      color: rgba(255,255,255,0.42);
-    }
-    .ht-body {
-      padding: 24px 28px;
-      font-family: ui-monospace, "SF Mono", monospace;
-      font-size: 14px;
-      line-height: 1.85;
-      color: rgba(255,255,255,0.82);
-    }
-    .ht-line { color: rgba(255,255,255,0.94); }
-    .ht-prompt { color: #2997ff; user-select: none; }
-    .ht-cmd { color: #fff; }
-    .ht-out { color: rgba(255,255,255,0.55); }
-    .ht-ok { color: #28c840; margin-right: 4px; }
-    .ht-emp { color: #fff; }
-    .ht-path { color: #2997ff; }
-    .ht-success { color: #28c840; margin-top: 12px; }
-    .ht-cursor {
+    .ed-link:hover { border-color: #1a1814; }
+    .ed-arrow {
       display: inline-block;
-      width: 8px; height: 16px;
-      background: #2997ff;
-      vertical-align: text-bottom;
-      animation: blink 1.05s steps(1) infinite;
-      margin-left: 2px;
+      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+    .ed-link:hover .ed-arrow { transform: translate(3px, 0); }
 
     /* ---------- Buttons ---------- */
     .btn {
@@ -319,182 +280,137 @@
     }
     .section-lede-on-dark { color: var(--body-muted); }
 
-    /* ---------- Agents (dark bento) ---------- */
-    .tile-deep {
-      background:
-        radial-gradient(ellipse 70% 50% at 100% 0%, rgba(139, 92, 246, 0.10) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 50% at 0% 100%, rgba(0, 102, 204, 0.10) 0%, transparent 55%),
-        #08080a;
-      color: #fff;
-      position: relative;
-      overflow: hidden;
+    /* ---------- Agents (editorial / zine specimen) ---------- */
+    .tile-zine {
+      background: #f1ece2;
+      color: #1a1814;
+      padding: 112px 32px;
     }
-    .tile-deep::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
-      pointer-events: none;
+    .zine-header {
+      max-width: 760px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid rgba(26, 24, 20, 0.18);
+      margin-bottom: 12px;
     }
-    .tile-deep > .container { position: relative; z-index: 1; }
-
-    .agents-header {
-      max-width: 720px;
-      margin-bottom: 64px;
-    }
-    .section-eyebrow-mono {
-      font-family: ui-monospace, "SF Mono", monospace;
-      font-size: 12px;
+    .zine-eyebrow {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 11px;
       font-weight: 500;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 1.2px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
-      display: inline-block;
+      color: rgba(26, 24, 20, 0.55);
     }
-    .section-head-dark {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: clamp(32px, 4.5vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      font-weight: 600;
-      color: #fff;
-      margin-top: 14px;
+    .zine-head {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: clamp(40px, 7vw, 92px);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      font-weight: 400;
+      color: #1a1814;
+      margin-top: 24px;
     }
-    .section-lede-dark {
-      font-size: 19px;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.6);
-      margin-top: 18px;
+    .zine-head em {
+      font-style: italic;
+      font-weight: 400;
+    }
+    .zine-deck {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: 22px;
+      line-height: 1.4;
+      font-style: italic;
+      color: rgba(26, 24, 20, 0.7);
       max-width: 600px;
-      letter-spacing: -0.011em;
+      margin-top: 32px;
     }
 
-    .agent-bento {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: minmax(180px, auto);
-      gap: 14px;
-    }
-    .ac {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%),
-        #101013;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 18px;
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease, background .2s ease;
+    .zine-list {
       display: flex;
       flex-direction: column;
     }
-    .ac:hover {
-      transform: translateY(-3px);
-      border-color: color-mix(in srgb, var(--c) 40%, rgba(255,255,255,0.07));
+    .zine-entry {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 56px;
+      padding: 64px 0;
+      border-bottom: 1px solid rgba(26, 24, 20, 0.14);
+      align-items: start;
     }
-    .ac:hover .ac-halo {
-      opacity: 0.32;
-      transform: translate(10px, -10px) scale(1.1);
+    .zine-entry:last-child {
+      border-bottom: 0;
     }
-    .ac-halo {
-      position: absolute;
-      top: -90px;
-      right: -90px;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--c) 0%, transparent 65%);
-      opacity: 0.22;
-      filter: blur(36px);
-      pointer-events: none;
-      transition: opacity .3s ease, transform .4s cubic-bezier(0.22, 1, 0.36, 1);
+    .zine-num {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: 56px;
+      line-height: 1;
+      font-weight: 400;
+      color: rgba(26, 24, 20, 0.32);
+      letter-spacing: -0.02em;
+      position: sticky;
+      top: 80px;
     }
-    .ac-tag {
-      font-family: ui-monospace, "SF Mono", monospace;
+    .zine-num-feature {
+      color: var(--c);
+      font-style: italic;
+    }
+    .zine-name {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 400;
+      color: #1a1814;
+      display: inline-block;
+      padding-bottom: 8px;
+      position: relative;
+      border-bottom: 3px solid var(--c);
+    }
+    .zine-name-feature {
+      font-style: italic;
+    }
+    .zine-role {
+      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
+      font-size: 19px;
+      font-style: italic;
+      color: var(--c);
+      margin-top: 20px;
+      letter-spacing: -0.01em;
+    }
+    .zine-desc {
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      color: rgba(26, 24, 20, 0.75);
+      margin-top: 16px;
+      max-width: 620px;
+      letter-spacing: -0.011em;
+    }
+    .zine-meta {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
       font-size: 11px;
-      font-weight: 500;
       letter-spacing: 1.4px;
       text-transform: uppercase;
-      color: var(--c);
+      color: rgba(26, 24, 20, 0.5);
+    }
+    .zine-meta-row {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 11px;
-      border-radius: 9999px;
-      background: color-mix(in srgb, var(--c) 14%, transparent);
-      border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
-      align-self: flex-start;
-      position: relative;
-      z-index: 1;
+      gap: 8px;
     }
-    .ac h3 {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: 22px;
+    .zine-chip {
+      width: 12px;
+      height: 12px;
+      background: var(--c);
+      display: inline-block;
+    }
+    .zine-meta strong {
+      color: #1a1814;
       font-weight: 600;
-      color: #fff;
-      letter-spacing: -0.02em;
-      margin-top: 20px;
-      position: relative;
-      z-index: 1;
+      margin-right: 4px;
     }
-    .ac-role-lead {
-      font-size: 15px;
-      color: color-mix(in srgb, var(--c) 60%, white);
-      margin-top: 6px;
-      font-style: italic;
-      position: relative;
-      z-index: 1;
-    }
-    .ac-desc {
-      font-size: 14px;
-      line-height: 1.55;
-      color: rgba(255,255,255,0.58);
-      margin-top: 12px;
-      letter-spacing: -0.01em;
-      position: relative;
-      z-index: 1;
-    }
-    .ac-meta {
-      margin-top: auto;
-      padding-top: 20px;
-      display: flex; flex-wrap: wrap; gap: 16px;
-      font-family: ui-monospace, "SF Mono", monospace;
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.4px;
-      position: relative;
-      z-index: 1;
-    }
-    .ac-meta em {
-      font-style: normal;
-      color: #fff;
-    }
-
-    /* Featured cards */
-    .ac-feature-orch {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-    .ac-feature-orch h3 { font-size: 36px; }
-    .ac-feature-orch .ac-halo {
-      width: 460px; height: 460px;
-      top: -120px; right: -120px;
-      opacity: 0.28;
-    }
-    .ac-feature-crit {
-      grid-column: span 4;
-    }
-    .ac-feature-crit { flex-direction: row; align-items: flex-start; gap: 40px; }
-    .ac-feature-crit > * { z-index: 1; }
-    .ac-feature-crit .ac-halo { width: 520px; height: 360px; top: -100px; right: -100px; opacity: 0.24; }
-    .ac-feature-crit-left { flex: 0 0 320px; }
-    .ac-feature-crit-right { flex: 1; padding-top: 6px; }
-    .ac-feature-crit h3 { font-size: 32px; margin-top: 18px; }
 
     /* ---------- Flow diagram ---------- */
     .flow-frame {
@@ -685,13 +601,11 @@
     }
     @media (max-width: 833px) {
       .tile { padding: 72px 24px; }
-      .hero { padding: 80px 24px 64px; }
-      .hero-lede { font-size: 17px; }
-      .hero-terminal { margin-top: 48px; }
-      .ht-body { padding: 18px 20px; font-size: 12px; }
-      .ht-title { font-size: 11px; }
+      .ed-hero { padding: 36px 24px 80px; }
+      .ed-masthead { padding-bottom: 20px; margin-bottom: 56px; }
+      .ed-deck { font-size: 18px; margin-top: 32px; }
+      .ed-actions { gap: 24px; margin-top: 36px; padding-top: 24px; }
       .section-head { font-size: 36px; }
-      .section-head-dark { font-size: 32px; }
       .install { grid-template-columns: 1fr; }
       .phases { grid-template-columns: 1fr; }
       .phase { border-right: 0; border-bottom: 1px solid var(--hairline); }
@@ -701,18 +615,19 @@
       .stat-num { font-size: 44px; }
       .stats { gap: 40px; padding: 48px 24px; }
 
-      /* Agent bento collapses to single column on mobile */
-      .agent-bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
-      .ac-feature-orch { grid-column: span 1; grid-row: span 1; }
-      .ac-feature-orch h3 { font-size: 28px; }
-      .ac-feature-crit { grid-column: span 1; flex-direction: column; gap: 16px; }
-      .ac-feature-crit-left { flex: none; }
-      .ac-feature-crit h3 { font-size: 26px; }
-    }
-    @media (min-width: 834px) and (max-width: 1023px) {
-      .agent-bento { grid-template-columns: repeat(3, 1fr); }
-      .ac-feature-orch { grid-column: span 2; grid-row: span 2; }
-      .ac-feature-crit { grid-column: span 3; }
+      /* Agents zine: stack the number above the content */
+      .tile-zine { padding: 80px 24px; }
+      .zine-header { padding-bottom: 40px; margin-bottom: 0; }
+      .zine-deck { font-size: 18px; }
+      .zine-entry {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 44px 0;
+      }
+      .zine-num { font-size: 40px; position: static; }
+      .zine-role { font-size: 17px; }
+      .zine-desc { font-size: 16px; }
+      .zine-meta { gap: 18px; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 36px; }
@@ -736,35 +651,38 @@
     </div>
   </nav>
 
-  <section class="tile hero">
+  <section class="tile ed-hero">
     <div class="container">
-      <a class="hero-badge" href="https://github.com/KaungMyatHein/agent-harry">
-        <span class="hero-badge-dot"></span>
-        v1 — Open source on GitHub
-        <span class="hero-badge-arrow">↗</span>
-      </a>
-      <h1 class="hero-h1">The product design team,<br>installed in <em>one command.</em></h1>
-      <p class="hero-lede">A 10-subagent Discovery → Define → Deliver pipeline that drops into any Claude Code project. Version-controlled on GitHub. Refreshable in a sentence. Yours to fork.</p>
-      <div class="hero-ctas">
-        <a href="#install" class="btn btn-primary">Install Agent Harry</a>
-        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost-on-dark">View source →</a>
+      <header class="ed-masthead">
+        <span class="ed-brand"><em class="ed-brand-mark">Agent</em> Harry <span class="ed-brand-dot"></span></span>
+        <span class="ed-edition">No. 01 · May 2026 · Open source · MIT</span>
+      </header>
+
+      <h1 class="ed-title">
+        The product<br>
+        design team,<br>
+        <span class="ed-em">in code</span>
+      </h1>
+
+      <p class="ed-deck">
+        A ten-subagent pipeline for Claude Code that runs Discovery, Define, and Deliver — and argues with itself before anything ships.
+      </p>
+
+      <div class="ed-byline">
+        <span>By <strong>Kaung Myat Hein</strong></span>
+        <span class="ed-divider"></span>
+        <span>v1 release</span>
+        <span class="ed-divider"></span>
+        <span>10 agents</span>
+        <span class="ed-divider"></span>
+        <span>3 modes</span>
       </div>
 
-      <div class="hero-terminal" role="img" aria-label="Terminal showing the Agent Harry install command running">
-        <div class="ht-bar">
-          <span class="ht-dot ht-r"></span>
-          <span class="ht-dot ht-y"></span>
-          <span class="ht-dot ht-g"></span>
-          <span class="ht-title">~/projects/fintech-app — claude</span>
-        </div>
-        <div class="ht-body">
-          <p class="ht-line"><span class="ht-prompt">claude&gt;</span> <span class="ht-cmd">install Agent Harry</span></p>
-          <p class="ht-out"><span class="ht-ok">✓</span> Detected mode <span class="ht-emp">Bundled</span></p>
-          <p class="ht-out"><span class="ht-ok">✓</span> Copying 10 agents → <span class="ht-path">./.claude/agents/</span></p>
-          <p class="ht-out"><span class="ht-ok">✓</span> Writing <span class="ht-path">SHARED_CONTEXT.md</span> · <span class="ht-path">README.md</span></p>
-          <p class="ht-success">Ready. Try: <span class="ht-emp">"Use the orchestrator to plan a discovery cycle."</span><span class="ht-cursor"></span></p>
-        </div>
-      </div>
+      <nav class="ed-actions">
+        <a class="ed-link" href="#install">Install <span class="ed-arrow">→</span></a>
+        <a class="ed-link" href="https://github.com/KaungMyatHein/agent-harry">Read the source <span class="ed-arrow">↗</span></a>
+        <a class="ed-link" href="https://github.com/KaungMyatHein/agent-harry/blob/main/CHANGELOG.md">Changelog</a>
+      </nav>
     </div>
   </section>
 
@@ -803,97 +721,144 @@
     </div>
   </section>
 
-  <section class="tile tile-deep" id="agents">
+  <section class="tile tile-zine" id="agents">
     <div class="container">
-      <div class="agents-header">
-        <span class="section-eyebrow-mono">[ 10 / 10 ] · Meet the agents</span>
-        <h2 class="section-head-dark">A team of specialists.</h2>
-        <p class="section-lede-dark">One job each. A strict anti-pattern list. Orchestrated end-to-end.</p>
-      </div>
+      <header class="zine-header">
+        <span class="zine-eyebrow">No. 02 · The team</span>
+        <h2 class="zine-head">Ten specialists.<br><em>One playbook.</em></h2>
+        <p class="zine-deck">A team that argues with itself before anything ships. The orchestrator routes; everyone else holds their lane.</p>
+      </header>
 
-      <div class="agent-bento">
+      <div class="zine-list">
 
-        <article class="ac ac-feature-orch" style="--c: var(--c-orchestrator);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Meta · Conductor</span>
-          <h3>Orchestrator</h3>
-          <p class="ac-role-lead">Calm strategist.</p>
-          <p class="ac-desc">Parses the goal into discrete phases, maps each to the right sub-agent, surfaces approval gates the user wants, runs the plan sub-agent by sub-agent, and synthesizes outputs into a final summary you can act on.</p>
-          <div class="ac-meta">
-            <span>routes to <em>all phases</em></span>
-            <span>authority <em>propose</em></span>
+        <article class="zine-entry" style="--c: var(--c-orchestrator);">
+          <div class="zine-num zine-num-feature">01</div>
+          <div>
+            <h3 class="zine-name zine-name-feature">Orchestrator</h3>
+            <p class="zine-role">The conductor — calm strategist.</p>
+            <p class="zine-desc">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs into a final summary you can act on. Doesn't produce design work itself; produces a plan, delegates, and reports.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Meta</span>
+              <span class="zine-meta-row"><strong>Authority</strong>Propose</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Action Blue · #0066CC</span>
+            </div>
           </div>
         </article>
 
-        <article class="ac" style="--c: var(--c-discovery);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Discovery</span>
-          <h3>discovery-researcher</h3>
-          <p class="ac-desc">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-competitive);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Discovery</span>
-          <h3>competitive-analyst</h3>
-          <p class="ac-desc">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-positioner);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Define</span>
-          <h3>product-positioner</h3>
-          <p class="ac-desc">Crafts positioning and value props. Picks the sharpest angle; defends it.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-prioritizer);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Define</span>
-          <h3>feature-prioritizer</h3>
-          <p class="ac-desc">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; says what you're giving up.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-ideation);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Define</span>
-          <h3>ideation-facilitator</h3>
-          <p class="ac-desc">Divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-interaction);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Deliver</span>
-          <h3>interaction-designer</h3>
-          <p class="ac-desc">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at senior IC level.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-usability);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Deliver</span>
-          <h3>usability-tester</h3>
-          <p class="ac-desc">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</p>
-        </article>
-
-        <article class="ac" style="--c: var(--c-handoff);">
-          <div class="ac-halo"></div>
-          <span class="ac-tag">Deliver</span>
-          <h3>handoff-engineer</h3>
-          <p class="ac-desc">Dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</p>
-        </article>
-
-        <article class="ac ac-feature-crit" style="--c: var(--c-critique);">
-          <div class="ac-halo"></div>
-          <div class="ac-feature-crit-left">
-            <span class="ac-tag">Cross-cutting · Always-on</span>
-            <h3>Critique Partner</h3>
-            <p class="ac-role-lead">The contrarian.</p>
+        <article class="zine-entry" style="--c: var(--c-discovery);">
+          <div class="zine-num">02</div>
+          <div>
+            <h3 class="zine-name">discovery-researcher</h3>
+            <p class="zine-role">Curious, evidence-first.</p>
+            <p class="zine-desc">Plans and runs interviews, secondary research, problem framing. Refuses to jump to solutions before the problem is named with evidence.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Discovery</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Slate · #5E81AC</span>
+            </div>
           </div>
-          <div class="ac-feature-crit-right">
-            <p class="ac-desc">Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Operates in Mode B by default — never asks "what do you want to do?", always proposes a sharper alternative.</p>
-            <div class="ac-meta">
-              <span>reviews <em>all phases</em></span>
-              <span>voice <em>devil's advocate</em></span>
-              <span>authority <em>propose</em></span>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-competitive);">
+          <div class="zine-num">03</div>
+          <div>
+            <h3 class="zine-name">competitive-analyst</h3>
+            <p class="zine-role">Pattern detective.</p>
+            <p class="zine-desc">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor. Names what's table-stakes and what's defensible.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Discovery</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Pine · #2C7D6F</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-positioner);">
+          <div class="zine-num">04</div>
+          <div>
+            <h3 class="zine-name">product-positioner</h3>
+            <p class="zine-role">Sharp, opinionated.</p>
+            <p class="zine-desc">Crafts positioning statements and value props. Picks the sharpest angle and defends it against softer alternatives.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Amber · #D97706</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-prioritizer);">
+          <div class="zine-num">05</div>
+          <div>
+            <h3 class="zine-name">feature-prioritizer</h3>
+            <p class="zine-role">Tradeoff-honest PM.</p>
+            <p class="zine-desc">Scores with RICE, ICE, or Kano — explains the choice of framework. Names tradeoffs honestly and tells you what you're giving up.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Burnt · #B45309</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-ideation);">
+          <div class="zine-num">06</div>
+          <div>
+            <h3 class="zine-name">ideation-facilitator</h3>
+            <p class="zine-role">Generative, divergent.</p>
+            <p class="zine-desc">Runs concept generation — Crazy 8s, How-Might-We, opportunity mapping. Diverges wide before converging on a direction worth prototyping.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Violet · #8B5CF6</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-interaction);">
+          <div class="zine-num">07</div>
+          <div>
+            <h3 class="zine-name">interaction-designer</h3>
+            <p class="zine-role">Craft-obsessed senior IC.</p>
+            <p class="zine-desc">Builds flows, states, microinteractions. Audits existing Figma. Sees the empty states, the loading states, the failure states — and refuses to ship without them.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Magenta · #EC4899</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-usability);">
+          <div class="zine-num">08</div>
+          <div>
+            <h3 class="zine-name">usability-tester</h3>
+            <p class="zine-role">Skeptical scientist.</p>
+            <p class="zine-desc">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks — then ruthlessly clear about what it says.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Verdant · #16A34A</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-handoff);">
+          <div class="zine-num">09</div>
+          <div>
+            <h3 class="zine-name">handoff-engineer</h3>
+            <p class="zine-role">Systems-thinker.</p>
+            <p class="zine-desc">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code; closes the gap most handoffs leave open.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Graphite · #525252</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="zine-entry" style="--c: var(--c-critique);">
+          <div class="zine-num zine-num-feature">10</div>
+          <div>
+            <h3 class="zine-name zine-name-feature">critique-partner</h3>
+            <p class="zine-role">The contrarian — devil's advocate.</p>
+            <p class="zine-desc">Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Never asks "what do you want to do?"; always proposes a sharper alternative.</p>
+            <div class="zine-meta">
+              <span class="zine-meta-row"><strong>Phase</strong>Cross-cutting</span>
+              <span class="zine-meta-row"><strong>Always</strong>On</span>
+              <span class="zine-meta-row"><span class="zine-chip"></span>Crimson · #DC2626</span>
             </div>
           </div>
         </article>
