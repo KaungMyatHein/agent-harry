@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Harry — A multi-agent product design system for Claude Code</title>
+  <meta name="description" content="Agent Harry installs a 10-subagent product design pipeline (Discovery → Define → Deliver) into any Claude Code project, with version control via GitHub.">
+  <style>
+    :root {
+      --primary: #0066cc;
+      --primary-focus: #0071e3;
+      --primary-on-dark: #2997ff;
+      --ink: #1d1d1f;
+      --body-muted: #cccccc;
+      --ink-muted-80: #333333;
+      --ink-muted-48: #7a7a7a;
+      --hairline: #e0e0e0;
+      --divider-soft: #f0f0f0;
+      --canvas: #ffffff;
+      --parchment: #f5f5f7;
+      --pearl: #fafafc;
+      --tile-1: #272729;
+      --tile-2: #2a2a2c;
+      --tile-3: #252527;
+      --black: #000000;
+      --shadow-product: rgba(0, 0, 0, 0.22) 3px 5px 30px 0;
+
+      --c-orchestrator: #0066cc;
+      --c-discovery: #5e81ac;
+      --c-competitive: #2c7d6f;
+      --c-positioner: #d97706;
+      --c-prioritizer: #b45309;
+      --c-ideation: #8b5cf6;
+      --c-interaction: #ec4899;
+      --c-usability: #16a34a;
+      --c-handoff: #525252;
+      --c-critique: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.47;
+      letter-spacing: -0.374px;
+      color: var(--ink);
+      background: var(--canvas);
+    }
+    h1, h2, h3, .display {
+      font-family: "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-weight: 600;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Global Nav ---------- */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--black); color: #fff;
+      height: 44px;
+    }
+    .nav-inner {
+      max-width: 1024px; margin: 0 auto;
+      height: 100%;
+      display: flex; align-items: center; gap: 32px;
+      padding: 0 22px;
+      font-size: 12px; line-height: 1; letter-spacing: -0.12px;
+    }
+    .nav-brand { font-weight: 600; font-size: 14px; letter-spacing: -0.224px; }
+    .nav ul { list-style: none; display: flex; gap: 28px; flex: 1; justify-content: flex-end; }
+    .nav a { color: #fff; opacity: 0.88; transition: opacity .15s ease; }
+    .nav a:hover { opacity: 1; }
+    .nav .gh-btn {
+      background: #fff; color: var(--ink);
+      padding: 6px 14px; border-radius: 9999px;
+      font-size: 12px; font-weight: 600;
+      transition: transform .12s ease;
+    }
+    .nav .gh-btn:active { transform: scale(.95); }
+
+    /* ---------- Tile system ---------- */
+    .tile { padding: 96px 32px; }
+    .tile-light { background: var(--canvas); }
+    .tile-parchment { background: var(--parchment); }
+    .tile-dark { background: var(--tile-1); color: #fff; }
+    .tile-dark-2 { background: var(--tile-2); color: #fff; }
+    .container { max-width: 1024px; margin: 0 auto; }
+    .narrow { max-width: 760px; margin: 0 auto; }
+
+    /* ---------- Hero ---------- */
+    .hero { text-align: center; padding: 112px 32px 96px; }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 14px; font-weight: 600;
+      color: var(--primary); letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 64px; line-height: 1.05; letter-spacing: -0.5px;
+    }
+    .hero .lede {
+      font-size: 28px; line-height: 1.2; font-weight: 400;
+      color: var(--ink-muted-80);
+      max-width: 760px; margin: 24px auto 0;
+      letter-spacing: 0.196px;
+    }
+    .hero .ctas {
+      margin-top: 40px;
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      font: inherit;
+      font-size: 17px;
+      padding: 11px 22px;
+      border: 1px solid transparent;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform .12s ease, background-color .15s ease;
+    }
+    .btn:active { transform: scale(.95); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-focus); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-ghost:hover { background: rgba(0, 102, 204, 0.06); }
+    .btn-ghost-on-dark { color: var(--primary-on-dark); border-color: var(--primary-on-dark); }
+    .btn-ghost-on-dark:hover { background: rgba(41, 151, 255, 0.08); }
+
+    /* ---------- Hero constellation ---------- */
+    .constellation { margin: 80px auto 0; max-width: 720px; }
+
+    /* ---------- Stats strip ---------- */
+    .stats {
+      display: flex; gap: 64px; justify-content: center; flex-wrap: wrap;
+      padding: 56px 32px;
+      background: var(--tile-2);
+    }
+    .stat { text-align: center; min-width: 140px; }
+    .stat-num {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 56px; font-weight: 600; line-height: 1;
+      letter-spacing: -0.28px; color: #fff;
+    }
+    .stat-label {
+      font-size: 14px; color: var(--body-muted);
+      margin-top: 12px; letter-spacing: -0.224px;
+    }
+
+    /* ---------- Section heads ---------- */
+    .section-eyebrow {
+      font-size: 14px; font-weight: 600;
+      color: var(--ink-muted-48); letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .section-eyebrow-on-dark { color: var(--body-muted); }
+    .section-head {
+      font-size: 48px; line-height: 1.08; letter-spacing: -0.28px;
+      margin-top: 12px; margin-bottom: 20px;
+    }
+    .section-lede {
+      font-size: 21px; line-height: 1.3;
+      color: var(--ink-muted-80);
+      max-width: 760px;
+      letter-spacing: 0.231px;
+    }
+    .section-lede-on-dark { color: var(--body-muted); }
+
+    /* ---------- Agents grid ---------- */
+    .agents {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 56px;
+    }
+    .agent-card {
+      position: relative;
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      padding: 28px 24px 24px;
+      transition: transform .15s ease, border-color .15s ease;
+      overflow: hidden;
+    }
+    .agent-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--c);
+    }
+    .agent-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--c);
+    }
+    .agent-dot {
+      width: 36px; height: 36px; border-radius: 9999px;
+      background: var(--c); margin-bottom: 20px;
+    }
+    .agent-name {
+      font-size: 17px; font-weight: 600; letter-spacing: -0.374px;
+      color: var(--ink);
+    }
+    .agent-role {
+      font-size: 14px; color: var(--ink-muted-80);
+      line-height: 1.43; margin-top: 8px; letter-spacing: -0.224px;
+    }
+    .agent-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 20px;
+    }
+    .agent-phase {
+      font-size: 12px; font-weight: 600;
+      color: var(--c); text-transform: uppercase; letter-spacing: 0.6px;
+    }
+    .agent-voice {
+      font-size: 12px; color: var(--ink-muted-48); font-style: italic;
+      letter-spacing: -0.12px;
+    }
+
+    /* ---------- Flow diagram ---------- */
+    .flow-frame {
+      margin-top: 56px;
+      border-radius: 18px;
+      background: var(--tile-2);
+      padding: 48px 24px;
+      overflow-x: auto;
+    }
+    .flow-frame svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+
+    /* ---------- Use cases ---------- */
+    .usecases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .uc {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      padding: 32px 28px;
+      display: flex; flex-direction: column;
+    }
+    .uc-num {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 12px; font-weight: 600; color: var(--ink-muted-48);
+      letter-spacing: 0.6px;
+    }
+    .uc-title {
+      font-size: 24px; line-height: 1.2; font-weight: 600;
+      letter-spacing: -0.374px;
+      margin-top: 14px;
+    }
+    .uc-trigger {
+      background: var(--parchment);
+      border-radius: 11px;
+      padding: 14px 16px;
+      margin-top: 20px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .uc-trigger::before { content: '> '; color: var(--ink-muted-48); }
+    .uc-flow {
+      font-size: 14px; color: var(--ink-muted-80);
+      margin-top: 20px; line-height: 1.43; letter-spacing: -0.224px;
+      flex: 1;
+    }
+    .uc-agents {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px;
+    }
+    .uc-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      background: var(--parchment);
+      font-size: 12px;
+      color: var(--ink);
+      letter-spacing: -0.12px;
+    }
+    .uc-chip-dot {
+      width: 8px; height: 8px; border-radius: 9999px; background: var(--c);
+    }
+
+    /* ---------- Install ---------- */
+    .install {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      margin-top: 56px;
+      align-items: start;
+    }
+    .terminal {
+      background: #000;
+      color: #fff;
+      border-radius: 18px;
+      padding: 28px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .terminal-bar {
+      display: flex; gap: 6px; margin-bottom: 20px;
+    }
+    .terminal-dot {
+      width: 12px; height: 12px; border-radius: 9999px;
+      background: rgba(255,255,255,0.16);
+    }
+    .terminal-dot.r { background: #ff5f56; }
+    .terminal-dot.y { background: #ffbd2e; }
+    .terminal-dot.g { background: #27c93f; }
+    .terminal-prompt { color: var(--body-muted); user-select: none; }
+    .terminal-cmd { color: #fff; }
+    .terminal-comment { color: var(--ink-muted-48); display: block; }
+    .terminal-out { color: #888; display: block; }
+
+    .modes { display: grid; gap: 16px; }
+    .mode {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+    .mode-name {
+      font-size: 17px; font-weight: 600; color: #fff;
+      letter-spacing: -0.374px;
+    }
+    .mode-trigger {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px; color: var(--primary-on-dark);
+      margin-top: 10px;
+    }
+    .mode-desc {
+      font-size: 14px; color: var(--body-muted);
+      margin-top: 10px; line-height: 1.43; letter-spacing: -0.224px;
+    }
+
+    /* ---------- Phases band ---------- */
+    .phases {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 56px;
+    }
+    .phase {
+      padding: 32px 28px;
+      border-right: 1px solid var(--hairline);
+    }
+    .phase:last-child { border-right: 0; }
+    .phase-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--phase-c);
+    }
+    .phase-name {
+      font-size: 28px; font-weight: 600; line-height: 1.14;
+      margin-top: 10px;
+      letter-spacing: 0.196px;
+    }
+    .phase-desc {
+      font-size: 14px; color: var(--ink-muted-80);
+      margin-top: 12px; line-height: 1.43; letter-spacing: -0.224px;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      background: var(--parchment);
+      padding: 80px 32px 40px;
+      color: var(--ink-muted-80);
+    }
+    .footer-inner { max-width: 1024px; margin: 0 auto; }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .footer-brand h3 {
+      font-size: 21px; letter-spacing: 0.231px;
+    }
+    .footer-brand p {
+      font-size: 14px; color: var(--ink-muted-80);
+      margin-top: 12px; letter-spacing: -0.224px;
+    }
+    .footer h4 {
+      font-size: 14px; font-weight: 600; letter-spacing: -0.224px;
+      margin-bottom: 8px;
+    }
+    .footer ul { list-style: none; }
+    .footer li {
+      font-size: 17px; line-height: 2.41;
+      letter-spacing: -0.374px;
+    }
+    .footer a:hover { color: var(--primary); }
+    .footer-legal {
+      font-size: 12px; color: var(--ink-muted-48);
+      padding-top: 24px;
+      letter-spacing: -0.12px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1024px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 833px) {
+      .tile { padding: 72px 24px; }
+      .hero { padding: 80px 24px 64px; }
+      .hero h1 { font-size: 44px; letter-spacing: -0.4px; }
+      .hero .lede { font-size: 21px; }
+      .section-head { font-size: 36px; }
+      .install { grid-template-columns: 1fr; }
+      .phases { grid-template-columns: 1fr; }
+      .phase { border-right: 0; border-bottom: 1px solid var(--hairline); }
+      .phase:last-child { border-bottom: 0; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .nav ul { gap: 18px; }
+      .stat-num { font-size: 44px; }
+      .stats { gap: 40px; padding: 48px 24px; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 36px; }
+      .section-head { font-size: 30px; }
+      .nav ul li:nth-child(n+3):not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <span class="nav-brand">Agent Harry</span>
+      <ul>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#flow">Flow</a></li>
+        <li><a href="#use-cases">Use cases</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="https://github.com/KaungMyatHein/agent-harry" class="gh-btn">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="tile tile-light hero">
+    <div class="container">
+      <span class="hero-eyebrow">A Claude Code skill · v1</span>
+      <h1 class="display">Ten product designers,<br>one command.</h1>
+      <p class="lede">
+        Agent Harry installs a 10-subagent product design system into any Claude Code project.
+        Discovery, Define, Deliver — plus embedded PM. Version-controlled on GitHub. Refreshable in a sentence.
+      </p>
+      <div class="ctas">
+        <a href="#install" class="btn btn-primary">Install</a>
+        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost">View on GitHub</a>
+      </div>
+
+      <div class="constellation">
+        <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g stroke="#e0e0e0" stroke-width="1" fill="none">
+            <path d="M360 50 L160 150" />
+            <path d="M360 50 L360 150" />
+            <path d="M360 50 L560 150" />
+            <path d="M160 200 Q360 290 360 270" />
+            <path d="M360 200 L360 270" />
+            <path d="M560 200 Q360 290 360 270" />
+            <path d="M210 165 L310 165" stroke-dasharray="3 3" />
+            <path d="M410 165 L510 165" stroke-dasharray="3 3" />
+          </g>
+          <circle cx="360" cy="40" r="14" fill="#0066cc"/>
+          <text x="360" y="22" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="11" font-weight="600" letter-spacing="-0.224">Orchestrator</text>
+
+          <circle cx="140" cy="160" r="11" fill="#5e81ac"/>
+          <text x="140" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Discovery</text>
+          <circle cx="180" cy="180" r="11" fill="#2c7d6f"/>
+
+          <circle cx="320" cy="160" r="11" fill="#d97706"/>
+          <text x="360" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Define</text>
+          <circle cx="360" cy="180" r="11" fill="#b45309"/>
+          <circle cx="400" cy="160" r="11" fill="#8b5cf6"/>
+
+          <circle cx="540" cy="160" r="11" fill="#ec4899"/>
+          <text x="580" y="138" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Deliver</text>
+          <circle cx="580" cy="180" r="11" fill="#16a34a"/>
+          <circle cx="620" cy="160" r="11" fill="#525252"/>
+
+          <circle cx="360" cy="280" r="13" fill="#dc2626"/>
+          <text x="360" y="312" text-anchor="middle" fill="#1d1d1f" font-family="SF Pro Text, system-ui" font-size="10" font-weight="600" letter-spacing="-0.12">Critique Partner</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">Specialized agents</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Lifecycle phases</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Skill modes</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Command to install</div></div>
+  </section>
+
+  <section class="tile tile-light">
+    <div class="container">
+      <span class="section-eyebrow">The pipeline</span>
+      <h2 class="section-head">Discovery, Define, Deliver — wired end to end.</h2>
+      <p class="section-lede">
+        Each phase is a small team of subagents with one job. The orchestrator routes between them, inserts approval gates, and synthesizes the handoffs. Nothing handwavy — every handoff carries a typed schema.
+      </p>
+
+      <div class="phases">
+        <div class="phase" style="--phase-c: var(--c-discovery);">
+          <span class="phase-eyebrow">01 — Discovery</span>
+          <h3 class="phase-name">Find the real problem.</h3>
+          <p class="phase-desc">Interviews, secondary research, competitive teardowns. The agents that refuse to jump to solutions.</p>
+        </div>
+        <div class="phase" style="--phase-c: var(--c-positioner);">
+          <span class="phase-eyebrow">02 — Define</span>
+          <h3 class="phase-name">Sharpen the bet.</h3>
+          <p class="phase-desc">Positioning, prioritization, ideation. Where vague intent becomes a defensible scope decision.</p>
+        </div>
+        <div class="phase" style="--phase-c: var(--c-interaction);">
+          <span class="phase-eyebrow">03 — Deliver</span>
+          <h3 class="phase-name">Ship something usable.</h3>
+          <p class="phase-desc">Interaction design, usability validation, engineering handoff. Craft-obsessed, systems-aware.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile tile-parchment" id="agents">
+    <div class="container">
+      <span class="section-eyebrow">Meet the agents</span>
+      <h2 class="section-head">Ten subagents. Ten colors. One playbook.</h2>
+      <p class="section-lede">
+        Every agent has a phase, a voice, a decision-authority level, and a strict anti-pattern list.
+      </p>
+
+      <div class="agents">
+        <div class="agent-card" style="--c: var(--c-orchestrator);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Orchestrator</div>
+          <div class="agent-role">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs.</div>
+          <div class="agent-meta"><span class="agent-phase">Meta</span><span class="agent-voice">Calm strategist</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-discovery);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Discovery Researcher</div>
+          <div class="agent-role">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</div>
+          <div class="agent-meta"><span class="agent-phase">Discovery</span><span class="agent-voice">Curious, evidence-first</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-competitive);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Competitive Analyst</div>
+          <div class="agent-role">Maps direct + indirect competitors, surfaces patterns and gaps with screenshot-level rigor.</div>
+          <div class="agent-meta"><span class="agent-phase">Discovery</span><span class="agent-voice">Pattern detective</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-positioner);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Product Positioner</div>
+          <div class="agent-role">Crafts the positioning statement and value props. Picks the sharpest angle; defends it.</div>
+          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Sharp, opinionated</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-prioritizer);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Feature Prioritizer</div>
+          <div class="agent-role">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; tells you what you're giving up.</div>
+          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Tradeoff-honest PM</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-ideation);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Ideation Facilitator</div>
+          <div class="agent-role">Runs divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</div>
+          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Generative, divergent</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-interaction);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Interaction Designer</div>
+          <div class="agent-role">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at IC senior level.</div>
+          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Craft-obsessed senior</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-usability);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Usability Tester</div>
+          <div class="agent-role">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</div>
+          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Skeptical scientist</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-handoff);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Handoff Engineer</div>
+          <div class="agent-role">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</div>
+          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Systems-thinker</span></div>
+        </div>
+
+        <div class="agent-card" style="--c: var(--c-critique);">
+          <div class="agent-dot"></div>
+          <div class="agent-name">Critique Partner</div>
+          <div class="agent-role">Reviews any phase output. Surfaces weak reasoning, untested assumptions, missing tradeoffs.</div>
+          <div class="agent-meta"><span class="agent-phase">Cross-cutting</span><span class="agent-voice">Devil's advocate</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile tile-dark" id="flow">
+    <div class="container">
+      <span class="section-eyebrow section-eyebrow-on-dark">How they collaborate</span>
+      <h2 class="section-head" style="color:#fff;">Orchestrated, gated, synthesized.</h2>
+      <p class="section-lede section-lede-on-dark">
+        The orchestrator runs the show. Phase agents do the work. Critique-partner stress-tests every output. Handoffs travel in a typed schema defined by <code style="color:#2997ff;">SHARED_CONTEXT.md</code> so nothing gets lost between agents.
+      </p>
+
+      <div class="flow-frame">
+        <svg viewBox="0 0 880 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow diagram showing orchestrator at top routing to Discovery, Define, and Deliver phases, with Critique Partner reviewing every phase">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6e6e72"/>
+            </marker>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+            </marker>
+          </defs>
+
+          <rect x="370" y="10" width="140" height="44" rx="11" fill="none" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="440" y="37" text-anchor="middle" fill="#cccccc" font-family="SF Pro Text, system-ui" font-size="13" letter-spacing="-0.224">User goal</text>
+          <line x1="440" y1="58" x2="440" y2="86" stroke="#6e6e72" stroke-width="1" marker-end="url(#arrow)"/>
+
+          <rect x="320" y="90" width="240" height="64" rx="14" fill="#0066cc"/>
+          <text x="440" y="120" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Orchestrator</text>
+          <text x="440" y="140" text-anchor="middle" fill="#cfe1ff" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">plan · delegate · synthesize</text>
+
+          <line x1="440" y1="158" x2="440" y2="185" stroke="#6e6e72" stroke-width="1"/>
+          <line x1="140" y1="185" x2="740" y2="185" stroke="#6e6e72" stroke-width="1"/>
+          <line x1="140" y1="185" x2="140" y2="210" stroke="#6e6e72" stroke-width="1" marker-end="url(#arrow)"/>
+          <line x1="440" y1="185" x2="440" y2="210" stroke="#6e6e72" stroke-width="1" marker-end="url(#arrow)"/>
+          <line x1="740" y1="185" x2="740" y2="210" stroke="#6e6e72" stroke-width="1" marker-end="url(#arrow)"/>
+
+          <text x="140" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DISCOVERY</text>
+          <rect x="40" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#5e81ac" stroke-width="1.5"/>
+          <circle cx="60" cy="276" r="6" fill="#5e81ac"/>
+          <text x="76" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">discovery-researcher</text>
+          <text x="76" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">interviews · framing</text>
+
+          <rect x="40" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#2c7d6f" stroke-width="1.5"/>
+          <circle cx="60" cy="344" r="6" fill="#2c7d6f"/>
+          <text x="76" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">competitive-analyst</text>
+          <text x="76" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">patterns · teardowns</text>
+
+          <text x="440" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DEFINE</text>
+          <rect x="340" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#d97706" stroke-width="1.5"/>
+          <circle cx="360" cy="276" r="6" fill="#d97706"/>
+          <text x="376" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">product-positioner</text>
+          <text x="376" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">positioning · value props</text>
+
+          <rect x="340" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#b45309" stroke-width="1.5"/>
+          <circle cx="360" cy="344" r="6" fill="#b45309"/>
+          <text x="376" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">feature-prioritizer</text>
+          <text x="376" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">RICE · ICE · tradeoffs</text>
+
+          <rect x="340" y="384" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#8b5cf6" stroke-width="1.5"/>
+          <circle cx="360" cy="412" r="6" fill="#8b5cf6"/>
+          <text x="376" y="407" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">ideation-facilitator</text>
+          <text x="376" y="424" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">concept generation</text>
+
+          <text x="740" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DELIVER</text>
+          <rect x="640" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#ec4899" stroke-width="1.5"/>
+          <circle cx="660" cy="276" r="6" fill="#ec4899"/>
+          <text x="676" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">interaction-designer</text>
+          <text x="676" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">flows · states · craft</text>
+
+          <rect x="640" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#16a34a" stroke-width="1.5"/>
+          <circle cx="660" cy="344" r="6" fill="#16a34a"/>
+          <text x="676" y="339" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">usability-tester</text>
+          <text x="676" y="356" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">test plans · analysis</text>
+
+          <rect x="640" y="384" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#525252" stroke-width="1.5"/>
+          <circle cx="660" cy="412" r="6" fill="#a0a0a0"/>
+          <text x="676" y="407" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">handoff-engineer</text>
+          <text x="676" y="424" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">dev specs · token audit</text>
+
+          <line x1="240" y1="340" x2="335" y2="340" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <line x1="540" y1="340" x2="635" y2="340" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <text x="287" y="332" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
+          <text x="587" y="332" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
+
+          <rect x="320" y="490" width="240" height="64" rx="14" fill="#dc2626"/>
+          <text x="440" y="520" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Critique Partner</text>
+          <text x="440" y="540" text-anchor="middle" fill="#fde2e2" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">stress-tests every output</text>
+
+          <path d="M380 490 Q300 460 220 380" stroke="#dc2626" stroke-width="1" fill="none" marker-end="url(#arrow-red)"/>
+          <path d="M440 490 L440 458" stroke="#dc2626" stroke-width="1" fill="none" marker-end="url(#arrow-red)"/>
+          <path d="M500 490 Q580 460 660 458" stroke="#dc2626" stroke-width="1" fill="none" marker-end="url(#arrow-red)"/>
+
+          <text x="440" y="592" text-anchor="middle" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">─── routing &#160;&#160;&#160;&#160; - - - typed handoff via SHARED_CONTEXT.md &#160;&#160;&#160;&#160; ─── critique loop</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile tile-parchment" id="use-cases">
+    <div class="container">
+      <span class="section-eyebrow">Use cases</span>
+      <h2 class="section-head">Four ways teams put Agent Harry to work.</h2>
+      <p class="section-lede">Real scenarios, real triggers. Each one runs through a different slice of the pipeline.</p>
+
+      <div class="usecases">
+        <div class="uc">
+          <span class="uc-num">CASE 01</span>
+          <h3 class="uc-title">Bootstrap a new mobile app</h3>
+          <div class="uc-trigger">Use the orchestrator to plan a discovery cycle for our new merchant payout flow.</div>
+          <p class="uc-flow">Orchestrator decomposes the brief, runs <strong>discovery-researcher</strong> for user interviews and <strong>competitive-analyst</strong> for prior-art teardown, then pauses for approval before entering Define.</p>
+          <div class="uc-agents">
+            <span class="uc-chip" style="--c: var(--c-orchestrator);"><span class="uc-chip-dot"></span>orchestrator</span>
+            <span class="uc-chip" style="--c: var(--c-discovery);"><span class="uc-chip-dot"></span>discovery-researcher</span>
+            <span class="uc-chip" style="--c: var(--c-competitive);"><span class="uc-chip-dot"></span>competitive-analyst</span>
+          </div>
+        </div>
+
+        <div class="uc">
+          <span class="uc-num">CASE 02</span>
+          <h3 class="uc-title">Audit an existing Figma file</h3>
+          <div class="uc-trigger">Have interaction-designer audit the onboarding flow in this Figma file and surface IxD anti-patterns.</div>
+          <p class="uc-flow"><strong>Interaction-designer</strong> runs in Mode B (audit existing artifact), inventories states and edge cases, calls in <strong>critique-partner</strong> for a second pass before producing the gap list.</p>
+          <div class="uc-agents">
+            <span class="uc-chip" style="--c: var(--c-interaction);"><span class="uc-chip-dot"></span>interaction-designer</span>
+            <span class="uc-chip" style="--c: var(--c-critique);"><span class="uc-chip-dot"></span>critique-partner</span>
+          </div>
+        </div>
+
+        <div class="uc">
+          <span class="uc-num">CASE 03</span>
+          <h3 class="uc-title">Sharpen positioning + roadmap</h3>
+          <div class="uc-trigger">Run a define cycle — positioning then prioritization — for the Q3 feature backlog.</div>
+          <p class="uc-flow"><strong>Product-positioner</strong> drafts three positioning angles and waits for the user's pick. <strong>Feature-prioritizer</strong> then scores the backlog against the chosen angle and produces a defensible scope cut with named tradeoffs.</p>
+          <div class="uc-agents">
+            <span class="uc-chip" style="--c: var(--c-orchestrator);"><span class="uc-chip-dot"></span>orchestrator</span>
+            <span class="uc-chip" style="--c: var(--c-positioner);"><span class="uc-chip-dot"></span>product-positioner</span>
+            <span class="uc-chip" style="--c: var(--c-prioritizer);"><span class="uc-chip-dot"></span>feature-prioritizer</span>
+          </div>
+        </div>
+
+        <div class="uc">
+          <span class="uc-num">CASE 04</span>
+          <h3 class="uc-title">Spec a feature for engineering</h3>
+          <div class="uc-trigger">Use handoff-engineer to produce a dev-ready spec and token audit for the new card component.</div>
+          <p class="uc-flow"><strong>Handoff-engineer</strong> reads the Figma node, builds the spec document with states, tokens, and edge cases. <strong>Usability-tester</strong> verifies the proposed states cover the test plan, then the spec is finalized.</p>
+          <div class="uc-agents">
+            <span class="uc-chip" style="--c: var(--c-handoff);"><span class="uc-chip-dot"></span>handoff-engineer</span>
+            <span class="uc-chip" style="--c: var(--c-usability);"><span class="uc-chip-dot"></span>usability-tester</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile tile-dark" id="install">
+    <div class="container">
+      <span class="section-eyebrow section-eyebrow-on-dark">Install</span>
+      <h2 class="section-head" style="color:#fff;">One clone. Then live in every project.</h2>
+      <p class="section-lede section-lede-on-dark">
+        Agent Harry lives at <code style="color:#2997ff;">~/.claude/skills/agent-harry/</code>. Clone once, then trigger any of three modes from inside any Claude Code project.
+      </p>
+
+      <div class="install">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot r"></span>
+            <span class="terminal-dot y"></span>
+            <span class="terminal-dot g"></span>
+          </div>
+
+          <span class="terminal-comment"># 1 — Install on a new machine</span>
+          <span class="terminal-prompt">$ </span><span class="terminal-cmd">git clone https://github.com/KaungMyatHein/agent-harry.git \</span><br>
+          <span class="terminal-cmd">&#160;&#160;&#160;&#160;~/.claude/skills/agent-harry</span>
+          <br><br>
+          <span class="terminal-comment"># 2 — Open a project, invoke the skill in plain English</span>
+          <span class="terminal-prompt">claude&gt; </span><span class="terminal-cmd">install Agent Harry</span>
+          <span class="terminal-out">→ 10 agents installed in ./.claude/agents/</span>
+          <span class="terminal-out">→ SHARED_CONTEXT.md, README.md written</span>
+          <br>
+          <span class="terminal-comment"># 3 — Pull future updates</span>
+          <span class="terminal-prompt">claude&gt; </span><span class="terminal-cmd">update Agent Harry skill</span>
+          <span class="terminal-out">→ Pulling from KaungMyatHein/agent-harry...</span>
+          <span class="terminal-out">→ See CHANGELOG.md for what's new.</span>
+        </div>
+
+        <div class="modes">
+          <div class="mode">
+            <div class="mode-name">Install</div>
+            <div class="mode-trigger">"install Agent Harry"</div>
+            <p class="mode-desc">Drops the 10 agents + SHARED_CONTEXT into your project's <code>.claude/agents/</code>. Bundled mode by default; Generator mode if you mention design system or MCPs.</p>
+          </div>
+          <div class="mode">
+            <div class="mode-name">Refresh</div>
+            <div class="mode-trigger">"refresh Agent Harry"</div>
+            <p class="mode-desc">Re-copies the latest agent files. Preserves your project-specific <code>SHARED_CONTEXT.md</code> and <code>README.md</code>. Warns first if you have local edits.</p>
+          </div>
+          <div class="mode">
+            <div class="mode-name">Update</div>
+            <div class="mode-trigger">"update Agent Harry skill"</div>
+            <p class="mode-desc">Pulls the latest skill from GitHub. Shows you the new CHANGELOG entries. Stops if your working tree is dirty.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 56px; text-align: center;">
+        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost-on-dark">Open the repo on GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3 class="display">Agent Harry</h3>
+          <p>A personal multi-agent product design system for Claude Code. Built by Kaung Myat Hein. Open source under the MIT license.</p>
+        </div>
+        <div>
+          <h4>Skill</h4>
+          <ul>
+            <li><a href="#install">Install</a></li>
+            <li><a href="#install">Refresh</a></li>
+            <li><a href="#install">Update</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#agents">Agents</a></li>
+            <li><a href="#flow">Flow</a></li>
+            <li><a href="#use-cases">Use cases</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Source</h4>
+          <ul>
+            <li><a href="https://github.com/KaungMyatHein/agent-harry">GitHub</a></li>
+            <li><a href="https://github.com/KaungMyatHein/agent-harry/blob/main/CHANGELOG.md">Changelog</a></li>
+            <li><a href="https://github.com/KaungMyatHein/agent-harry/blob/main/LICENSE">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        Copyright © 2026 Kaung Myat Hein. Agent Harry is an unofficial personal project, not affiliated with Anthropic or Apple. Claude Code is a product of Anthropic. Design tokens informed by the Apple brand DESIGN.md (visual reference, not endorsement).
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
