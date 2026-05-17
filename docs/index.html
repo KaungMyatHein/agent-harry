@@ -17,7 +17,7 @@
       --hairline: #e0e0e0;
       --divider-soft: #f0f0f0;
       --canvas: #ffffff;
-      --parchment: #f1ece2;
+      --parchment: #f5f5f7;
       --pearl: #fafafc;
       --tile-1: #272729;
       --tile-2: #2a2a2c;
@@ -102,105 +102,74 @@
     .container { max-width: 1024px; margin: 0 auto; }
     .narrow { max-width: 760px; margin: 0 auto; }
 
-    /* ---------- Hero (editorial / zine) ---------- */
-    .ed-hero {
-      background: #f1ece2;
-      color: #1a1814;
-      padding: 56px 32px 112px;
-      border-bottom: 1px solid rgba(26, 24, 20, 0.12);
+    /* ---------- Hero (Apple light) ---------- */
+    .hero {
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0, 102, 204, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 30%, rgba(139, 92, 246, 0.035) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 20% 70%, rgba(236, 72, 153, 0.025) 0%, transparent 60%),
+        var(--canvas);
+      text-align: center;
+      padding: 112px 32px 96px;
+      color: var(--ink);
     }
-    .ed-masthead {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding-bottom: 28px;
-      border-bottom: 1px solid rgba(26, 24, 20, 0.18);
-      margin-bottom: 96px;
-      gap: 24px; flex-wrap: wrap;
-    }
-    .ed-brand {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      color: #1a1814;
-      display: inline-flex; align-items: baseline; gap: 8px;
-    }
-    .ed-brand-mark { font-style: italic; }
-    .ed-brand-dot {
-      display: inline-block; width: 4px; height: 4px; border-radius: 9999px;
-      background: #1a1814; transform: translateY(-4px);
-    }
-    .ed-edition {
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: rgba(26, 24, 20, 0.55);
-    }
-    .ed-title {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: clamp(52px, 9.5vw, 128px);
-      line-height: 0.96;
-      letter-spacing: -0.04em;
-      font-weight: 400;
-      color: #1a1814;
-      max-width: 1100px;
-    }
-    .ed-em {
-      font-style: italic;
-      font-weight: 400;
-      color: #1a1814;
-    }
-    .ed-em::after {
-      content: '.';
-      font-style: normal;
-    }
-    .ed-deck {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: clamp(20px, 2.2vw, 26px);
-      line-height: 1.4;
-      font-style: italic;
-      color: rgba(26, 24, 20, 0.72);
-      max-width: 640px;
-      margin-top: 48px;
-      font-weight: 400;
-    }
-    .ed-byline {
-      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-      margin-top: 56px;
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: rgba(26, 24, 20, 0.55);
-    }
-    .ed-byline strong { color: #1a1814; font-weight: 600; }
-    .ed-divider {
-      display: inline-block; width: 16px; height: 1px;
-      background: rgba(26, 24, 20, 0.3);
-    }
-    .ed-actions {
-      display: flex; gap: 36px; flex-wrap: wrap;
-      margin-top: 48px;
-      padding-top: 32px;
-      border-top: 1px solid rgba(26, 24, 20, 0.15);
-    }
-    .ed-link {
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 7px 16px 7px 12px;
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
       font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
-      font-size: 17px;
+      font-size: 13px;
       font-weight: 500;
+      color: var(--primary);
       letter-spacing: -0.011em;
-      color: #1a1814;
-      padding-bottom: 2px;
-      border-bottom: 1px solid rgba(26, 24, 20, 0.35);
-      transition: border-color .2s ease, transform .2s ease;
-      display: inline-flex; align-items: baseline; gap: 6px;
+      transition: border-color .2s ease, transform .15s ease;
     }
-    .ed-link:hover { border-color: #1a1814; }
-    .ed-arrow {
-      display: inline-block;
-      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1);
+    .hero-pill:hover {
+      border-color: color-mix(in srgb, var(--primary) 30%, var(--hairline));
+      transform: translateY(-1px);
     }
-    .ed-link:hover .ed-arrow { transform: translate(3px, 0); }
+    .hero-pill-dot {
+      width: 7px; height: 7px; border-radius: 9999px;
+      background: var(--primary);
+      box-shadow: 0 0 8px rgba(0, 102, 204, 0.45);
+    }
+    .hero-title {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: clamp(48px, 8.5vw, 104px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 32px;
+      max-width: 980px;
+      margin-left: auto; margin-right: auto;
+    }
+    .hero-title em {
+      font-style: italic;
+      font-weight: 500;
+      color: color-mix(in srgb, var(--ink) 70%, var(--primary));
+    }
+    .hero-lede {
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      font-size: clamp(20px, 2.2vw, 26px);
+      line-height: 1.35;
+      font-weight: 400;
+      color: var(--ink-muted-80);
+      max-width: 720px;
+      margin: 28px auto 0;
+      letter-spacing: -0.011em;
+    }
+    .hero-ctas {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .hero-visual {
+      margin: 96px auto 0;
+      max-width: 880px;
+    }
+    .hero-visual svg { display: block; width: 100%; height: auto; }
 
     /* ---------- Buttons ---------- */
     .btn {
@@ -280,136 +249,103 @@
     }
     .section-lede-on-dark { color: var(--body-muted); }
 
-    /* ---------- Agents (editorial / zine specimen) ---------- */
-    .tile-zine {
-      background: #f1ece2;
-      color: #1a1814;
-      padding: 112px 32px;
-    }
-    .zine-header {
+    /* ---------- Agents (Apple cards with signature visuals) ---------- */
+    .agents-intro {
+      text-align: center;
       max-width: 760px;
-      padding-bottom: 64px;
-      border-bottom: 1px solid rgba(26, 24, 20, 0.18);
-      margin-bottom: 12px;
+      margin: 0 auto;
     }
-    .zine-eyebrow {
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: rgba(26, 24, 20, 0.55);
+    .agents-intro .section-eyebrow,
+    .agents-intro .section-lede {
+      display: block;
+      margin-left: auto; margin-right: auto;
     }
-    .zine-head {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: clamp(40px, 7vw, 92px);
-      line-height: 0.98;
-      letter-spacing: -0.035em;
-      font-weight: 400;
-      color: #1a1814;
-      margin-top: 24px;
-    }
-    .zine-head em {
-      font-style: italic;
-      font-weight: 400;
-    }
-    .zine-deck {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: 22px;
-      line-height: 1.4;
-      font-style: italic;
-      color: rgba(26, 24, 20, 0.7);
-      max-width: 600px;
-      margin-top: 32px;
-    }
+    .agents-intro .section-head { text-align: center; }
+    .agents-intro .section-lede { text-align: center; margin-top: 16px; }
 
-    .zine-list {
+    .ag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 18px;
+      margin-top: 72px;
+    }
+    .ag-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease, box-shadow .25s ease;
       display: flex;
       flex-direction: column;
     }
-    .zine-entry {
-      display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 56px;
-      padding: 64px 0;
-      border-bottom: 1px solid rgba(26, 24, 20, 0.14);
-      align-items: start;
+    .ag-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
+      box-shadow: 0 20px 44px -18px color-mix(in srgb, var(--c) 28%, rgba(0, 0, 0, 0.14));
     }
-    .zine-entry:last-child {
-      border-bottom: 0;
-    }
-    .zine-num {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: 56px;
-      line-height: 1;
-      font-weight: 400;
-      color: rgba(26, 24, 20, 0.32);
-      letter-spacing: -0.02em;
-      position: sticky;
-      top: 80px;
-    }
-    .zine-num-feature {
-      color: var(--c);
-      font-style: italic;
-    }
-    .zine-name {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: clamp(32px, 5vw, 56px);
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-      font-weight: 400;
-      color: #1a1814;
-      display: inline-block;
-      padding-bottom: 8px;
+    .ag-stage {
+      aspect-ratio: 5 / 4;
       position: relative;
-      border-bottom: 3px solid var(--c);
-    }
-    .zine-name-feature {
-      font-style: italic;
-    }
-    .zine-role {
-      font-family: "Iowan Old Style", "Iowan Old Style Roman", "Charter", "Georgia", serif;
-      font-size: 19px;
-      font-style: italic;
-      color: var(--c);
-      margin-top: 20px;
-      letter-spacing: -0.01em;
-    }
-    .zine-desc {
-      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
-      font-size: 18px;
-      line-height: 1.6;
-      color: rgba(26, 24, 20, 0.75);
-      margin-top: 16px;
-      max-width: 620px;
-      letter-spacing: -0.011em;
-    }
-    .zine-meta {
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 75% 60% at 50% 50%,
+          color-mix(in srgb, var(--c) 14%, white) 0%,
+          color-mix(in srgb, var(--c) 5%, white) 65%,
+          white 100%);
       display: flex;
-      gap: 28px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: rgba(26, 24, 20, 0.5);
-    }
-    .zine-meta-row {
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      transition: background .3s ease;
     }
-    .zine-chip {
-      width: 12px;
-      height: 12px;
-      background: var(--c);
-      display: inline-block;
+    .ag-stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 90%, color-mix(in srgb, var(--c) 10%, transparent) 0%, transparent 55%);
+      pointer-events: none;
     }
-    .zine-meta strong {
-      color: #1a1814;
+    .ag-card:hover .ag-stage {
+      background:
+        radial-gradient(ellipse 75% 60% at 50% 50%,
+          color-mix(in srgb, var(--c) 18%, white) 0%,
+          color-mix(in srgb, var(--c) 7%, white) 65%,
+          white 100%);
+    }
+    .ag-stage svg {
+      width: 65%;
+      max-width: 170px;
+      height: auto;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--c) 24%, transparent));
+      transition: transform .3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .ag-card:hover .ag-stage svg { transform: scale(1.04); }
+    .ag-body {
+      padding: 18px 22px 22px;
+    }
+    .ag-phase {
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      font-size: 11px;
       font-weight: 600;
-      margin-right: 4px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--c);
+    }
+    .ag-name {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.374px;
+      color: var(--ink);
+      margin-top: 4px;
+    }
+    .ag-role {
+      font-size: 14px;
+      font-style: italic;
+      color: color-mix(in srgb, var(--c) 50%, var(--ink-muted-80));
+      margin-top: 4px;
+      letter-spacing: -0.224px;
     }
 
     /* ---------- Flow diagram ---------- */
@@ -601,10 +537,9 @@
     }
     @media (max-width: 833px) {
       .tile { padding: 72px 24px; }
-      .ed-hero { padding: 36px 24px 80px; }
-      .ed-masthead { padding-bottom: 20px; margin-bottom: 56px; }
-      .ed-deck { font-size: 18px; margin-top: 32px; }
-      .ed-actions { gap: 24px; margin-top: 36px; padding-top: 24px; }
+      .hero { padding: 80px 24px 72px; }
+      .hero-lede { font-size: 19px; }
+      .hero-visual { margin-top: 64px; }
       .section-head { font-size: 36px; }
       .install { grid-template-columns: 1fr; }
       .phases { grid-template-columns: 1fr; }
@@ -614,20 +549,10 @@
       .nav ul { gap: 18px; }
       .stat-num { font-size: 44px; }
       .stats { gap: 40px; padding: 48px 24px; }
-
-      /* Agents zine: stack the number above the content */
-      .tile-zine { padding: 80px 24px; }
-      .zine-header { padding-bottom: 40px; margin-bottom: 0; }
-      .zine-deck { font-size: 18px; }
-      .zine-entry {
-        grid-template-columns: 1fr;
-        gap: 18px;
-        padding: 44px 0;
-      }
-      .zine-num { font-size: 40px; position: static; }
-      .zine-role { font-size: 17px; }
-      .zine-desc { font-size: 16px; }
-      .zine-meta { gap: 18px; }
+      .ag-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+    @media (max-width: 480px) {
+      .ag-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 36px; }
@@ -651,38 +576,91 @@
     </div>
   </nav>
 
-  <section class="tile ed-hero">
+  <section class="tile hero">
     <div class="container">
-      <header class="ed-masthead">
-        <span class="ed-brand"><em class="ed-brand-mark">Agent</em> Harry <span class="ed-brand-dot"></span></span>
-        <span class="ed-edition">No. 01 · May 2026 · Open source · MIT</span>
-      </header>
+      <a class="hero-pill" href="https://github.com/KaungMyatHein/agent-harry">
+        <span class="hero-pill-dot"></span>
+        v1 · Open source on GitHub →
+      </a>
 
-      <h1 class="ed-title">
-        The product<br>
-        design team,<br>
-        <span class="ed-em">in code</span>
-      </h1>
+      <h1 class="hero-title">Ten product designers,<br>in <em>one command.</em></h1>
 
-      <p class="ed-deck">
-        A ten-subagent pipeline for Claude Code that runs Discovery, Define, and Deliver — and argues with itself before anything ships.
+      <p class="hero-lede">
+        A multi-agent UX pipeline for Claude Code. Discovery, Define, Deliver — plus embedded PM. Version-controlled on GitHub. Refreshable in a sentence.
       </p>
 
-      <div class="ed-byline">
-        <span>By <strong>Kaung Myat Hein</strong></span>
-        <span class="ed-divider"></span>
-        <span>v1 release</span>
-        <span class="ed-divider"></span>
-        <span>10 agents</span>
-        <span class="ed-divider"></span>
-        <span>3 modes</span>
+      <div class="hero-ctas">
+        <a href="#install" class="btn btn-primary">Install</a>
+        <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost">View source</a>
       </div>
 
-      <nav class="ed-actions">
-        <a class="ed-link" href="#install">Install <span class="ed-arrow">→</span></a>
-        <a class="ed-link" href="https://github.com/KaungMyatHein/agent-harry">Read the source <span class="ed-arrow">↗</span></a>
-        <a class="ed-link" href="https://github.com/KaungMyatHein/agent-harry/blob/main/CHANGELOG.md">Changelog</a>
-      </nav>
+      <div class="hero-visual">
+        <svg viewBox="0 0 880 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A constellation of ten agents — the Orchestrator at center, eight phase agents arranged around it in a ring, the Critique Partner floating below as cross-cutting reviewer">
+          <defs>
+            <radialGradient id="hv-orch" cx="0.32" cy="0.3" r="0.9">
+              <stop offset="0%" stop-color="#3a92ff"/>
+              <stop offset="55%" stop-color="#0066cc"/>
+              <stop offset="100%" stop-color="#004a99"/>
+            </radialGradient>
+            <radialGradient id="hv-crit" cx="0.32" cy="0.3" r="0.9">
+              <stop offset="0%" stop-color="#ff5757"/>
+              <stop offset="55%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#9b1b1b"/>
+            </radialGradient>
+            <radialGradient id="hv-disc" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#a5bcd9"/><stop offset="55%" stop-color="#5e81ac"/><stop offset="100%" stop-color="#3d5a7f"/></radialGradient>
+            <radialGradient id="hv-comp" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#76b0a4"/><stop offset="55%" stop-color="#2c7d6f"/><stop offset="100%" stop-color="#1a574c"/></radialGradient>
+            <radialGradient id="hv-pos" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f6b15c"/><stop offset="55%" stop-color="#d97706"/><stop offset="100%" stop-color="#a05905"/></radialGradient>
+            <radialGradient id="hv-pri" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e09257"/><stop offset="55%" stop-color="#b45309"/><stop offset="100%" stop-color="#7a3905"/></radialGradient>
+            <radialGradient id="hv-idea" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#c4a9fa"/><stop offset="55%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#5e37c2"/></radialGradient>
+            <radialGradient id="hv-inter" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="55%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
+            <radialGradient id="hv-usab" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#6ed393"/><stop offset="55%" stop-color="#16a34a"/><stop offset="100%" stop-color="#0e6e32"/></radialGradient>
+            <radialGradient id="hv-hand" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#a8a8a8"/><stop offset="55%" stop-color="#525252"/><stop offset="100%" stop-color="#2e2e2e"/></radialGradient>
+            <filter id="hv-shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+              <feOffset dx="0" dy="6" result="off"/>
+              <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="hv-shadow-lg" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+              <feOffset dx="0" dy="10" result="off"/>
+              <feComponentTransfer><feFuncA type="linear" slope="0.24"/></feComponentTransfer>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="hv-line" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#0066cc" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#0066cc" stop-opacity="0.1"/>
+            </linearGradient>
+          </defs>
+
+          <g stroke="#d6d6db" stroke-width="1" fill="none" opacity="0.7">
+            <line x1="440" y1="270" x2="440" y2="80"/>
+            <line x1="440" y1="270" x2="600" y2="120"/>
+            <line x1="440" y1="270" x2="660" y2="270"/>
+            <line x1="440" y1="270" x2="600" y2="420"/>
+            <line x1="440" y1="270" x2="440" y2="460"/>
+            <line x1="440" y1="270" x2="280" y2="420"/>
+            <line x1="440" y1="270" x2="220" y2="270"/>
+            <line x1="440" y1="270" x2="280" y2="120"/>
+          </g>
+
+          <g stroke="#dc2626" stroke-width="1" fill="none" opacity="0.32" stroke-dasharray="4 4">
+            <line x1="440" y1="510" x2="440" y2="270"/>
+          </g>
+
+          <circle cx="440" cy="80" r="22" fill="url(#hv-disc)" filter="url(#hv-shadow)"/>
+          <circle cx="600" cy="120" r="22" fill="url(#hv-comp)" filter="url(#hv-shadow)"/>
+          <circle cx="660" cy="270" r="22" fill="url(#hv-pos)" filter="url(#hv-shadow)"/>
+          <circle cx="600" cy="420" r="22" fill="url(#hv-pri)" filter="url(#hv-shadow)"/>
+          <circle cx="440" cy="460" r="22" fill="url(#hv-idea)" filter="url(#hv-shadow)"/>
+          <circle cx="280" cy="420" r="22" fill="url(#hv-inter)" filter="url(#hv-shadow)"/>
+          <circle cx="220" cy="270" r="22" fill="url(#hv-usab)" filter="url(#hv-shadow)"/>
+          <circle cx="280" cy="120" r="22" fill="url(#hv-hand)" filter="url(#hv-shadow)"/>
+
+          <circle cx="440" cy="270" r="52" fill="url(#hv-orch)" filter="url(#hv-shadow-lg)"/>
+          <circle cx="440" cy="510" r="28" fill="url(#hv-crit)" filter="url(#hv-shadow)"/>
+        </svg>
+      </div>
     </div>
   </section>
 
@@ -721,145 +699,203 @@
     </div>
   </section>
 
-  <section class="tile tile-zine" id="agents">
+  <section class="tile tile-parchment" id="agents">
     <div class="container">
-      <header class="zine-header">
-        <span class="zine-eyebrow">No. 02 · The team</span>
-        <h2 class="zine-head">Ten specialists.<br><em>One playbook.</em></h2>
-        <p class="zine-deck">A team that argues with itself before anything ships. The orchestrator routes; everyone else holds their lane.</p>
-      </header>
+      <div class="agents-intro">
+        <span class="section-eyebrow">Meet the agents</span>
+        <h2 class="section-head">A team of ten specialists.</h2>
+        <p class="section-lede">Each agent has one job and a visual identity to match. Hover any card to see it lift.</p>
+      </div>
 
-      <div class="zine-list">
+      <div class="ag-grid">
 
-        <article class="zine-entry" style="--c: var(--c-orchestrator);">
-          <div class="zine-num zine-num-feature">01</div>
-          <div>
-            <h3 class="zine-name zine-name-feature">Orchestrator</h3>
-            <p class="zine-role">The conductor — calm strategist.</p>
-            <p class="zine-desc">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs into a final summary you can act on. Doesn't produce design work itself; produces a plan, delegates, and reports.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Meta</span>
-              <span class="zine-meta-row"><strong>Authority</strong>Propose</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Action Blue · #0066CC</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-orchestrator);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#0066cc" fill="#0066cc" aria-hidden="true">
+              <g opacity="0.32" stroke-width="1" fill="none">
+                <line x1="100" y1="80" x2="143" y2="55"/>
+                <line x1="100" y1="80" x2="100" y2="30"/>
+                <line x1="100" y1="80" x2="57" y2="55"/>
+                <line x1="100" y1="80" x2="57" y2="105"/>
+                <line x1="100" y1="80" x2="100" y2="130"/>
+                <line x1="100" y1="80" x2="143" y2="105"/>
+              </g>
+              <circle cx="143" cy="55" r="5" opacity="0.55"/>
+              <circle cx="100" cy="30" r="5" opacity="0.75"/>
+              <circle cx="57" cy="55" r="5" opacity="0.55"/>
+              <circle cx="57" cy="105" r="5" opacity="0.75"/>
+              <circle cx="100" cy="130" r="5" opacity="0.55"/>
+              <circle cx="143" cy="105" r="5" opacity="0.75"/>
+              <circle cx="100" cy="80" r="19"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Meta</div>
+            <div class="ag-name">orchestrator</div>
+            <div class="ag-role">The conductor.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-discovery);">
-          <div class="zine-num">02</div>
-          <div>
-            <h3 class="zine-name">discovery-researcher</h3>
-            <p class="zine-role">Curious, evidence-first.</p>
-            <p class="zine-desc">Plans and runs interviews, secondary research, problem framing. Refuses to jump to solutions before the problem is named with evidence.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Discovery</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Slate · #5E81AC</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-discovery);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#5e81ac" fill="#5e81ac" aria-hidden="true">
+              <circle cx="100" cy="80" r="55" stroke-width="1.5" fill="none" opacity="0.32"/>
+              <circle cx="100" cy="80" r="38" stroke-width="1.5" fill="none" opacity="0.5"/>
+              <circle cx="100" cy="80" r="22" stroke-width="2" fill="none" opacity="0.75"/>
+              <circle cx="124" cy="70" r="7"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Discovery</div>
+            <div class="ag-name">discovery-researcher</div>
+            <div class="ag-role">Curious, evidence-first.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-competitive);">
-          <div class="zine-num">03</div>
-          <div>
-            <h3 class="zine-name">competitive-analyst</h3>
-            <p class="zine-role">Pattern detective.</p>
-            <p class="zine-desc">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor. Names what's table-stakes and what's defensible.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Discovery</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Pine · #2C7D6F</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-competitive);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#2c7d6f" fill="#2c7d6f" aria-hidden="true">
+              <circle cx="78" cy="80" r="38" stroke-width="2" fill="none" opacity="0.7"/>
+              <circle cx="122" cy="80" r="38" stroke-width="2" fill="none" opacity="0.7"/>
+              <circle cx="100" cy="80" r="7"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Discovery</div>
+            <div class="ag-name">competitive-analyst</div>
+            <div class="ag-role">Pattern detective.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-positioner);">
-          <div class="zine-num">04</div>
-          <div>
-            <h3 class="zine-name">product-positioner</h3>
-            <p class="zine-role">Sharp, opinionated.</p>
-            <p class="zine-desc">Crafts positioning statements and value props. Picks the sharpest angle and defends it against softer alternatives.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Amber · #D97706</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-positioner);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#d97706" fill="#d97706" aria-hidden="true">
+              <circle cx="42" cy="80" r="7"/>
+              <line x1="52" y1="80" x2="138" y2="80" stroke-width="4" stroke-linecap="round"/>
+              <polygon points="155,80 132,66 132,94" stroke="none"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Define</div>
+            <div class="ag-name">product-positioner</div>
+            <div class="ag-role">Sharp, opinionated.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-prioritizer);">
-          <div class="zine-num">05</div>
-          <div>
-            <h3 class="zine-name">feature-prioritizer</h3>
-            <p class="zine-role">Tradeoff-honest PM.</p>
-            <p class="zine-desc">Scores with RICE, ICE, or Kano — explains the choice of framework. Names tradeoffs honestly and tells you what you're giving up.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Burnt · #B45309</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-prioritizer);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" fill="#b45309" aria-hidden="true">
+              <rect x="40" y="32" width="120" height="14" rx="7" opacity="1"/>
+              <rect x="40" y="55" width="96" height="14" rx="7" opacity="0.78"/>
+              <rect x="40" y="78" width="72" height="14" rx="7" opacity="0.56"/>
+              <rect x="40" y="101" width="46" height="14" rx="7" opacity="0.38"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Define</div>
+            <div class="ag-name">feature-prioritizer</div>
+            <div class="ag-role">Tradeoff-honest PM.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-ideation);">
-          <div class="zine-num">06</div>
-          <div>
-            <h3 class="zine-name">ideation-facilitator</h3>
-            <p class="zine-role">Generative, divergent.</p>
-            <p class="zine-desc">Runs concept generation — Crazy 8s, How-Might-We, opportunity mapping. Diverges wide before converging on a direction worth prototyping.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Define</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Violet · #8B5CF6</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-ideation);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#8b5cf6" fill="#8b5cf6" aria-hidden="true">
+              <g opacity="0.35" stroke-width="1" fill="none">
+                <line x1="100" y1="80" x2="155" y2="80"/>
+                <line x1="100" y1="80" x2="139" y2="119"/>
+                <line x1="100" y1="80" x2="100" y2="135"/>
+                <line x1="100" y1="80" x2="61" y2="119"/>
+                <line x1="100" y1="80" x2="45" y2="80"/>
+                <line x1="100" y1="80" x2="61" y2="41"/>
+                <line x1="100" y1="80" x2="100" y2="25"/>
+                <line x1="100" y1="80" x2="139" y2="41"/>
+              </g>
+              <circle cx="155" cy="80" r="4" opacity="0.7"/>
+              <circle cx="139" cy="119" r="4" opacity="0.7"/>
+              <circle cx="100" cy="135" r="4" opacity="0.7"/>
+              <circle cx="61" cy="119" r="4" opacity="0.7"/>
+              <circle cx="45" cy="80" r="4" opacity="0.7"/>
+              <circle cx="61" cy="41" r="4" opacity="0.7"/>
+              <circle cx="100" cy="25" r="4" opacity="0.7"/>
+              <circle cx="139" cy="41" r="4" opacity="0.7"/>
+              <circle cx="100" cy="80" r="11"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Define</div>
+            <div class="ag-name">ideation-facilitator</div>
+            <div class="ag-role">Generative, divergent.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-interaction);">
-          <div class="zine-num">07</div>
-          <div>
-            <h3 class="zine-name">interaction-designer</h3>
-            <p class="zine-role">Craft-obsessed senior IC.</p>
-            <p class="zine-desc">Builds flows, states, microinteractions. Audits existing Figma. Sees the empty states, the loading states, the failure states — and refuses to ship without them.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Magenta · #EC4899</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-interaction);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#ec4899" fill="#ec4899" aria-hidden="true">
+              <path d="M 30 80 Q 65 25, 100 80 T 170 80" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <circle cx="60" cy="51" r="5"/>
+              <circle cx="100" cy="80" r="5"/>
+              <circle cx="140" cy="109" r="5"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Deliver</div>
+            <div class="ag-name">interaction-designer</div>
+            <div class="ag-role">Craft-obsessed senior IC.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-usability);">
-          <div class="zine-num">08</div>
-          <div>
-            <h3 class="zine-name">usability-tester</h3>
-            <p class="zine-role">Skeptical scientist.</p>
-            <p class="zine-desc">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks — then ruthlessly clear about what it says.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Verdant · #16A34A</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-usability);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#16a34a" fill="none" aria-hidden="true">
+              <circle cx="100" cy="80" r="50" stroke-width="1.5" opacity="0.45"/>
+              <path d="M 75 80 L 93 99 L 128 60" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Deliver</div>
+            <div class="ag-name">usability-tester</div>
+            <div class="ag-role">Skeptical scientist.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-handoff);">
-          <div class="zine-num">09</div>
-          <div>
-            <h3 class="zine-name">handoff-engineer</h3>
-            <p class="zine-role">Systems-thinker.</p>
-            <p class="zine-desc">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code; closes the gap most handoffs leave open.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Deliver</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Graphite · #525252</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-handoff);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#525252" fill="#525252" aria-hidden="true">
+              <g opacity="0.5" stroke-width="1.4" fill="none">
+                <rect x="58" y="38" width="18" height="18" rx="2"/>
+                <rect x="91" y="38" width="18" height="18" rx="2"/>
+                <rect x="124" y="38" width="18" height="18" rx="2"/>
+                <rect x="58" y="71" width="18" height="18" rx="2"/>
+                <rect x="124" y="71" width="18" height="18" rx="2"/>
+                <rect x="58" y="104" width="18" height="18" rx="2"/>
+                <rect x="91" y="104" width="18" height="18" rx="2"/>
+                <rect x="124" y="104" width="18" height="18" rx="2"/>
+              </g>
+              <rect x="91" y="71" width="18" height="18" rx="2"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Deliver</div>
+            <div class="ag-name">handoff-engineer</div>
+            <div class="ag-role">Systems-thinker.</div>
           </div>
         </article>
 
-        <article class="zine-entry" style="--c: var(--c-critique);">
-          <div class="zine-num zine-num-feature">10</div>
-          <div>
-            <h3 class="zine-name zine-name-feature">critique-partner</h3>
-            <p class="zine-role">The contrarian — devil's advocate.</p>
-            <p class="zine-desc">Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Never asks "what do you want to do?"; always proposes a sharper alternative.</p>
-            <div class="zine-meta">
-              <span class="zine-meta-row"><strong>Phase</strong>Cross-cutting</span>
-              <span class="zine-meta-row"><strong>Always</strong>On</span>
-              <span class="zine-meta-row"><span class="zine-chip"></span>Crimson · #DC2626</span>
-            </div>
+        <article class="ag-card" style="--c: var(--c-critique);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#dc2626" fill="#dc2626" aria-hidden="true">
+              <circle cx="100" cy="80" r="52" stroke-width="2" fill="none" opacity="0.4"/>
+              <circle cx="100" cy="80" r="32" stroke-width="2" fill="none" opacity="0.7"/>
+              <line x1="40" y1="80" x2="160" y2="80" stroke-width="1.2" opacity="0.4"/>
+              <line x1="100" y1="20" x2="100" y2="140" stroke-width="1.2" opacity="0.4"/>
+              <circle cx="100" cy="80" r="8"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Cross-cutting</div>
+            <div class="ag-name">critique-partner</div>
+            <div class="ag-role">The contrarian.</div>
           </div>
         </article>
 
