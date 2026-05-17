@@ -173,53 +173,76 @@
     }
     .section-lede-on-dark { color: var(--body-muted); }
 
-    /* ---------- Agents grid ---------- */
-    .agents {
+    /* ---------- Agents (Apple store-style cards) ---------- */
+    .agents-intro {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .agents-intro .section-eyebrow,
+    .agents-intro .section-lede {
+      display: block;
+      margin-left: auto; margin-right: auto;
+    }
+    .agents-intro .section-head { text-align: center; }
+    .agents-intro .section-lede { text-align: center; margin-top: 16px; }
+
+    .phase-group { margin-top: 96px; }
+    .phase-group:first-of-type { margin-top: 80px; }
+    .phase-group-head {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.374px;
+      margin-bottom: 36px;
+      color: var(--ink);
+    }
+    .agent-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-      margin-top: 56px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
     }
     .agent-card {
-      position: relative;
       background: var(--canvas);
       border: 1px solid var(--hairline);
       border-radius: 18px;
-      padding: 28px 24px 24px;
-      transition: transform .15s ease, border-color .15s ease;
       overflow: hidden;
+      transition: transform .15s ease;
+      display: flex;
+      flex-direction: column;
     }
-    .agent-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--c);
+    .agent-card:hover { transform: translateY(-2px); }
+    .agent-card-art {
+      aspect-ratio: 4 / 3;
+      background: color-mix(in srgb, var(--c) 8%, #ffffff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
-    .agent-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px; background: var(--c);
+    .agent-card-orb {
+      width: 56px; height: 56px;
+      border-radius: 9999px;
+      background: var(--c);
     }
-    .agent-dot {
-      width: 36px; height: 36px; border-radius: 9999px;
-      background: var(--c); margin-bottom: 20px;
+    .agent-card-body {
+      padding: 20px 24px 24px;
+      flex: 1;
     }
-    .agent-name {
-      font-size: 17px; font-weight: 600; letter-spacing: -0.374px;
+    .agent-card-name {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.374px;
       color: var(--ink);
     }
-    .agent-role {
-      font-size: 14px; color: var(--ink-muted-80);
-      line-height: 1.43; margin-top: 8px; letter-spacing: -0.224px;
-    }
-    .agent-meta {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-top: 20px;
-    }
-    .agent-phase {
-      font-size: 12px; font-weight: 600;
-      color: var(--c); text-transform: uppercase; letter-spacing: 0.6px;
-    }
-    .agent-voice {
-      font-size: 12px; color: var(--ink-muted-48); font-style: italic;
-      letter-spacing: -0.12px;
+    .agent-card-role {
+      font-size: 14px;
+      color: var(--ink-muted-80);
+      line-height: 1.43;
+      margin-top: 6px;
+      letter-spacing: -0.224px;
     }
 
     /* ---------- Flow diagram ---------- */
@@ -423,6 +446,9 @@
       .nav ul { gap: 18px; }
       .stat-num { font-size: 44px; }
       .stats { gap: 40px; padding: 48px 24px; }
+      .phase-section { padding: 40px 0; }
+      .agent-list { gap: 32px; }
+      .agent-row-name { font-size: 19px; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 36px; }
@@ -532,81 +558,103 @@
 
   <section class="tile tile-parchment" id="agents">
     <div class="container">
-      <span class="section-eyebrow">Meet the agents</span>
-      <h2 class="section-head">Ten subagents. Ten colors. One playbook.</h2>
-      <p class="section-lede">
-        Every agent has a phase, a voice, a decision-authority level, and a strict anti-pattern list.
-      </p>
+      <div class="agents-intro">
+        <span class="section-eyebrow">Meet the agents</span>
+        <h2 class="section-head">The team.</h2>
+        <p class="section-lede">Ten agents, grouped by phase. Each one has a single job.</p>
+      </div>
 
-      <div class="agents">
-        <div class="agent-card" style="--c: var(--c-orchestrator);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Orchestrator</div>
-          <div class="agent-role">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs.</div>
-          <div class="agent-meta"><span class="agent-phase">Meta</span><span class="agent-voice">Calm strategist</span></div>
+      <div class="phase-group">
+        <h3 class="phase-group-head">Discovery</h3>
+        <div class="agent-grid">
+          <div class="agent-card" style="--c: var(--c-discovery);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">discovery-researcher</h4>
+              <p class="agent-card-role">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-competitive);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">competitive-analyst</h4>
+              <p class="agent-card-role">Maps direct and indirect competitors. Surfaces patterns and gaps with screenshot-level rigor.</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="agent-card" style="--c: var(--c-discovery);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Discovery Researcher</div>
-          <div class="agent-role">Plans and runs interviews, secondary research, problem framing. Evidence before opinion.</div>
-          <div class="agent-meta"><span class="agent-phase">Discovery</span><span class="agent-voice">Curious, evidence-first</span></div>
+      <div class="phase-group">
+        <h3 class="phase-group-head">Define</h3>
+        <div class="agent-grid">
+          <div class="agent-card" style="--c: var(--c-positioner);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">product-positioner</h4>
+              <p class="agent-card-role">Crafts the positioning statement and value props. Picks the sharpest angle; defends it.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-prioritizer);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">feature-prioritizer</h4>
+              <p class="agent-card-role">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; says what you're giving up.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-ideation);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">ideation-facilitator</h4>
+              <p class="agent-card-role">Runs divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="agent-card" style="--c: var(--c-competitive);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Competitive Analyst</div>
-          <div class="agent-role">Maps direct + indirect competitors, surfaces patterns and gaps with screenshot-level rigor.</div>
-          <div class="agent-meta"><span class="agent-phase">Discovery</span><span class="agent-voice">Pattern detective</span></div>
+      <div class="phase-group">
+        <h3 class="phase-group-head">Deliver</h3>
+        <div class="agent-grid">
+          <div class="agent-card" style="--c: var(--c-interaction);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">interaction-designer</h4>
+              <p class="agent-card-role">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at senior IC level.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-usability);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">usability-tester</h4>
+              <p class="agent-card-role">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-handoff);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">handoff-engineer</h4>
+              <p class="agent-card-role">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="agent-card" style="--c: var(--c-positioner);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Product Positioner</div>
-          <div class="agent-role">Crafts the positioning statement and value props. Picks the sharpest angle; defends it.</div>
-          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Sharp, opinionated</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-prioritizer);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Feature Prioritizer</div>
-          <div class="agent-role">Scores with RICE, ICE, or Kano. Names tradeoffs honestly; tells you what you're giving up.</div>
-          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Tradeoff-honest PM</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-ideation);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Ideation Facilitator</div>
-          <div class="agent-role">Runs divergent concept generation. Crazy 8s, How-Might-We, opportunity mapping.</div>
-          <div class="agent-meta"><span class="agent-phase">Define</span><span class="agent-voice">Generative, divergent</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-interaction);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Interaction Designer</div>
-          <div class="agent-role">Builds flows, states, microinteractions. Audits existing Figma. Craft-obsessed at IC senior level.</div>
-          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Craft-obsessed senior</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-usability);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Usability Tester</div>
-          <div class="agent-role">Designs test plans, writes tasks, analyzes session results. Skeptical until the data speaks.</div>
-          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Skeptical scientist</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-handoff);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Handoff Engineer</div>
-          <div class="agent-role">Produces dev-ready specs, token audits, edge-case matrices. Speaks both Figma and code.</div>
-          <div class="agent-meta"><span class="agent-phase">Deliver</span><span class="agent-voice">Systems-thinker</span></div>
-        </div>
-
-        <div class="agent-card" style="--c: var(--c-critique);">
-          <div class="agent-dot"></div>
-          <div class="agent-name">Critique Partner</div>
-          <div class="agent-role">Reviews any phase output. Surfaces weak reasoning, untested assumptions, missing tradeoffs.</div>
-          <div class="agent-meta"><span class="agent-phase">Cross-cutting</span><span class="agent-voice">Devil's advocate</span></div>
+      <div class="phase-group">
+        <h3 class="phase-group-head">Meta &amp; Cross-cutting</h3>
+        <div class="agent-grid">
+          <div class="agent-card" style="--c: var(--c-orchestrator);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">orchestrator</h4>
+              <p class="agent-card-role">Decomposes the goal, sequences sub-agents, inserts approval gates, synthesizes handoffs.</p>
+            </div>
+          </div>
+          <div class="agent-card" style="--c: var(--c-critique);">
+            <div class="agent-card-art"><div class="agent-card-orb"></div></div>
+            <div class="agent-card-body">
+              <h4 class="agent-card-name">critique-partner</h4>
+              <p class="agent-card-role">Reviews any phase output. Surfaces weak reasoning, untested assumptions, missing tradeoffs.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
