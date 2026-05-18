@@ -249,6 +249,7 @@ The mapping below is the source of truth. Agents read this and decide when to in
 | `pm-strategist` *(v3)* | pm-product-strategy:strategy, pm-product-strategy:product-vision, pm-product-strategy:business-model, pm-product-strategy:lean-canvas, pm-product-strategy:startup-canvas, pm-product-strategy:swot-analysis, pm-product-strategy:porters-five-forces, pm-product-strategy:pestle-analysis, pm-product-strategy:ansoff-matrix, pm-product-strategy:pricing-strategy, pm-product-strategy:monetization-strategy, pm-marketing-growth:north-star-metric, pm-marketing-growth:marketing-ideas, pm-market-research:market-sizing |
 | `pm-launch-architect` *(v3)* | pm-go-to-market:gtm-strategy, pm-go-to-market:beachhead-segment, pm-go-to-market:ideal-customer-profile, pm-go-to-market:gtm-motions, pm-go-to-market:growth-loops, pm-execution:pre-mortem, pm-execution:release-notes, pm-execution:stakeholder-map, product-management:stakeholder-update |
 | `pm-metrics-architect` *(v3)* | pm-product-discovery:metrics-dashboard, pm-execution:plan-okrs, pm-execution:brainstorm-okrs, pm-marketing-growth:north-star, product-tracking-skills:product-tracking-design-tracking-plan, product-tracking-skills:product-tracking-instrument-new-feature, product-tracking-skills:product-tracking-model-product, product-management:metrics-review |
+| `prd-author` *(v3.5)* | pm-execution:create-prd, pm-execution:write-prd, pm-execution:user-stories, pm-execution:job-stories, pm-execution:wwas, pm-execution:test-scenarios |
 | `orchestrator` | product-management:product-brainstorming, pm-execution:sprint-plan, pm-execution:retro, pm-execution:summarize-meeting, pm-execution:meeting-notes, product-management:roadmap-update, pm-execution:outcome-roadmap |
 | `critique-partner` | pm-execution:pre-mortem, grill-me (when user explicitly invokes) |
 
@@ -454,3 +455,55 @@ decisionData:
 ### Length discipline
 
 Each agent's decisionData stays within the v2 output caps (max 6 insights / 4 gaps / 10 scoring rows / etc.). The Decision Data panel is for the *headline* data the user needs to decide; full methodology, sample bias audit, dropped ideas, etc. still live in the MD handoff file. The dashboard's job is to make the `y / revise / pivot` choice possible without opening MD; the MD is the audit trail.
+
+---
+
+## Notion Sync (v3.5)
+
+After confirmed artifacts exist, you can publish them to Notion via the `/agent-harry-notion-sync` slash command. This is opt-in — the pipeline runs the same whether you sync to Notion or not. Use it when teammates need to read decisions outside Claude Code.
+
+### What gets synced
+
+- **Discovery** insights (from `discovery-researcher`) + competitive teardown (from `competitive-analyst`)
+- **Define** artifacts — positioning, prioritization scoring, concepts, the strategic bet
+- **Success Metrics** (from `pm-metrics-architect`) — carries a `✓ Confirmed` badge if the Success-Metrics Gate cleared
+- **PRDs** (from `prd-author`) — one Notion page per PRD file
+- **Deliver** artifacts — design spec, usability test plan, launch plan
+
+### What does NOT get synced
+
+- Full long-form bodies of MD handoffs (they're archival; the MD files own them)
+- `.harry-queue.json` runtime state (not relevant to teammates)
+- The `dashboard.html` file (rendered visual; doesn't fit Notion's block model cleanly)
+- Critique-partner stress-test responses inline — they're folded into the artifact they critiqued, not separate pages
+
+### Config file
+
+`<project-root>/.notion-config.json` (created by first run of the slash command). Schema:
+
+```json
+{
+  "parent_page_id": "<notion-page-id-user-picked>",
+  "project_root_page_id": "<notion-page-id-of-Agent-Harry-project-root>",
+  "synced_pages": {
+    "<relative-artifact-path>": "<notion-page-id>"
+  },
+  "last_sync": "<ISO-8601 UTC>",
+  "version": "v3.5"
+}
+```
+
+Idempotent — re-running the slash command updates pages in place, doesn't duplicate.
+
+### When to invoke
+
+- After the Success-Metrics Gate clears, before kicking off design (so teammates can review metrics + prioritization in Notion)
+- After `prd-author` produces PRDs (so engineering can read them in Notion)
+- After the pipeline marks complete (final publish)
+- Any other time you want Notion to reflect the current state — the command is cheap (~$0.05–0.10 per run)
+
+### Anti-patterns
+
+- Auto-syncing on every Stop Gate without user opt-in (wastes Notion API quota; some artifacts shouldn't be public yet)
+- Syncing un-confirmed drafts (only artifacts the user has approved with `y` should land in Notion — that's the team's read-once source of truth)
+- Duplicating data Notion can compute (use Notion's TOC block for the overview, not a hardcoded page list)

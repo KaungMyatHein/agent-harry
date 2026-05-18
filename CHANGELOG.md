@@ -4,6 +4,27 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-19 — v3.5: PRD-per-sub-feature + Notion sync
+
+After v3.4's Success-Metrics Gate clears, two new capabilities ship to make the confirmed artifacts actionable for the rest of the team: per-feature PRDs (so engineering has something concrete to build against), and a one-shot Notion publish (so non-Claude-Code teammates can read what was decided).
+
+- **New agent `prd-author` (sonnet)** — `templates/.claude/agents/prd-author.md`. Routes after the Success-Metrics Gate clears. Reads the confirmed `feature-prioritizer` handoff, extracts items tagged `in` for MVP, generates one PRD per item using the `pm-execution:create-prd` skill. Writes each to `./design-workspace/<project-slug>/prds/<feature-slug>.md`. Batch capped at 8 PRDs per run for token discipline; if the user has 10+ "in" items, proposes splitting into 2 batches.
+  - Decision Data shape: `table` — manifest with slug · word count · source RICE · status pill (`new` / `updated` / `open` for PRDs with unresolved Open Questions).
+  - Idempotent: re-running on a project updates existing PRD files; doesn't blindly overwrite. Per-PRD revision via `revise — <slug>: <delta>` regenerates one without rebatching all.
+  - PRD template: Problem · Users · Success criteria (must reference confirmed metrics) · Scope in/out · User stories · Acceptance criteria · Tradeoffs · Open questions · Links. The "Scope: out" section is mandatory — explicit non-goals kill scope creep.
+- **New slash command `/agent-harry-notion-sync`** — `templates/.claude/commands/agent-harry-notion-sync.md`. Pushes confirmed artifacts to Notion via the Notion MCP. First run prompts for parent page (search-based picker), saves config to `<project-root>/.notion-config.json`. Subsequent runs are incremental and idempotent — same artifact path always maps to the same Notion page ID.
+  - Builds a structured tree: Project root → Overview (TOC) → Discovery → Define → Success Metrics (with ✓ Confirmed badge if Gate cleared) → PRDs (one page each) → Deliver.
+  - `--dry-run` previews changes without writing. `--re-init` resets the config.
+  - Page content = Executive Summary + 3-bullet TL;DR + Decision Data (rendered with Notion's matching block types). Long-form MD body stays on disk as audit trail; Notion gets the decision-grade summary.
+- **Orchestrator routing extended** — after the Success-Metrics Gate clears, the orchestrator's smallest-next-move logic checks: if prioritization has "in" items AND no PRDs exist yet, propose `prd-author`. Otherwise propose `interaction-designer` Mode A (design-led) or `handoff-engineer` (spec-led). `/agent-harry-notion-sync` is surfaced as a sidebar option in the Stop Gate's next-move-suggestion text, not auto-invoked.
+- **SHARED_CONTEXT.md** — `prd-author` row added to PM Skills Map (`pm-execution:create-prd`, `:write-prd`, `:user-stories`, `:job-stories`, `:wwas`, `:test-scenarios`). New "Notion Sync (v3.5)" section spelling out what does/doesn't sync, the config schema, idempotency rules, and anti-patterns.
+- **`templates/dashboard.html`** — no template change; v3.3's existing Decision Data `table` shape renders the PRD manifest natively. The orchestrator just populates `decisionData` per the spec.
+- **Demo state added** — state 11 "PRD Batch (v3.5)" in `docs/dashboard-demo.html` shows `prd-author`'s manifest table after generating 5 PRDs for the POS Checkout MVP scenario. One PRD has status `open` (unresolved Open Questions) demonstrating the partial-readiness flavor. Total state count grows 11 → 12.
+
+Agents total: 13 → **14**. Slash commands total: 2 → **3**. Opus model agents unchanged (still orchestrator + critique-partner only).
+
+Token cost: `prd-author` ~$0.10–0.20 per PRD × N items (max 8) = ~$0.80–1.60 worst case. Notion sync ~$0.05–0.10 per run. A full v2/v3/v3.5 pipeline still lands in the $1.50–3.00 range, inside the $3 ceiling.
+
 ## 2026-05-18 — v3.4: Success-Metrics Gate — force metrics + confirmation before Deliver
 
 After Define is done, you should never just glide into Deliver without naming what success looks like. v3.4 codifies that as a second hard gate, mirroring the Research-First Gate but firing at the Define → Deliver boundary instead of nothing → Discovery.

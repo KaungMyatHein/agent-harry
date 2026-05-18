@@ -50,7 +50,7 @@ Steps:
 Expected output:
 
 ```
-Installed 13 Agent Harry subagents + 2 slash commands + dashboard server + SHARED_CONTEXT.md + dashboard.html into <project>/
+Installed 14 Agent Harry subagents + 3 slash commands + dashboard server + SHARED_CONTEXT.md + dashboard.html into <project>/
 
 Try this — chat-only mode (simplest):
 1. Open dashboard.html in the Claude Preview MCP panel.
@@ -69,7 +69,8 @@ Quick reference:
 - Deliver: interaction-designer, usability-tester, handoff-engineer, pm-launch-architect (gated by Research-First check)
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
-- Commands: /audit-pipeline · /agent-harry-loop
+- Commands: /audit-pipeline · /agent-harry-loop · /agent-harry-notion-sync
+- v3.5 agents: prd-author (PRDs per sub-feature)
 - Visual: dashboard.html (auto-regenerated at every Stop Gate)
 - Click-driven: dashboard-server.py + .harry-queue.json (v3.2 opt-in)
 ```
@@ -139,7 +140,7 @@ Steps:
 Expected output:
 
 ```
-Refreshed 13 agent files + 2 slash commands + dashboard.html + dashboard-server.py in <project>/
+Refreshed 14 agent files + 3 slash commands + dashboard.html + dashboard-server.py in <project>/
 Preserved: SHARED_CONTEXT.md, README.md, .harry-queue.json (if existed)
 SHARED_CONTEXT.md v2/v3 sections check: <present | MISSING — see below>
 
@@ -203,13 +204,17 @@ templates/
 │                                 v3: PM Skills Map
 │                                 v3.1: Dashboard companion spec
 │                                 v3.2: Queue Mode spec
+│                                 v3.3: Decision Data Shapes appendix
+│                                 v3.4: Success-Metrics Gate
+│                                 v3.5: Notion Sync section
 ├── dashboard.html              ← v3.1: visual Stop Gate companion
 │                                 v3.2: clickable buttons + inline inputs + fetch handlers
+│                                 v3.3: Decision Data panel
 ├── dashboard-server.py         ← v3.2: Python stdlib HTTP server on :3737
 ├── .harry-queue.json           ← v3.2: queue state file for click→orchestrator handoff
 └── .claude/
     ├── agents/
-    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; v3.1/v3.2: writes dashboard.html + Queue Mode
+    │   ├── orchestrator.md          (opus)   ← v3.4: enforces Research-First + Success-Metrics Gates
     │   ├── critique-partner.md      (opus)
     │   ├── discovery-researcher.md  (sonnet)
     │   ├── competitive-analyst.md   (sonnet)
@@ -221,10 +226,12 @@ templates/
     │   ├── handoff-engineer.md      (sonnet)
     │   ├── pm-strategist.md         (sonnet) ← v3: strategy / business model / vision / pricing
     │   ├── pm-launch-architect.md   (sonnet) ← v3: GTM / beachhead / ICP / growth loops
-    │   └── pm-metrics-architect.md  (sonnet) ← v3: north-star / OKRs / tracking plans
+    │   ├── pm-metrics-architect.md  (sonnet) ← v3.4: gate-clearer for Define→Deliver
+    │   └── prd-author.md            (sonnet) ← v3.5: one PRD per "in"-tagged sub-feature
     └── commands/
-        ├── audit-pipeline.md         ← /audit-pipeline — enforces Research-First Gate
-        └── agent-harry-loop.md       ← /agent-harry-loop — v3.2 click-driven polling loop
+        ├── audit-pipeline.md              ← /audit-pipeline — Research-First + Success-Metrics gates
+        ├── agent-harry-loop.md            ← /agent-harry-loop — v3.2 click-driven polling loop
+        └── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.
@@ -232,6 +239,10 @@ These are the source of truth. Don't regenerate — copy then patch.
 **v2 token-cost design:** Opus only on orchestrator + critique-partner. The other 11 agents run on Sonnet. This is the primary lever that brings a full pipeline run from ~$8 down to ~$1–3. Don't override per-agent without a logged reason in the handoff.
 
 **v3 orchestration shift:** Default mode is the Alignment Loop (Diagnose → smallest-next-move → Run → Realign), not waterfall. Waterfall planning is the fallback for explicit "lay out the full pipeline" requests. User can `pivot — <new direction>` at any Stop Gate.
+
+**v3.4 dual hard gates:** Research-First Gate blocks Deliver until Discovery/Define exist. Success-Metrics Gate blocks Deliver until pm-metrics-architect has run AND been confirmed. Same Hybrid pattern — strict by default, explicit opt-out phrase.
+
+**v3.5 post-Deliver:** Once Success-Metrics confirmed, `prd-author` (new sonnet agent) generates one PRD per "in"-tagged sub-feature. `/agent-harry-notion-sync` (new slash command) publishes confirmed artifacts to Notion as a structured workspace.
 
 ---
 

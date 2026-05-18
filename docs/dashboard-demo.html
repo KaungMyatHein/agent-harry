@@ -785,7 +785,8 @@
       <button class="state-btn" data-state="pm-strategist"><span class="state-num">08</span>PM Strategist</button>
       <button class="state-btn" data-state="pm-launch"><span class="state-num">09</span>PM Launch Architect</button>
       <button class="state-btn" data-state="pm-metrics"><span class="state-num">10</span>PM Metrics Architect</button>
-      <button class="state-btn" data-state="revise-open"><span class="state-num">11</span>Revise input open</button>
+      <button class="state-btn" data-state="prd-batch"><span class="state-num">11</span>PRD Batch (v3.5)</button>
+      <button class="state-btn" data-state="revise-open"><span class="state-num">12</span>Revise input open</button>
     </nav>
 
     <section class="stage-wrap">
@@ -1360,6 +1361,97 @@
         },
       },
 
+      'prd-batch': {
+        project: 'POS Checkout MVP',
+        stats: { steps: 9, elapsed: '36 min', cost: '$1.08', costClass: 'budget-ok' },
+        history: {
+          crumbs: [
+            { agent: 'discovery-researcher', mode: 'Mode B' },
+            { agent: 'critique-partner', mode: null },
+            { agent: 'product-positioner', mode: 'Mode A' },
+            { agent: 'feature-prioritizer', mode: 'Mode B' },
+            { agent: 'pm-strategist', mode: 'Mode A' },
+            { agent: 'pm-metrics-architect', mode: 'Mode A' },
+            { agent: 'prd-author', mode: 'Mode A' },
+            { agent: 'critique-partner', mode: null },
+            { agent: 'pm-metrics-architect', mode: 'revise' },
+          ],
+        },
+        now: {
+          status: 'awaiting',
+          eyebrow: 'Now · PRDs generated · Awaiting your input',
+          agent: 'prd-author',
+          mode: 'Mode A',
+          phase: { name: 'Deliver · PM', color: 'var(--c-handoff)' },
+        },
+        statCells: [
+          { label: 'Confidence', value: 'high', cls: 'confidence-high' },
+          { label: 'PRDs generated', value: '5 of 5 in items' },
+          { label: 'Total words', value: '4,820' },
+          { label: 'Step cost', value: '$0.62' },
+        ],
+        decisionData: {
+          type: 'table',
+          label: 'PRDs generated · 5 features · 4,820 words total',
+          cols: [
+            { label: 'Feature' },
+            { label: 'Slug' },
+            { label: 'Words', num: true },
+            { label: 'Source RICE', num: true },
+            { label: 'Status' },
+          ],
+          rows: [
+            { cells: [
+              { html: '<strong>Guest checkout</strong>' },
+              { html: '<code>guest-checkout.md</code>' },
+              { num: true, html: '1,140' },
+              { num: true, html: '76' },
+              { html: '<span class="pill-in">new</span>' },
+            ]},
+            { cells: [
+              { html: 'Phone-verify retry' },
+              { html: '<code>phone-verify-retry.md</code>' },
+              { num: true, html: '880' },
+              { num: true, html: '65' },
+              { html: '<span class="pill-in">new</span>' },
+            ]},
+            { cells: [
+              { html: 'Cash reconciliation flow' },
+              { html: '<code>cash-reconciliation-flow.md</code>' },
+              { num: true, html: '1,260' },
+              { num: true, html: '32' },
+              { html: '<span class="pill-in">new</span>' },
+            ]},
+            { cells: [
+              { html: 'Apple Pay (scoped)' },
+              { html: '<code>apple-pay-scoped.md</code>' },
+              { num: true, html: '720' },
+              { num: true, html: '18' },
+              { html: '<span class="pill-open">open</span>' },
+            ]},
+            { cells: [
+              { html: 'Cart abandonment recovery' },
+              { html: '<code>cart-abandonment-recovery.md</code>' },
+              { num: true, html: '820' },
+              { num: true, html: '28' },
+              { html: '<span class="pill-in">new</span>' },
+            ]},
+          ],
+        },
+        tldrLabel: 'TL;DR · 5 PRDs in ./design-workspace/<project>/prds/',
+        tldr: [
+          { html: '<strong>5 PRDs written</strong>, one per "in"-tagged feature — each pinned to a success metric from the confirmed measurement plan. Highest priority: <code>guest-checkout.md</code> (RICE 76, 1,140 words, 5 acceptance criteria).' },
+          { html: '<strong>1 PRD has open questions</strong> — <code>apple-pay-scoped.md</code> needs engineering input on iOS WebKit constraints before scope can lock. Flagged in its Open Questions section; status is <em>open</em>, not <em>new</em>.' },
+          { html: '<strong>Open question</strong> — accept the batch as-is, or revise a specific PRD before proceeding to <code>interaction-designer</code>? <em>Reply <code>y</code> to ship; <code>revise — guest-checkout: add a dependency on phone-verify</code> to re-generate one; <code>revise — apple-pay-scoped: descope, defer to v2</code> to handle the open one.</em>', open_q: true },
+        ],
+        suggest: '<span class="suggest-label">Next move suggested</span> <code>interaction-designer</code> Mode A — design the guest-checkout flow first (highest RICE). The PRD\'s acceptance criteria become the screens-to-build checklist. Plus: <em>run <code>/agent-harry-notion-sync</code> now so engineering can preview these PRDs in Notion.</em>',
+        chips: { show: true, hint: 'ship all 5 PRDs' },
+        annotation: {
+          title: 'PRD Batch (v3.5) — one PRD per sub-feature, post Success-Metrics Gate',
+          body: '<p>v3.5\'s new agent <code>prd-author</code> runs after the Success-Metrics Gate clears. It iterates the "in"-tagged items from <code>feature-prioritizer</code> and produces one PRD per item using the <code>pm-execution:create-prd</code> skill.</p><ul><li>Decision Data uses the <code>table</code> shape — manifest with slug · word count · RICE · status (new/updated/open).</li><li>Status pill <code>open</code> means the PRD has unresolved Open Questions that should be addressed before downstream design. Status <code>new</code> means clean.</li><li>The chip hint changes to <strong>"ship all 5 PRDs"</strong> — explicit batch-confirmation framing.</li><li>The suggested-next strip surfaces <code>/agent-harry-notion-sync</code> as a sidebar option — running it makes the PRDs visible to engineering in Notion without leaving the dashboard.</li><li>Single-PRD revision via <code>revise — &lt;slug&gt;: &lt;delta&gt;</code> is cheap (one re-generation); full re-batch is not.</li></ul>',
+        },
+      },
+
       'revise-open': {
         project: 'POS Checkout MVP',
         stats: { steps: 4, elapsed: '18 min', cost: '$0.42', costClass: 'budget-ok' },
@@ -1551,7 +1643,7 @@
     // ============================================================
     // Wire up state selector
     // ============================================================
-    const stateOrder = ['first', 'post-discovery', 'mid', 'near-budget', 'over-budget', 'cancelled', 'complete', 'pm-strategist', 'pm-launch', 'pm-metrics', 'revise-open'];
+    const stateOrder = ['first', 'post-discovery', 'mid', 'near-budget', 'over-budget', 'cancelled', 'complete', 'pm-strategist', 'pm-launch', 'pm-metrics', 'prd-batch', 'revise-open'];
 
     function selectState(key) {
       const s = STATES[key];

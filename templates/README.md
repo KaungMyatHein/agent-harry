@@ -25,7 +25,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
                              └────────────┘             └───────────┘
 ```
 
-## Agents (13 total)
+## Agents (14 total)
 
 | Agent | Phase | Voice | Model | Primary MCPs |
 |---|---|---|---|---|
@@ -42,8 +42,9 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 | `handoff-engineer` | Deliver | Systems-thinker | sonnet | Figma, Notion |
 | `pm-launch-architect` | Deliver | Pragmatic GTM lead | sonnet | Notion, Web |
 | `pm-metrics-architect` | Cross-cutting | Skeptical instrumentation lead | sonnet | Notion |
+| `prd-author` | Deliver | Precise PRD writer | sonnet | — |
 
-Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 11 phase + cross-cutting agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
+Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 12 phase + cross-cutting agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
 
 ## Orchestration Style — Alignment Loop, not Waterfall
 
@@ -116,11 +117,51 @@ You can still type in chat anytime — chat input takes priority over the queue.
 
 **Token-cost note:** idle polling costs ~$0.015 per cycle. 20-poll idle cap = ~$0.30 worst-case waste if you walk away. Still well within the $3 ceiling.
 
+## PRDs + Notion sync (v3.5)
+
+After Define is done and Success Metrics are confirmed (v3.4 Gate), two new capabilities are available:
+
+### `prd-author` agent
+
+Iterates the confirmed `feature-prioritizer` "in"-tagged items. Generates one PRD per sub-feature using the `pm-execution:create-prd` skill. Writes each PRD to `./design-workspace/<project-slug>/prds/<feature-slug>.md`.
+
+- Token cost: ~$0.10–0.20 per PRD. Batch capped at 8 PRDs per run (scope down if you have more).
+- Visible in the dashboard's Decision Data panel as a manifest table — slug · words · source RICE · status (new/updated).
+- Idempotent: re-running on the same project updates existing PRD files; doesn't blindly overwrite.
+- Routes naturally after the Success-Metrics Gate clears (orchestrator proposes it as the next move).
+
+### `/agent-harry-notion-sync` slash command
+
+Publishes confirmed Agent Harry artifacts to Notion as a structured workspace tree.
+
+```bash
+/agent-harry-notion-sync           # first run prompts for parent page
+/agent-harry-notion-sync --dry-run # preview without writing
+/agent-harry-notion-sync --re-init # reset .notion-config.json
+```
+
+The slash command requires Notion MCP to be connected. Builds this tree under your chosen parent page:
+
+```
+<Parent>/
+└── <Project Name> — Agent Harry
+    ├── 📍 Overview (auto-generated TOC)
+    ├── 🔍 Discovery (research insights, competitive teardown)
+    ├── 🎯 Define (positioning, prioritization, concepts, strategy)
+    ├── 📊 Success Metrics (with ✓ Confirmed badge if Gate cleared)
+    ├── 📄 PRDs (one page per generated PRD)
+    └── 🚀 Deliver (design spec, usability test, launch plan)
+```
+
+Idempotent — re-run any time to push updates. MD files in `./design-workspace/` stay as the audit trail; Notion holds the decision-grade summary for your team. Token cost: ~$0.05–0.10 per sync.
+
 ## Slash Commands
 
 | Command | Purpose |
 |---|---|
-| `/audit-pipeline` | Reports which phases have artifacts and whether the **Research-First Gate** is PASS / BLOCK / OPTED-OUT. Run before any Deliver-phase work or whenever a session shifts toward "let's prototype / build / design". |
+| `/audit-pipeline` | Reports which phases have artifacts and whether the **Research-First Gate** + **Success-Metrics Gate** are PASS / BLOCK / OPTED-OUT. Run before any Deliver-phase work or whenever a session shifts toward "let's prototype / build / design". |
+| `/agent-harry-loop` | v3.2 click-driven polling loop. Reads `.harry-queue.json` every ~60s; processes browser-clicked actions via the dashboard server. |
+| `/agent-harry-notion-sync` | v3.5 push confirmed artifacts to Notion as a structured workspace. Idempotent; safe to re-run. `--dry-run` previews without writing. |
 
 ## Always-On Stop Gate
 
@@ -254,8 +295,10 @@ product-designer-agents/
     │   ├── handoff-engineer.md      (sonnet)
     │   ├── pm-strategist.md         (sonnet)
     │   ├── pm-launch-architect.md   (sonnet)
-    │   └── pm-metrics-architect.md  (sonnet)
+    │   ├── pm-metrics-architect.md  (sonnet)
+    │   └── prd-author.md            (sonnet) ← v3.5
     └── commands/
-        ├── audit-pipeline.md        ← /audit-pipeline
-        └── agent-harry-loop.md      ← /agent-harry-loop (v3.2 click-driven)
+        ├── audit-pipeline.md              ← /audit-pipeline
+        ├── agent-harry-loop.md            ← /agent-harry-loop (v3.2)
+        └── agent-harry-notion-sync.md     ← /agent-harry-notion-sync (v3.5)
 ```
