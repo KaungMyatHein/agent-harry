@@ -58,6 +58,21 @@ You can `pivot — <new direction>` at any Stop Gate to steer the loop somewhere
 
 When you explicitly want a fixed plan upfront ("plan the full discovery sprint"), the orchestrator falls back to **Waterfall mode** — same Stop Gates between every step.
 
+## Visual companion — `dashboard.html` (v3.1)
+
+Reading text TL;DR cards step-by-step gets tiring. At every Stop Gate, the orchestrator also writes a self-contained `dashboard.html` to the project root, designed to be viewed in the Claude Preview MCP panel.
+
+What's on it:
+
+- **Top bar** — project name + step count + elapsed time + cumulative cost (turns yellow at $1.50, red at $2.50 — keeps the $3 ceiling visible)
+- **History breadcrumb** — every completed sub-agent in this session, compressed
+- **NOW card** — the visual centerpiece. Status dot + agent name + Mode tag + phase pill + 4 stat cells + 3-bullet TL;DR + next-move suggestion + 5 command chips
+- **Suggested-next strip** — if `y` leads to a clear next agent, shown here with cost estimate
+
+The dashboard is **read-only**. Command chips display the literal text you type in chat (`y / revise <delta> / pivot — <direction> / grill me / cancel`). Clicks do nothing — chat is still the source of truth and where input happens. Silence is still not consent.
+
+If you don't have Claude Preview MCP connected, the dashboard file still renders fine in any browser. Open it manually if you want to glance at the visual TL;DR.
+
 ## Slash Commands
 
 | Command | Purpose |
@@ -178,7 +193,8 @@ Agents are **framework-agnostic but context-aware**. They will draw from Double 
 ```
 product-designer-agents/
 ├── README.md                          ← you are here
-├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate
+├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate + Dashboard spec
+├── dashboard.html                     ← visual Stop Gate companion (overwritten by orchestrator each turn)
 └── .claude/
     ├── agents/
     │   ├── orchestrator.md          (opus)

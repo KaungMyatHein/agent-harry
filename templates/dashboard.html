@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Harry · POS Checkout MVP — Stop Gate</title>
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --ink-muted: #515154;
+      --ink-faint: #86868b;
+      --canvas: #ffffff;
+      --parchment: #f5f5f7;
+      --hairline: #d2d2d7;
+      --divider-soft: #ececef;
+      --black: #1d1d1f;
+      --bg-dim: #fafafa;
+
+      --status-done: #16a34a;
+      --status-running: #0066cc;
+      --status-awaiting: #d97706;
+      --status-pending: #86868b;
+      --status-cancelled: #86868b;
+
+      --c-orchestrator: #0066cc;
+      --c-discovery: #5e81ac;
+      --c-competitive: #2c7d6f;
+      --c-positioner: #d97706;
+      --c-prioritizer: #b45309;
+      --c-ideation: #8b5cf6;
+      --c-interaction: #ec4899;
+      --c-usability: #16a34a;
+      --c-handoff: #525252;
+      --c-strategist: #0891b2;
+      --c-launch: #c2410c;
+      --c-metrics: #65a30d;
+      --c-critique: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.47;
+      letter-spacing: -0.224px;
+      color: var(--ink);
+      background: var(--bg-dim);
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .display { font-family: "SF Pro Display", system-ui, sans-serif; font-weight: 600; }
+    code, .mono {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 12.5px;
+      letter-spacing: -0.1px;
+    }
+
+    .shell {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      background: var(--black);
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+    }
+    .topbar-left { display: flex; flex-direction: column; gap: 3px; }
+    .topbar-brand {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: #a1a1a6;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .topbar-project {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 17px; font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.224px;
+    }
+    .topbar-stats {
+      display: flex; gap: 22px;
+      font-size: 12px;
+      color: #c7c7cc;
+    }
+    .stat-pair { display: flex; flex-direction: column; gap: 1px; align-items: flex-end; }
+    .stat-label { font-size: 10px; color: #86868b; text-transform: uppercase; letter-spacing: 0.6px; }
+    .stat-value { font-family: "SF Pro Display", system-ui, sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
+    .stat-value.budget-ok { color: #34c759; }
+    .stat-value.budget-warn { color: #ffd60a; }
+    .stat-value.budget-over { color: #ff453a; }
+
+    /* ---------- History strip ---------- */
+    .history {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap;
+    }
+    .history-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px; text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .crumb {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px 5px 8px;
+      background: var(--parchment);
+      border-radius: 9999px;
+      font-size: 12px;
+      color: var(--ink);
+      letter-spacing: -0.12px;
+    }
+    .crumb-check {
+      width: 14px; height: 14px;
+      border-radius: 9999px;
+      background: var(--status-done);
+      color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .crumb-agent { font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace; font-size: 11.5px; }
+    .crumb-mode { color: var(--ink-faint); font-size: 10.5px; }
+    .crumb-arrow { color: var(--ink-faint); font-size: 11px; user-select: none; }
+
+    /* ---------- NOW card ---------- */
+    .now-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+    }
+    .now-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--divider-soft);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .now-status-dot {
+      width: 10px; height: 10px;
+      border-radius: 9999px;
+      background: var(--status-awaiting);
+      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.18);
+      flex-shrink: 0;
+    }
+    .now-headline {
+      display: flex; flex-direction: column; gap: 2px;
+      flex: 1; min-width: 0;
+    }
+    .now-eyebrow {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--status-awaiting);
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .now-title {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 20px; font-weight: 600;
+      letter-spacing: -0.374px;
+      color: var(--ink);
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    .now-title .agent-name { font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace; font-size: 18px; }
+    .now-title .mode-tag {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 11px;
+      padding: 2px 7px;
+      background: var(--parchment);
+      border-radius: 5px;
+      color: var(--ink-muted);
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .phase-pill {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 10.5px; font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      color: #fff;
+      background: var(--c-prioritizer);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Stat card ---------- */
+    .now-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+      background: var(--divider-soft);
+      border-bottom: 1px solid var(--divider-soft);
+    }
+    .stat-cell {
+      background: var(--canvas);
+      padding: 14px 20px;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .stat-cell-label {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .stat-cell-value {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 16px; font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.224px;
+    }
+    .stat-cell-value.confidence-medium { color: var(--c-positioner); }
+    .stat-cell-value.confidence-high { color: var(--status-done); }
+    .stat-cell-value.confidence-low { color: var(--c-critique); }
+
+    /* ---------- TL;DR ---------- */
+    .now-tldr {
+      padding: 22px 24px 8px;
+    }
+    .now-tldr-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.8px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .now-tldr ul {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .now-tldr li {
+      display: flex; gap: 12px;
+      font-size: 15px;
+      line-height: 1.47;
+      letter-spacing: -0.224px;
+      color: var(--ink);
+    }
+    .now-tldr li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 5px; height: 5px;
+      border-radius: 9999px;
+      background: var(--ink);
+      margin-top: 10px;
+    }
+    .now-tldr li.open-q {
+      color: var(--ink-muted);
+    }
+    .now-tldr li.open-q::before {
+      background: var(--status-awaiting);
+    }
+    .now-tldr li strong { color: var(--ink); font-weight: 600; }
+    .now-tldr li em { font-style: normal; color: var(--ink-faint); font-size: 13px; }
+
+    /* ---------- Next-step suggestion ---------- */
+    .now-suggest {
+      margin: 8px 24px 0;
+      padding: 14px 16px;
+      background: var(--parchment);
+      border-radius: 11px;
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+    .now-suggest .suggest-label {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px; text-transform: uppercase;
+      margin-right: 6px;
+    }
+    .now-suggest .suggest-agent {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ---------- Command chips ---------- */
+    .now-prompt {
+      padding: 18px 24px 22px;
+      background: linear-gradient(180deg, transparent 0%, var(--parchment) 100%);
+      margin-top: 14px;
+    }
+    .prompt-instruction {
+      font-size: 12.5px;
+      color: var(--ink-faint);
+      margin-bottom: 12px;
+      letter-spacing: -0.12px;
+    }
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: 8px 14px;
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 9px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--ink);
+      letter-spacing: -0.12px;
+    }
+    .chip.primary {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+    .chip.muted {
+      color: var(--ink-muted);
+      background: transparent;
+      border-color: var(--divider-soft);
+    }
+    .chip .chip-hint {
+      color: var(--ink-faint);
+      margin-left: 6px;
+      font-size: 11px;
+    }
+    .chip.primary .chip-hint { color: #a1a1a6; }
+
+    /* ---------- Suggested-next strip ---------- */
+    .next-strip {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .next-strip-icon {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: var(--c-strategist);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .next-strip-icon svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .next-strip-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .next-strip-label {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .next-strip-body {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.4;
+    }
+    .next-strip-body code {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 12px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .next-strip-cost {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 11px;
+      color: var(--ink-faint);
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .next-strip-cost strong { color: var(--ink-muted); font-weight: 600; }
+
+    /* ---------- Footnote ---------- */
+    .foot {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-faint);
+      padding-top: 4px;
+      letter-spacing: -0.12px;
+    }
+    .foot code { font-size: 11px; padding: 1px 5px; background: var(--canvas); border: 1px solid var(--divider-soft); border-radius: 4px; color: var(--ink-muted); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ===== Top bar ===== -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-brand">Agent Harry · Stop Gate</div>
+        <div class="topbar-project">POS Checkout MVP</div>
+      </div>
+      <div class="topbar-stats">
+        <div class="stat-pair">
+          <div class="stat-label">Steps</div>
+          <div class="stat-value">4</div>
+        </div>
+        <div class="stat-pair">
+          <div class="stat-label">Elapsed</div>
+          <div class="stat-value">18 min</div>
+        </div>
+        <div class="stat-pair">
+          <div class="stat-label">Cost · cap $3</div>
+          <div class="stat-value budget-ok">$0.42</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== History strip ===== -->
+    <div class="history">
+      <div class="history-label">Done</div>
+      <span class="crumb">
+        <span class="crumb-check">✓</span>
+        <span class="crumb-agent">discovery-researcher</span>
+        <span class="crumb-mode">Mode B</span>
+      </span>
+      <span class="crumb-arrow">→</span>
+      <span class="crumb">
+        <span class="crumb-check">✓</span>
+        <span class="crumb-agent">critique-partner</span>
+      </span>
+      <span class="crumb-arrow">→</span>
+      <span class="crumb">
+        <span class="crumb-check">✓</span>
+        <span class="crumb-agent">product-positioner</span>
+        <span class="crumb-mode">Mode A</span>
+      </span>
+      <span class="crumb-arrow">→</span>
+      <span class="crumb">
+        <span class="crumb-check">✓</span>
+        <span class="crumb-agent">feature-prioritizer</span>
+        <span class="crumb-mode">Mode B</span>
+      </span>
+    </div>
+
+    <!-- ===== NOW card ===== -->
+    <div class="now-card">
+
+      <div class="now-header">
+        <div class="now-status-dot"></div>
+        <div class="now-headline">
+          <div class="now-eyebrow">Now · Awaiting your input</div>
+          <div class="now-title">
+            <span class="agent-name">feature-prioritizer</span>
+            <span class="mode-tag">Mode B</span>
+          </div>
+        </div>
+        <div class="phase-pill" style="background: var(--c-prioritizer);">Define</div>
+      </div>
+
+      <div class="now-stats">
+        <div class="stat-cell">
+          <div class="stat-cell-label">Confidence</div>
+          <div class="stat-cell-value confidence-medium">medium</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Inputs analyzed</div>
+          <div class="stat-cell-value">12 items</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Outputs</div>
+          <div class="stat-cell-value">8 re-scored</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Step cost</div>
+          <div class="stat-cell-value">$0.04</div>
+        </div>
+      </div>
+
+      <div class="now-tldr">
+        <div class="now-tldr-label">TL;DR · 3 things to know</div>
+        <ul>
+          <li><span><strong>"Guest checkout" jumped from #6 to #2</strong> — reach + impact both rose after the Discovery audit reframed the abandonment data. <em>RICE 38 → 76.</em></span></li>
+          <li><span><strong>Dropping "Wishlist sync" from MVP</strong> — RICE 0.4. Effort doesn't justify it; revisit post-launch only.</span></li>
+          <li class="open-q"><span><strong>Open question</strong> — does "Apple Pay" survive scoring? Reach is large but effort estimate is shaky. <em>Flagged for engineering input.</em></span></li>
+        </ul>
+      </div>
+
+      <div class="now-suggest">
+        <span class="suggest-label">Next move suggested</span>
+        <span class="suggest-agent">pm-strategist</span> Mode A → sharpen a value-prop for the guest-checkout wedge, so interaction-designer has a clear narrative before screens.
+      </div>
+
+      <div class="now-prompt">
+        <div class="prompt-instruction">Type one of these in chat ↓</div>
+        <div class="chips">
+          <span class="chip primary">y<span class="chip-hint">proceed</span></span>
+          <span class="chip">revise &lt;delta&gt;<span class="chip-hint">refine this step</span></span>
+          <span class="chip">pivot — &lt;direction&gt;<span class="chip-hint">steer the loop</span></span>
+          <span class="chip">grill me<span class="chip-hint">stress-test</span></span>
+          <span class="chip muted">cancel<span class="chip-hint">halt</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== Suggested-next strip ===== -->
+    <div class="next-strip">
+      <div class="next-strip-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M 4 18 L 12 4 L 20 18"/>
+          <line x1="4" y1="18" x2="20" y2="18"/>
+        </svg>
+      </div>
+      <div class="next-strip-text">
+        <div class="next-strip-label">If you type <code style="color: var(--ink); background: transparent; padding: 0;">y</code> · suggested next</div>
+        <div class="next-strip-body"><code>pm-strategist</code> · Define · PM — value-prop for guest-checkout wedge</div>
+      </div>
+      <div class="next-strip-cost">
+        ~<strong>$0.10</strong><br>~5 min
+      </div>
+    </div>
+
+    <div class="foot">
+      Read-only view · Open <code>SHARED_CONTEXT.md</code> for the handoff schema · Codified in CHANGELOG v2 / v2.1 / v3
+    </div>
+
+  </div>
+</body>
+</html>

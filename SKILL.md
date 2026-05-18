@@ -37,22 +37,23 @@ Use when the user wants the standard system without project-specific tuning.
 
 Steps:
 1. Confirm the project root directory with the user (or use cwd if obvious)
-2. Check if `.claude/agents/`, `.claude/commands/`, or `SHARED_CONTEXT.md` already exist — if yes, ask before overwriting
+2. Check if `.claude/agents/`, `.claude/commands/`, `SHARED_CONTEXT.md`, or `dashboard.html` already exist — if yes, ask before overwriting
 3. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/`
 4. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/`
 5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
-6. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-7. Confirm completion with file list and a quick "try this next" prompt
+6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (this seeds the file with a sample state so the user sees something immediately; the orchestrator overwrites it at the first Stop Gate)
+7. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
+8. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 13 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md into <project>/
+Installed 13 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md + dashboard.html into <project>/
 
 Try this:
-"/audit-pipeline" — confirm the project is set up correctly, then
-"Use the orchestrator agent — I want to <outcome>."
-(Orchestrator defaults to Alignment Loop: it asks you 1-2 questions and proposes the smallest next move.)
+1. Open dashboard.html in the Claude Preview MCP panel — you'll see a seeded sample state. The orchestrator overwrites it with real state at every Stop Gate.
+2. "/audit-pipeline" — confirm the project is set up correctly.
+3. "Use the orchestrator agent — I want to <outcome>." (Alignment Loop default — orchestrator asks you 1-2 questions and proposes the smallest next move. Dashboard updates on every Stop Gate.)
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
@@ -61,6 +62,7 @@ Quick reference:
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
 - Commands: /audit-pipeline
+- Visual: dashboard.html (auto-regenerated at every Stop Gate)
 ```
 
 Done. Don't over-explain.
@@ -118,16 +120,17 @@ Steps:
 3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
 5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
-6. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2 markers ("Executive Summary", "Token Budget", "Research-First Gate"), tell the user the v2 sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
-7. Do **not** touch `README.md`.
-8. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
+6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; this resets the seed sample — the orchestrator will overwrite it again at the first Stop Gate). If `dashboard.html` is missing from the project, this also brings v3.1 to a pre-v3.1 install.
+7. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
+8. Do **not** touch `README.md`.
+9. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
 
 Expected output:
 
 ```
-Refreshed 10 agent files + /audit-pipeline command in <project>/.claude/
+Refreshed 13 agent files + /audit-pipeline command + dashboard.html in <project>/
 Preserved: SHARED_CONTEXT.md, README.md
-SHARED_CONTEXT.md v2 sections check: <present | MISSING — see below>
+SHARED_CONTEXT.md v2/v3 sections check: <present | MISSING — see below>
 
 Templates source: ~/.claude/skills/agent-harry/
 Latest changes: <one-line from CHANGELOG.md top entry>
@@ -187,9 +190,12 @@ templates/
 ├── SHARED_CONTEXT.md           ← v2: Executive Summary, Token Budget, Research-First Gate
 │                                 v2.1: Always-On Stop Gate
 │                                 v3: PM Skills Map
+│                                 v3.1: Dashboard companion spec
+├── dashboard.html              ← v3.1: visual Stop Gate companion, rendered in
+│                                       Claude Preview MCP panel
 └── .claude/
     ├── agents/
-    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; Waterfall fallback
+    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; v3.1: writes dashboard.html
     │   ├── critique-partner.md      (opus)
     │   ├── discovery-researcher.md  (sonnet)
     │   ├── competitive-analyst.md   (sonnet)

@@ -153,6 +153,20 @@ There is no implicit cap on revision rounds. The user decides when an output is 
 - Asking only "approve?" without showing the TL;DR — the user shouldn't have to open the handoff file to decide
 - Treating `revise` as `cancel` — revise means iterate on this step, not skip it
 
+### Dashboard companion (v3.1)
+
+In addition to the chat TL;DR, the orchestrator writes `<project-root>/dashboard.html` at every Stop Gate. This is a static, self-contained HTML file that renders the same Executive Summary visually — designed to be viewed in the Claude Preview MCP panel.
+
+Architecture:
+
+- **Read-only** — command chips show the literal text the user types in chat (`y / revise <delta> / pivot — <X> / grill me / cancel`). Clicks do nothing; chat is still where the user inputs decisions. Silence is still not consent.
+- **Regenerated at every Stop Gate** — no JavaScript, no polling, no server. Each Stop Gate, orchestrator overwrites the file with current state baked in as inline HTML. Auto-refreshes in the preview panel.
+- **Layout** — top bar with project + cost meter (load-bearing — turns yellow at $1.50, red at $2.50) · compressed history breadcrumb · BIG NOW card (status, agent, mode, phase pill, 4 stat cells, 3-bullet TL;DR, next-move suggestion, 5 command chips) · suggested-next strip · footer.
+- **Single-focus per turn** — matches the Alignment Loop philosophy. One thing is happening NOW; past is compressed context; future is a non-binding preview.
+- **Graceful degrade** — if the file doesn't exist (e.g. pre-v3.1 install that hasn't been refreshed), orchestrator skips the render silently and prints the TL;DR in chat as before.
+
+The dashboard does NOT replace chat. Chat is the source of truth, the audit trail, and the input surface. The dashboard is a visual surface to *read* the TL;DR more easily.
+
 ---
 
 ## Research-First Gate (Hard Block)
