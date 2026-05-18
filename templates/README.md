@@ -27,18 +27,53 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 
 ## Agents (10 total)
 
-| Agent | Phase | Voice | Primary MCPs |
-|---|---|---|---|
-| `orchestrator` | Meta | Calm strategist | All |
-| `discovery-researcher` | Discovery | Curious, evidence-first | Notion, Web |
-| `competitive-analyst` | Discovery | Pattern detective | Mobbin, Web, Figma |
-| `product-positioner` | Define | Sharp, opinionated | Notion, Web |
-| `feature-prioritizer` | Define | Tradeoff-honest PM | Notion |
-| `ideation-facilitator` | Define | Generative, divergent | Mobbin, Notion |
-| `interaction-designer` | Deliver | Craft-obsessed senior | Figma, Mobbin |
-| `usability-tester` | Deliver | Skeptical scientist | Notion |
-| `handoff-engineer` | Deliver | Systems-thinker | Figma, Notion |
-| `critique-partner` | Cross-cutting | Devil's advocate | All |
+| Agent | Phase | Voice | Model | Primary MCPs |
+|---|---|---|---|---|
+| `orchestrator` | Meta | Calm strategist | opus | All |
+| `critique-partner` | Cross-cutting | Devil's advocate | opus | All |
+| `discovery-researcher` | Discovery | Curious, evidence-first | sonnet | Notion, Web |
+| `competitive-analyst` | Discovery | Pattern detective | sonnet | Mobbin, Web, Figma |
+| `product-positioner` | Define | Sharp, opinionated | sonnet | Notion, Web |
+| `feature-prioritizer` | Define | Tradeoff-honest PM | sonnet | Notion |
+| `ideation-facilitator` | Define | Generative, divergent | sonnet | Mobbin, Notion |
+| `interaction-designer` | Deliver | Craft-obsessed senior | sonnet | Figma, Mobbin |
+| `usability-tester` | Deliver | Skeptical scientist | sonnet | Notion |
+| `handoff-engineer` | Deliver | Systems-thinker | sonnet | Figma, Notion |
+
+Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 8 phase agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
+
+## Slash Commands
+
+| Command | Purpose |
+|---|---|
+| `/audit-pipeline` | Reports which phases have artifacts and whether the **Research-First Gate** is PASS / BLOCK / OPTED-OUT. Run before any Deliver-phase work or whenever a session shifts toward "let's prototype / build / design". |
+
+## Always-On Stop Gate
+
+Every sub-agent run ends with a mandatory user checkpoint. The orchestrator (and any directly-invoked agent) presents the Executive Summary, then stops and waits for one of:
+
+- `y` — proceed to the next planned step
+- `revise <delta>` — iterate the same step with the revision delta
+- `grill me` — invoke the `grill-me` skill to stress-test before locking in
+- `cancel` — halt the pipeline
+
+**This gate fires even when bypass-permissions mode is enabled.** Permission mode controls tool authorization; the Stop Gate is a product-design discipline. Silence is not consent — if no reply comes, the orchestrator re-asks rather than assuming approval.
+
+## Executive Summary & Token Budget
+
+Every agent handoff starts with a **stat-card table + 3-bullet TL;DR + next-step line**. This is the human-readable summary. The long-form analysis below is for downstream AI handoff. You read the top; the next agent reads the bottom.
+
+Hard output caps (per `SHARED_CONTEXT.md`):
+
+| Section | Cap |
+|---|---|
+| Insights / synthesis | 6 |
+| Gaps | 4 |
+| Critique concerns | 4 |
+| Scoring table rows | 10 |
+| Open questions | 5 |
+
+Orchestrator surfaces estimated token cost upfront and refuses any plan that exceeds $3 USD without explicit approval.
 
 ## Two Modes per Agent
 
@@ -127,16 +162,19 @@ Agents are **framework-agnostic but context-aware**. They will draw from Double 
 ```
 product-designer-agents/
 ├── README.md                          ← you are here
-├── SHARED_CONTEXT.md                  ← handoff schema + conventions
-└── .claude/agents/
-    ├── orchestrator.md
-    ├── discovery-researcher.md
-    ├── competitive-analyst.md
-    ├── product-positioner.md
-    ├── feature-prioritizer.md
-    ├── ideation-facilitator.md
-    ├── interaction-designer.md
-    ├── usability-tester.md
-    ├── handoff-engineer.md
-    └── critique-partner.md
+├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate
+└── .claude/
+    ├── agents/
+    │   ├── orchestrator.md          (opus)
+    │   ├── critique-partner.md      (opus)
+    │   ├── discovery-researcher.md  (sonnet)
+    │   ├── competitive-analyst.md   (sonnet)
+    │   ├── product-positioner.md    (sonnet)
+    │   ├── feature-prioritizer.md   (sonnet)
+    │   ├── ideation-facilitator.md  (sonnet)
+    │   ├── interaction-designer.md  (sonnet)
+    │   ├── usability-tester.md      (sonnet)
+    │   └── handoff-engineer.md      (sonnet)
+    └── commands/
+        └── audit-pipeline.md        ← /audit-pipeline
 ```

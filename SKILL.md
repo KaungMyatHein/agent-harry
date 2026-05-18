@@ -37,25 +37,28 @@ Use when the user wants the standard system without project-specific tuning.
 
 Steps:
 1. Confirm the project root directory with the user (or use cwd if obvious)
-2. Check if `.claude/agents/` or `SHARED_CONTEXT.md` already exist — if yes, ask before overwriting
+2. Check if `.claude/agents/`, `.claude/commands/`, or `SHARED_CONTEXT.md` already exist — if yes, ask before overwriting
 3. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/`
-4. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
-5. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-6. Confirm completion with file list and a quick "try this next" prompt
+4. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/`
+5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
+6. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
+7. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 10 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 10 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md into <project>/
 
 Try this:
+"/audit-pipeline" — confirm the project is set up correctly, then
 "Use the orchestrator agent to plan a discovery cycle for <feature>."
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
 - Define: product-positioner, feature-prioritizer, ideation-facilitator
-- Deliver: interaction-designer, usability-tester, handoff-engineer
-- Meta: orchestrator, critique-partner
+- Deliver: interaction-designer, usability-tester, handoff-engineer (gated by Research-First check)
+- Meta: orchestrator (opus), critique-partner (opus)
+- Commands: /audit-pipeline
 ```
 
 Done. Don't over-explain.
@@ -102,22 +105,27 @@ Try this:
 
 Use when the user has already installed Agent Harry into a project, then later pulled an updated version of the skill from GitHub, and now wants the project's local agents updated to the new templates.
 
-**Refresh policy: overwrite only the 10 agent files; never touch SHARED_CONTEXT.md or README.md.** SHARED_CONTEXT is project-customized by design — users edit it. README may have project-specific additions. Agent files are canonical and rarely edited locally.
+**Refresh policy: overwrite only the 10 agent files and the `.claude/commands/` folder; never touch SHARED_CONTEXT.md or README.md.** SHARED_CONTEXT is project-customized by design — users edit it. README may have project-specific additions. Agent + command files are canonical and rarely edited locally.
+
+**Important — SHARED_CONTEXT.md note:** v2 introduced the Executive Summary requirement, Token Budget rules, and Research-First Gate into `SHARED_CONTEXT.md`. If the user has an old (pre-v2) SHARED_CONTEXT.md, refresh does NOT overwrite it — but warn them so they can manually merge the new sections, or opt in to a SHARED_CONTEXT.md refresh.
 
 Steps:
 
 1. Confirm the project root with the user (or use cwd).
 2. Check that `<project>/.claude/agents/` exists. If not, this isn't an installed Agent Harry project — suggest running Install instead.
-3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/` to see if any agent files have uncommitted local modifications. If yes, list them and ask: *"These agent files have local edits — overwrite anyway?"* Don't proceed without confirmation.
+3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
-5. Do **not** touch `SHARED_CONTEXT.md` or `README.md`.
-6. Report which agent files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
+5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
+6. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2 markers ("Executive Summary", "Token Budget", "Research-First Gate"), tell the user the v2 sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
+7. Do **not** touch `README.md`.
+8. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
 
 Expected output:
 
 ```
-Refreshed 10 agent files in <project>/.claude/agents/
+Refreshed 10 agent files + /audit-pipeline command in <project>/.claude/
 Preserved: SHARED_CONTEXT.md, README.md
+SHARED_CONTEXT.md v2 sections check: <present | MISSING — see below>
 
 Templates source: ~/.claude/skills/agent-harry/
 Latest changes: <one-line from CHANGELOG.md top entry>
@@ -174,21 +182,26 @@ All bundled templates live in `templates/` next to this SKILL.md:
 ```
 templates/
 ├── README.md
-├── SHARED_CONTEXT.md
-└── .claude/agents/
-    ├── orchestrator.md
-    ├── discovery-researcher.md
-    ├── competitive-analyst.md
-    ├── product-positioner.md
-    ├── feature-prioritizer.md
-    ├── ideation-facilitator.md
-    ├── interaction-designer.md
-    ├── usability-tester.md
-    ├── handoff-engineer.md
-    └── critique-partner.md
+├── SHARED_CONTEXT.md           ← v2: includes Executive Summary schema, Token Budget rules, Research-First Gate
+└── .claude/
+    ├── agents/
+    │   ├── orchestrator.md          (opus)
+    │   ├── critique-partner.md      (opus)
+    │   ├── discovery-researcher.md  (sonnet)
+    │   ├── competitive-analyst.md   (sonnet)
+    │   ├── product-positioner.md    (sonnet)
+    │   ├── feature-prioritizer.md   (sonnet)
+    │   ├── ideation-facilitator.md  (sonnet)
+    │   ├── interaction-designer.md  (sonnet)
+    │   ├── usability-tester.md      (sonnet)
+    │   └── handoff-engineer.md      (sonnet)
+    └── commands/
+        └── audit-pipeline.md   ← /audit-pipeline — enforces Research-First Gate
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.
+
+**v2 token-cost design:** Opus only on orchestrator + critique-partner. The other 8 agents run on Sonnet. This is the primary lever that brings a full pipeline run from ~$8 down to ~$1–3. Don't override per-agent without a logged reason in the handoff.
 
 ---
 
