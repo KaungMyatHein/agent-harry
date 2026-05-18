@@ -265,14 +265,15 @@
 
     .ag-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(240px, auto);
+      gap: 14px;
       margin-top: 72px;
     }
     .ag-card {
       background: var(--canvas);
       border: 1px solid var(--hairline);
-      border-radius: 18px;
+      border-radius: 24px;
       overflow: hidden;
       transition: transform .25s cubic-bezier(0.22, 1, 0.36, 1), border-color .2s ease, box-shadow .25s ease;
       display: flex;
@@ -281,10 +282,9 @@
     .ag-card:hover {
       transform: translateY(-4px);
       border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
-      box-shadow: 0 20px 44px -18px color-mix(in srgb, var(--c) 28%, rgba(0, 0, 0, 0.14));
+      box-shadow: 0 22px 48px -20px color-mix(in srgb, var(--c) 28%, rgba(0, 0, 0, 0.14));
     }
     .ag-stage {
-      aspect-ratio: 5 / 4;
       position: relative;
       overflow: hidden;
       background:
@@ -296,6 +296,8 @@
       align-items: center;
       justify-content: center;
       transition: background .3s ease;
+      flex: 1;
+      min-height: 140px;
     }
     .ag-stage::after {
       content: '';
@@ -312,8 +314,8 @@
           white 100%);
     }
     .ag-stage svg {
-      width: 65%;
-      max-width: 170px;
+      width: 58%;
+      max-width: 140px;
       height: auto;
       position: relative;
       z-index: 1;
@@ -322,7 +324,7 @@
     }
     .ag-card:hover .ag-stage svg { transform: scale(1.04); }
     .ag-body {
-      padding: 18px 22px 22px;
+      padding: 20px 22px 22px;
     }
     .ag-phase {
       font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
@@ -346,6 +348,63 @@
       color: color-mix(in srgb, var(--c) 50%, var(--ink-muted-80));
       margin-top: 4px;
       letter-spacing: -0.224px;
+    }
+
+    /* Bento featured tiles */
+    .ag-feature-orch {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .ag-feature-orch .ag-stage { min-height: 280px; }
+    .ag-feature-orch .ag-stage svg { width: 46%; max-width: 240px; }
+    .ag-feature-orch .ag-body { padding: 32px 36px 36px; }
+    .ag-feature-orch .ag-name {
+      font-size: clamp(28px, 3.2vw, 40px);
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      margin-top: 10px;
+    }
+    .ag-feature-orch .ag-role { font-size: 18px; margin-top: 10px; }
+    .ag-feature-orch .ag-desc {
+      font-size: 17px;
+      line-height: 1.5;
+      color: var(--ink-muted-80);
+      margin-top: 18px;
+      max-width: 480px;
+      letter-spacing: -0.011em;
+    }
+
+    .ag-feature-crit {
+      grid-column: span 4;
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .ag-feature-crit .ag-stage {
+      flex: 0 0 38%;
+      min-height: 260px;
+    }
+    .ag-feature-crit .ag-stage svg { width: 50%; max-width: 180px; }
+    .ag-feature-crit .ag-body {
+      flex: 1;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .ag-feature-crit .ag-name {
+      font-size: clamp(28px, 3.2vw, 40px);
+      letter-spacing: -0.025em;
+      line-height: 1.08;
+      margin-top: 10px;
+    }
+    .ag-feature-crit .ag-role { font-size: 18px; margin-top: 10px; }
+    .ag-feature-crit .ag-desc {
+      font-size: 17px;
+      line-height: 1.5;
+      color: var(--ink-muted-80);
+      margin-top: 18px;
+      max-width: 600px;
+      letter-spacing: -0.011em;
     }
 
     /* ---------- Flow diagram ---------- */
@@ -535,6 +594,11 @@
     @media (max-width: 1024px) {
       .footer-top { grid-template-columns: 1fr 1fr; }
     }
+    @media (min-width: 834px) and (max-width: 1023px) {
+      .ag-grid { grid-template-columns: repeat(3, 1fr); }
+      .ag-feature-orch { grid-column: span 2; grid-row: span 2; }
+      .ag-feature-crit { grid-column: span 3; }
+    }
     @media (max-width: 833px) {
       .tile { padding: 72px 24px; }
       .hero { padding: 80px 24px 72px; }
@@ -549,10 +613,18 @@
       .nav ul { gap: 18px; }
       .stat-num { font-size: 44px; }
       .stats { gap: 40px; padding: 48px 24px; }
-      .ag-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .ag-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; grid-auto-rows: auto; }
+      .ag-feature-orch { grid-column: span 2; grid-row: span 1; }
+      .ag-feature-orch .ag-stage { min-height: 220px; }
+      .ag-feature-orch .ag-body { padding: 24px 26px 28px; }
+      .ag-feature-crit { grid-column: span 2; flex-direction: column; }
+      .ag-feature-crit .ag-stage { flex: none; min-height: 200px; }
+      .ag-feature-crit .ag-body { padding: 24px 26px 28px; }
     }
     @media (max-width: 480px) {
       .ag-grid { grid-template-columns: 1fr; }
+      .ag-feature-orch { grid-column: span 1; }
+      .ag-feature-crit { grid-column: span 1; }
     }
     @media (max-width: 480px) {
       .hero h1 { font-size: 36px; }
@@ -709,7 +781,7 @@
 
       <div class="ag-grid">
 
-        <article class="ag-card" style="--c: var(--c-orchestrator);">
+        <article class="ag-card ag-feature-orch" style="--c: var(--c-orchestrator);">
           <div class="ag-stage">
             <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#0066cc" fill="#0066cc" aria-hidden="true">
               <g opacity="0.32" stroke-width="1" fill="none">
@@ -730,9 +802,10 @@
             </svg>
           </div>
           <div class="ag-body">
-            <div class="ag-phase">Meta</div>
-            <div class="ag-name">orchestrator</div>
-            <div class="ag-role">The conductor.</div>
+            <div class="ag-phase">Meta · Conductor</div>
+            <div class="ag-name">Orchestrator</div>
+            <div class="ag-role">Calm strategist.</div>
+            <p class="ag-desc">Decomposes the goal, sequences sub-agents, inserts approval gates, and synthesizes the handoffs into a summary you can act on.</p>
           </div>
         </article>
 
@@ -882,7 +955,7 @@
           </div>
         </article>
 
-        <article class="ag-card" style="--c: var(--c-critique);">
+        <article class="ag-card ag-feature-crit" style="--c: var(--c-critique);">
           <div class="ag-stage">
             <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" stroke="#dc2626" fill="#dc2626" aria-hidden="true">
               <circle cx="100" cy="80" r="52" stroke-width="2" fill="none" opacity="0.4"/>
@@ -893,9 +966,10 @@
             </svg>
           </div>
           <div class="ag-body">
-            <div class="ag-phase">Cross-cutting</div>
-            <div class="ag-name">critique-partner</div>
-            <div class="ag-role">The contrarian.</div>
+            <div class="ag-phase">Cross-cutting · Always-on</div>
+            <div class="ag-name">Critique Partner</div>
+            <div class="ag-role">The contrarian — devil's advocate.</div>
+            <p class="ag-desc">Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Never asks "what do you want?" — always proposes a sharper alternative.</p>
           </div>
         </article>
 
