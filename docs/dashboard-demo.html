@@ -314,6 +314,171 @@
     .crumb-mode { color: var(--ink-faint); font-size: 10.5px; }
     .crumb-arrow { color: var(--ink-faint); font-size: 11px; user-select: none; }
 
+    /* ---------- Decision Data panel (v3.3) ---------- */
+    .now-decision {
+      padding: 18px 24px 22px;
+      border-bottom: 1px solid var(--divider-soft);
+      background: var(--canvas);
+    }
+    .now-decision-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.8px; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* Type 1: insight list */
+    .decision-insights { display: flex; flex-direction: column; gap: 10px; }
+    .decision-insight {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--parchment);
+      border-radius: 10px;
+    }
+    .decision-insight-num {
+      width: 22px; height: 22px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background: var(--c-discovery);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      margin-top: 1px;
+    }
+    .decision-insight-body { flex: 1; min-width: 0; }
+    .decision-insight-text {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.42;
+      letter-spacing: -0.12px;
+    }
+    .decision-insight-evidence {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      font-style: italic;
+      margin-top: 4px;
+      letter-spacing: -0.12px;
+      line-height: 1.42;
+    }
+    .decision-conf {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-left: 6px;
+      vertical-align: 2px;
+    }
+    .decision-conf.high { background: rgba(22,163,74,0.15); color: var(--status-done); }
+    .decision-conf.medium { background: rgba(217,119,6,0.15); color: var(--c-positioner); }
+    .decision-conf.low { background: rgba(220,38,38,0.15); color: var(--c-critique); }
+
+    /* Type 2: scoring table */
+    .decision-table-wrap { overflow-x: auto; }
+    .decision-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .decision-table th {
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .decision-table th.num { text-align: right; }
+    .decision-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--divider-soft);
+      vertical-align: top;
+      font-size: 13px;
+    }
+    .decision-table td.num { text-align: right; font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace; font-size: 12.5px; }
+    .decision-table tr:last-child td { border-bottom: 0; }
+    .decision-table td .delta-up { color: var(--status-done); font-weight: 600; }
+    .decision-table td .delta-down { color: var(--c-critique); font-weight: 600; }
+    .decision-table tr.dropped td { color: var(--ink-faint); }
+    .decision-table tr.dropped td.label { text-decoration: line-through; }
+    .decision-table .pill-in {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      background: rgba(22,163,74,0.15); color: var(--status-done);
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .decision-table .pill-out {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      background: var(--parchment); color: var(--ink-faint);
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .decision-table .pill-open {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      background: rgba(217,119,6,0.15); color: var(--c-positioner);
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* Type 3: highlighted callout (strategist's "the bet", launch's beachhead) */
+    .decision-callout {
+      padding: 18px 22px;
+      background: linear-gradient(135deg, #ecfeff 0%, #ffffff 100%);
+      border-left: 3px solid var(--c-strategist);
+      border-radius: 0 12px 12px 0;
+    }
+    .decision-callout.launch {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+      border-left-color: var(--c-launch);
+    }
+    .decision-callout-quote {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.35;
+      letter-spacing: -0.374px;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .decision-callout-quote em { font-style: italic; color: var(--c-strategist); font-weight: 600; }
+    .decision-callout.launch .decision-callout-quote em { color: var(--c-launch); }
+    .decision-callout-meta {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+    .decision-callout-meta strong { color: var(--ink); font-weight: 600; }
+    .decision-callout-meta em { font-style: italic; color: var(--ink-faint); }
+
+    /* Type 4: metric layers (pm-metrics-architect) */
+    .decision-metrics { display: flex; flex-direction: column; gap: 8px; }
+    .decision-metric-row {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--parchment);
+      border-radius: 9px;
+    }
+    .decision-metric-layer {
+      flex-shrink: 0;
+      width: 96px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding-top: 3px;
+    }
+    .decision-metric-layer.northstar { color: var(--c-metrics); }
+    .decision-metric-layer.counter { color: var(--c-critique); }
+    .decision-metric-body { flex: 1; font-size: 14px; line-height: 1.4; letter-spacing: -0.12px; }
+    .decision-metric-body strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+    .decision-metric-body small { display: block; color: var(--ink-muted); font-size: 12px; margin-top: 3px; }
+
     .first-banner {
       background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
       border: 1px solid #bfdbfe;
@@ -611,15 +776,16 @@
 
     <nav class="state-nav" id="stateNav">
       <button class="state-btn active" data-state="first"><span class="state-num">01</span>First Stop Gate</button>
-      <button class="state-btn" data-state="mid"><span class="state-num">02</span>Mid-pipeline</button>
-      <button class="state-btn" data-state="near-budget"><span class="state-num">03</span>Near budget</button>
-      <button class="state-btn" data-state="over-budget"><span class="state-num">04</span>Over budget</button>
-      <button class="state-btn" data-state="cancelled"><span class="state-num">05</span>Cancelled</button>
-      <button class="state-btn" data-state="complete"><span class="state-num">06</span>Complete</button>
-      <button class="state-btn" data-state="pm-strategist"><span class="state-num">07</span>PM Strategist</button>
-      <button class="state-btn" data-state="pm-launch"><span class="state-num">08</span>PM Launch Architect</button>
-      <button class="state-btn" data-state="pm-metrics"><span class="state-num">09</span>PM Metrics Architect</button>
-      <button class="state-btn" data-state="revise-open"><span class="state-num">10</span>Revise input open</button>
+      <button class="state-btn" data-state="post-discovery"><span class="state-num">02</span>After Discovery</button>
+      <button class="state-btn" data-state="mid"><span class="state-num">03</span>Mid-pipeline</button>
+      <button class="state-btn" data-state="near-budget"><span class="state-num">04</span>Near budget</button>
+      <button class="state-btn" data-state="over-budget"><span class="state-num">05</span>Over budget</button>
+      <button class="state-btn" data-state="cancelled"><span class="state-num">06</span>Cancelled</button>
+      <button class="state-btn" data-state="complete"><span class="state-num">07</span>Complete</button>
+      <button class="state-btn" data-state="pm-strategist"><span class="state-num">08</span>PM Strategist</button>
+      <button class="state-btn" data-state="pm-launch"><span class="state-num">09</span>PM Launch Architect</button>
+      <button class="state-btn" data-state="pm-metrics"><span class="state-num">10</span>PM Metrics Architect</button>
+      <button class="state-btn" data-state="revise-open"><span class="state-num">11</span>Revise input open</button>
     </nav>
 
     <section class="stage-wrap">
@@ -684,6 +850,68 @@
         },
       },
 
+      'post-discovery': {
+        project: 'POS Checkout MVP',
+        stats: { steps: 1, elapsed: '8 min', cost: '$0.12', costClass: 'budget-ok' },
+        history: { crumbs: [{ agent: 'discovery-researcher', mode: 'Mode B' }] },
+        now: {
+          status: 'awaiting',
+          eyebrow: 'Now · Awaiting your input',
+          agent: 'discovery-researcher',
+          mode: 'Mode B',
+          phase: { name: 'Discovery', color: 'var(--c-discovery)' },
+        },
+        statCells: [
+          { label: 'Confidence', value: 'high', cls: 'confidence-high' },
+          { label: 'Sources', value: '12 interviews · 90d GA4' },
+          { label: 'Insights', value: '5 themes + 3 gaps' },
+          { label: 'Step cost', value: '$0.12' },
+        ],
+        decisionData: {
+          type: 'insights',
+          label: 'Top 5 insights · with evidence + confidence',
+          items: [
+            {
+              text: '<strong>Cart abandonment peaks at the "verify phone" step</strong>',
+              evidence: '"I gave up because the SMS never came" — 6 of 12 interviews · GA4 funnel drop 41% at that step',
+              conf: 'high',
+            },
+            {
+              text: '<strong>Mobile breakpoint accounts for 60% of friction events</strong>',
+              evidence: '1,847 rage-clicks captured in Clarity across 90 days, 78% on viewports &lt;430px',
+              conf: 'high',
+            },
+            {
+              text: '<strong>Guest-checkout interest is implicit, not stated</strong>',
+              evidence: '8 of 12 users abandoned at the "sign up to continue" gate; only 1 verbally asked for guest mode',
+              conf: 'medium',
+            },
+            {
+              text: '<strong>COD merchants prefer manual cash reconciliation</strong>',
+              evidence: '"I don\'t trust the app to count it" — 4 of 9 merchant interviews',
+              conf: 'medium',
+            },
+            {
+              text: '<strong>Power users want order-history filtering</strong>',
+              evidence: 'Single Reddit thread, 38 upvotes — no other surface; flagged as anecdotal',
+              conf: 'low',
+            },
+          ],
+        },
+        tldrLabel: 'TL;DR · 3 things to decide',
+        tldr: [
+          { html: '<strong>Top 2 insights are high-confidence</strong> — phone-verify drop-off and mobile-breakpoint friction. Both have triangulated qual + quant evidence.' },
+          { html: '<strong>Guest-checkout signal is real but indirect</strong> — users vote with feet, not with words. Treat as strong hypothesis going into prioritization, not a consensus ask.' },
+          { html: '<strong>Open question</strong> — firm up the medium-confidence findings with a quick survey first, or go straight to prioritization? <em>Default = straight to prioritization; <code>revise — add survey</code> if you want to firm up first.</em>', open_q: true },
+        ],
+        suggest: '<span class="suggest-label">Next move suggested</span> <code>feature-prioritizer</code> Mode B — re-score the existing backlog against these 5 insights. Expect "guest checkout" to jump significantly.',
+        chips: { show: true, hint: 'proceed to prioritization' },
+        annotation: {
+          title: 'After Discovery — research evidence inline (v3.3)',
+          body: '<p>This is the new <strong>v3.3 Decision Data panel</strong> in action. Between the stat cells and the TL;DR, the dashboard now shows the actual <strong>5 insights with verbatim evidence and per-insight confidence</strong>.</p><ul><li>Before v3.3, you would\'ve had to open <code>./design-workspace/&lt;project&gt;/discovery/...md</code> to see these. Now they\'re visible inline.</li><li>Each insight gets a confidence chip (<code>high</code>/<code>medium</code>/<code>low</code>) — visual cue for which findings drive the next decision.</li><li>The TL;DR below now <em>references</em> the panel ("Top 2 insights are high-confidence") instead of duplicating it.</li><li>The MD file in <code>./design-workspace/</code> still has the full methodology, sample bias audit, and gap map — the dashboard surfaces decision-critical only.</li></ul>',
+        },
+      },
+
       mid: {
         project: 'POS Checkout MVP',
         stats: { steps: 4, elapsed: '18 min', cost: '$0.42', costClass: 'budget-ok' },
@@ -708,6 +936,68 @@
           { label: 'Outputs', value: '8 re-scored' },
           { label: 'Step cost', value: '$0.04' },
         ],
+        decisionData: {
+          type: 'table',
+          label: 'Re-scored backlog · top 6 with deltas + MVP call',
+          cols: [
+            { label: 'Feature' },
+            { label: 'Reach', num: true },
+            { label: 'Impact', num: true },
+            { label: 'Effort', num: true },
+            { label: 'RICE', num: true },
+            { label: 'MVP' },
+          ],
+          rows: [
+            { cells: [
+              { html: '<strong>Guest checkout</strong>' },
+              { num: true, html: '9' },
+              { num: true, html: '8' },
+              { num: true, html: '3' },
+              { num: true, html: '76 <span class="delta-up">↑</span>' },
+              { html: '<span class="pill-in">in</span>' },
+            ]},
+            { cells: [
+              { html: 'Phone-verify retry' },
+              { num: true, html: '7' },
+              { num: true, html: '7' },
+              { num: true, html: '2' },
+              { num: true, html: '65 <span class="delta-up">↑</span>' },
+              { html: '<span class="pill-in">in</span>' },
+            ]},
+            { cells: [
+              { html: 'Cash reconciliation flow' },
+              { num: true, html: '5' },
+              { num: true, html: '9' },
+              { num: true, html: '5' },
+              { num: true, html: '32' },
+              { html: '<span class="pill-in">in</span>' },
+            ]},
+            { cells: [
+              { html: 'Apple Pay' },
+              { num: true, html: '8' },
+              { num: true, html: '6' },
+              { num: true, html: '8?' },
+              { num: true, html: '18 ?' },
+              { html: '<span class="pill-open">open</span>' },
+            ]},
+            { cells: [
+              { html: 'Order history filter' },
+              { num: true, html: '3' },
+              { num: true, html: '4' },
+              { num: true, html: '4' },
+              { num: true, html: '9' },
+              { html: '<span class="pill-out">out</span>' },
+            ]},
+            { dropped: true, cells: [
+              { html: 'Wishlist sync', cls: 'label' },
+              { num: true, html: '2' },
+              { num: true, html: '3' },
+              { num: true, html: '6' },
+              { num: true, html: '0.4 <span class="delta-down">↓</span>' },
+              { html: '<span class="pill-out">dropped</span>' },
+            ]},
+          ],
+        },
         tldrLabel: 'TL;DR · 3 things to know',
         tldr: [
           { html: '<strong>"Guest checkout" jumped from #6 to #2</strong> — reach + impact both rose after the Discovery audit reframed abandonment data. <em>RICE 38 → 76.</em>' },
@@ -717,8 +1007,8 @@
         suggest: '<span class="suggest-label">Next move suggested</span> <code>pm-strategist</code> Mode A → sharpen a value-prop for the guest-checkout wedge, so interaction-designer has a clear narrative before screens.',
         chips: { show: true, hint: 'proceed' },
         annotation: {
-          title: 'Mid-pipeline — the steady state',
-          body: '<p>This is what most of the dashboard\'s life looks like. <strong>History strip populated</strong>, current step prominent, suggested-next preview hinting at the orchestrator\'s next move.</p><ul><li>Cumulative cost is $0.42 (still green) after 4 substantive steps — well within the $3 ceiling.</li><li>The TL;DR\'s 3rd bullet has class <code>open-q</code> (orange dot) — it signals a question that should affect your <code>y / revise</code> choice.</li><li>The suggested-next strip is visible but not committing — orchestrator may re-propose based on what you say.</li></ul>',
+          title: 'Mid-pipeline + scoring table inline (v3.3)',
+          body: '<p>The Decision Data panel now shows the <strong>scoring table</strong> directly — RICE numbers, deltas vs prior scoring (green ↑ / red ↓), and the MVP in/out/open call for each item.</p><ul><li>The dropped row uses muted color + line-through label, so you see <em>what didn\'t make it</em> without it being noisy.</li><li>The "open" pill on Apple Pay matches the open-question bullet in the TL;DR below — the dashboard is internally consistent.</li><li>You can make a <code>y</code>/<code>revise</code> call without opening the MD file. Full scoring rationale and methodology still live in <code>./design-workspace/&lt;project&gt;/define/feature-prioritizer_....md</code>.</li></ul>',
         },
       },
 
@@ -934,6 +1224,12 @@
           { label: 'Skill invoked', value: 'pm-product-strategy:strategy' },
           { label: 'Step cost', value: '$0.12' },
         ],
+        decisionData: {
+          type: 'callout',
+          label: 'The bet · one sentence + falsification + tradeoffs',
+          quote: 'We win by being the <em>fastest</em> mobile checkout in Southeast Asia for cash-on-delivery merchants — not by feature breadth. Differentiator: 3-tap purchase, sub-1.5s perceived latency.',
+          meta: '<strong>Falsifiable:</strong> if 3-tap doesn\'t lift conversion ≥18% vs baseline by week 6, the bet fails and we re-scope.<br><br><strong>Tradeoffs we accept:</strong> Card-first merchants are explicitly out of scope. "Fastest" requires deep iOS/Android perf investment. Latency goal locks us out of SDK-heavy plugins (we\'ll build native instead). <em>Pricing strategy (per-transaction vs SaaS) is parked — routing to a follow-up pm-strategist call.</em>',
+        },
         tldrLabel: 'TL;DR · The bet, in one sentence + 2 supporting findings',
         tldr: [
           { html: '<strong>The bet:</strong> We win by being the <em>fastest</em> mobile checkout in Southeast Asia for cash-on-delivery merchants — not by feature breadth. Differentiator: 3-tap purchase, sub-1.5s perceived latency.' },
@@ -975,6 +1271,13 @@
           { label: 'ICP fit', value: '14 accounts named' },
           { label: 'Step cost', value: '$0.16' },
         ],
+        decisionData: {
+          type: 'callout',
+          flavor: 'launch',
+          label: 'Beachhead + ICP · with named accounts',
+          quote: 'Beachhead: <em>cash-on-delivery F&B merchants in Yangon</em> · 300–800 daily orders · mobile-only. Disqualifies: warehouse retail, &gt;5k orders/day, card-first.',
+          meta: '<strong>Named accounts (14 total):</strong> Pomelo Bakery · Ohnpyae Coffee · MyaMya Burger · Sweet Dreams Co · Yangon Daily · Coffee Circle · Burma Bites · 7 more in handoff doc.<br><br><strong>Motion:</strong> sales-led with PLG signup — merchants try free for 7 days; AE follows up on day 5. Sales-led only because COD ops requires human-touch onboarding (cash-handling SOPs).<br><br><strong>Channels (max 2 at launch):</strong> in-person merchant visits + LINE OA outreach.<br><br><strong>Kill-switch:</strong> if &lt;3 named accounts convert by week 4, halt and re-scope segment. <em>This is non-negotiable.</em>',
+        },
         tldrLabel: 'TL;DR · Beachhead + ICP + motion',
         tldr: [
           { html: '<strong>Beachhead = cash-on-delivery F&amp;B merchants in Yangon</strong> (300-800 daily orders, mobile-only). Can name 14 specific accounts (e.g. Pomelo Bakery, Ohnpyae Coffee). Disqualifies: warehouse retail, &gt;5k orders/day, card-first.' },
@@ -1015,6 +1318,34 @@
           { label: 'Counter-metric', value: 'Support-ticket rate' },
           { label: 'Step cost', value: '$0.12' },
         ],
+        decisionData: {
+          type: 'metrics',
+          label: '4-layer measurement plan · north-star · input · health · counter',
+          layers: [
+            {
+              layer: 'North-star',
+              layerKey: 'northstar',
+              title: 'Completed checkouts per active merchant per day',
+              small: 'ONE number · falsifiable · tracks what users get, not what we ship',
+            },
+            {
+              layer: 'Input × 3',
+              title: 'New merchant activations / day · Sessions per active merchant · Cart-to-checkout conversion %',
+              small: 'Variables the team can influence weekly — they compound into the north-star',
+            },
+            {
+              layer: 'Health × 3',
+              title: 'Time-to-first-checkout (new merchants) · Phone-verify success rate · Support-ticket trend',
+              small: 'Leading indicators — flag the north-star 2–5 days before it turns',
+            },
+            {
+              layer: 'Counter × 1',
+              layerKey: 'counter',
+              title: 'Support tickets opened per merchant per week',
+              small: 'Catches "winning the wrong way" — high checkouts with high ops burden is a false positive',
+            },
+          ],
+        },
         tldrLabel: 'TL;DR · 4-layer measurement plan',
         tldr: [
           { html: '<strong>North-star: Completed checkouts per active merchant per day.</strong> One number. Tracks what the user gets, not what we ship. Falsifiable.' },
@@ -1106,6 +1437,46 @@
       return `<div class="now-tldr"><div class="now-tldr-label">${escape(label)}</div><ul>${lis}</ul></div>`;
     }
 
+    function renderDecisionData(dd) {
+      if (!dd) return '';
+      let content = '';
+      if (dd.type === 'insights') {
+        content = `<div class="decision-insights">${
+          dd.items.map((it, i) => `
+            <div class="decision-insight">
+              <div class="decision-insight-num">${i + 1}</div>
+              <div class="decision-insight-body">
+                <div class="decision-insight-text">${it.text}<span class="decision-conf ${it.conf}">${escape(it.conf)}</span></div>
+                ${it.evidence ? `<div class="decision-insight-evidence">${it.evidence}</div>` : ''}
+              </div>
+            </div>
+          `).join('')
+        }</div>`;
+      } else if (dd.type === 'table') {
+        content = `<div class="decision-table-wrap"><table class="decision-table">
+          <thead><tr>${dd.cols.map(c => `<th class="${c.num ? 'num' : ''}">${escape(c.label)}</th>`).join('')}</tr></thead>
+          <tbody>${dd.rows.map(r => `
+            <tr class="${r.dropped ? 'dropped' : ''}">${r.cells.map(c => `<td class="${c.num ? 'num' : ''} ${c.cls || ''}">${c.html}</td>`).join('')}</tr>
+          `).join('')}</tbody>
+        </table></div>`;
+      } else if (dd.type === 'callout') {
+        content = `<div class="decision-callout ${dd.flavor || ''}">
+          <div class="decision-callout-quote">${dd.quote}</div>
+          ${dd.meta ? `<div class="decision-callout-meta">${dd.meta}</div>` : ''}
+        </div>`;
+      } else if (dd.type === 'metrics') {
+        content = `<div class="decision-metrics">${
+          dd.layers.map(l => `
+            <div class="decision-metric-row">
+              <div class="decision-metric-layer ${l.layerKey || ''}">${escape(l.layer)}</div>
+              <div class="decision-metric-body"><strong>${l.title}</strong>${l.small ? `<small>${l.small}</small>` : ''}</div>
+            </div>
+          `).join('')
+        }</div>`;
+      }
+      return `<div class="now-decision"><div class="now-decision-label">${escape(dd.label)}</div>${content}</div>`;
+    }
+
     function renderChips(chips) {
       if (!chips.show) return '';
       const reviseRow = chips.reviseOpen
@@ -1157,6 +1528,8 @@
 
             <div class="now-stats">${renderStatCells(s.statCells)}</div>
 
+            ${renderDecisionData(s.decisionData)}
+
             ${renderTldr(s.tldrLabel, s.tldr)}
 
             <div class="now-suggest">${s.suggest}</div>
@@ -1178,7 +1551,7 @@
     // ============================================================
     // Wire up state selector
     // ============================================================
-    const stateOrder = ['first', 'mid', 'near-budget', 'over-budget', 'cancelled', 'complete', 'pm-strategist', 'pm-launch', 'pm-metrics', 'revise-open'];
+    const stateOrder = ['first', 'post-discovery', 'mid', 'near-budget', 'over-budget', 'cancelled', 'complete', 'pm-strategist', 'pm-launch', 'pm-metrics', 'revise-open'];
 
     function selectState(key) {
       const s = STATES[key];
