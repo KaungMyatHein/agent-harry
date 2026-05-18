@@ -47,16 +47,18 @@ Steps:
 Expected output:
 
 ```
-Installed 10 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md into <project>/
+Installed 13 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md into <project>/
 
 Try this:
 "/audit-pipeline" — confirm the project is set up correctly, then
-"Use the orchestrator agent to plan a discovery cycle for <feature>."
+"Use the orchestrator agent — I want to <outcome>."
+(Orchestrator defaults to Alignment Loop: it asks you 1-2 questions and proposes the smallest next move.)
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
-- Define: product-positioner, feature-prioritizer, ideation-facilitator
-- Deliver: interaction-designer, usability-tester, handoff-engineer (gated by Research-First check)
+- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist
+- Deliver: interaction-designer, usability-tester, handoff-engineer, pm-launch-architect (gated by Research-First check)
+- Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
 - Commands: /audit-pipeline
 ```
@@ -182,10 +184,12 @@ All bundled templates live in `templates/` next to this SKILL.md:
 ```
 templates/
 ├── README.md
-├── SHARED_CONTEXT.md           ← v2: includes Executive Summary schema, Token Budget rules, Research-First Gate
+├── SHARED_CONTEXT.md           ← v2: Executive Summary, Token Budget, Research-First Gate
+│                                 v2.1: Always-On Stop Gate
+│                                 v3: PM Skills Map
 └── .claude/
     ├── agents/
-    │   ├── orchestrator.md          (opus)
+    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; Waterfall fallback
     │   ├── critique-partner.md      (opus)
     │   ├── discovery-researcher.md  (sonnet)
     │   ├── competitive-analyst.md   (sonnet)
@@ -194,14 +198,19 @@ templates/
     │   ├── ideation-facilitator.md  (sonnet)
     │   ├── interaction-designer.md  (sonnet)
     │   ├── usability-tester.md      (sonnet)
-    │   └── handoff-engineer.md      (sonnet)
+    │   ├── handoff-engineer.md      (sonnet)
+    │   ├── pm-strategist.md         (sonnet) ← v3: strategy / business model / vision / pricing
+    │   ├── pm-launch-architect.md   (sonnet) ← v3: GTM / beachhead / ICP / growth loops
+    │   └── pm-metrics-architect.md  (sonnet) ← v3: north-star / OKRs / tracking plans
     └── commands/
         └── audit-pipeline.md   ← /audit-pipeline — enforces Research-First Gate
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.
 
-**v2 token-cost design:** Opus only on orchestrator + critique-partner. The other 8 agents run on Sonnet. This is the primary lever that brings a full pipeline run from ~$8 down to ~$1–3. Don't override per-agent without a logged reason in the handoff.
+**v2 token-cost design:** Opus only on orchestrator + critique-partner. The other 11 agents run on Sonnet. This is the primary lever that brings a full pipeline run from ~$8 down to ~$1–3. Don't override per-agent without a logged reason in the handoff.
+
+**v3 orchestration shift:** Default mode is the Alignment Loop (Diagnose → smallest-next-move → Run → Realign), not waterfall. Waterfall planning is the fallback for explicit "lay out the full pipeline" requests. User can `pivot — <new direction>` at any Stop Gate.
 
 ---
 

@@ -25,7 +25,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
                              └────────────┘             └───────────┘
 ```
 
-## Agents (10 total)
+## Agents (13 total)
 
 | Agent | Phase | Voice | Model | Primary MCPs |
 |---|---|---|---|---|
@@ -36,11 +36,27 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 | `product-positioner` | Define | Sharp, opinionated | sonnet | Notion, Web |
 | `feature-prioritizer` | Define | Tradeoff-honest PM | sonnet | Notion |
 | `ideation-facilitator` | Define | Generative, divergent | sonnet | Mobbin, Notion |
+| `pm-strategist` | Define | Opinionated strategist | sonnet | Notion, Web |
 | `interaction-designer` | Deliver | Craft-obsessed senior | sonnet | Figma, Mobbin |
 | `usability-tester` | Deliver | Skeptical scientist | sonnet | Notion |
 | `handoff-engineer` | Deliver | Systems-thinker | sonnet | Figma, Notion |
+| `pm-launch-architect` | Deliver | Pragmatic GTM lead | sonnet | Notion, Web |
+| `pm-metrics-architect` | Cross-cutting | Skeptical instrumentation lead | sonnet | Notion |
 
-Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 8 phase agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
+Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 11 phase + cross-cutting agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
+
+## Orchestration Style — Alignment Loop, not Waterfall
+
+The orchestrator's default mode is the **Alignment Loop**:
+
+1. **Diagnose** — opens with at most 2 questions to understand what you actually need
+2. **Propose the smallest-next-move** — one agent, one mode, one tight goal
+3. **Run** that move
+4. **Realign** — present what we learned, propose the next move, you decide
+
+You can `pivot — <new direction>` at any Stop Gate to steer the loop somewhere else. The orchestrator doesn't pre-commit to a 5-phase pipeline; it co-creates the path with you.
+
+When you explicitly want a fixed plan upfront ("plan the full discovery sprint"), the orchestrator falls back to **Waterfall mode** — same Stop Gates between every step.
 
 ## Slash Commands
 
@@ -174,7 +190,10 @@ product-designer-agents/
     │   ├── ideation-facilitator.md  (sonnet)
     │   ├── interaction-designer.md  (sonnet)
     │   ├── usability-tester.md      (sonnet)
-    │   └── handoff-engineer.md      (sonnet)
+    │   ├── handoff-engineer.md      (sonnet)
+    │   ├── pm-strategist.md         (sonnet)
+    │   ├── pm-launch-architect.md   (sonnet)
+    │   └── pm-metrics-architect.md  (sonnet)
     └── commands/
         └── audit-pipeline.md        ← /audit-pipeline
 ```
