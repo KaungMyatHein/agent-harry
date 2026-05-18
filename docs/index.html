@@ -165,30 +165,126 @@
       display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
       margin-top: 40px;
     }
-    .hero-visual {
-      margin: 80px auto 0;
-      max-width: 880px;
+    /* Hero workflow workspace — labeled cards that animate in sequence */
+    .hero-workspace {
+      margin: 24px auto 0;
+      max-width: 1100px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0, 102, 204, 0.04) 0%, transparent 70%),
+        var(--parchment);
+      border: 1px solid var(--hairline);
+      border-radius: 28px;
+      padding: 40px 24px;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
     }
-    .hero-visual svg { display: block; width: 100%; height: auto; }
-
-    /* Constellation interactivity */
-    .hv-node {
-      transform-box: fill-box;
-      transform-origin: center;
-      transition: opacity .35s ease, filter .35s ease;
+    .flow-track {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+      justify-content: center;
+      min-width: max-content;
+      margin: 0 auto;
+      padding: 4px 8px;
     }
-    .hv-node.hv-dim { opacity: 0.16; }
-    .hv-node.hv-active { opacity: 1; }
-    .hv-node.hv-pulse {
-      animation: hv-pulse 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    .flow-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 22px 22px 20px;
+      min-width: 208px;
+      max-width: 230px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+      transition: opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform .55s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color .25s ease,
+                  box-shadow .25s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
-    @keyframes hv-pulse {
-      0% { transform: scale(1); }
-      28% { transform: scale(1.24); }
-      100% { transform: scale(1); }
+    .flow-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--c, var(--primary));
     }
-    .hv-link { transition: opacity .35s ease; }
-    .hv-link.hv-link-dim { opacity: 0.15; }
+    .flow-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .flow-card.show:hover {
+      border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
+      box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--c) 22%, rgba(0, 0, 0, 0.12));
+    }
+    .flow-step {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      color: var(--ink-muted-48);
+      text-transform: uppercase;
+    }
+    .flow-title {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 8px;
+      letter-spacing: -0.022em;
+      line-height: 1.18;
+    }
+    .flow-desc {
+      font-size: 13px;
+      color: var(--ink-muted-80);
+      margin-top: 6px;
+      line-height: 1.45;
+      letter-spacing: -0.12px;
+    }
+    .flow-agents {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--divider-soft);
+    }
+    .flow-agent {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.18px;
+    }
+    .flow-agent-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 9999px;
+      background: var(--ac, var(--primary));
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac, #ccc) 14%, transparent);
+    }
+    .flow-arrow {
+      align-self: center;
+      display: flex;
+      align-items: center;
+      color: var(--ink-muted-48);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity .4s ease, transform .4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .flow-arrow.show { opacity: 1; transform: translateX(0); }
+    .flow-arrow svg { width: 22px; height: 22px; display: block; }
 
     /* Use case picker */
     .hero-cases {
@@ -685,7 +781,12 @@
       .tile { padding: 72px 24px; }
       .hero { padding: 80px 24px 72px; }
       .hero-lede { font-size: 19px; }
-      .hero-visual { margin-top: 64px; }
+      .hero-workspace { margin-top: 20px; padding: 28px 16px; border-radius: 22px; }
+      .flow-card { min-width: 200px; max-width: 220px; padding: 20px 20px 18px; }
+      .flow-title { font-size: 18px; }
+      .hero-cases { margin-top: 36px; }
+      .hc-tabs { padding: 4px; }
+      .hc-tab { padding: 8px 14px; font-size: 12px; }
       .section-head { font-size: 36px; }
       .install { grid-template-columns: 1fr; }
       .phases { grid-template-columns: 1fr; }
@@ -748,74 +849,6 @@
         <a href="https://github.com/KaungMyatHein/agent-harry" class="btn btn-ghost">View source</a>
       </div>
 
-      <div class="hero-visual">
-        <svg viewBox="0 0 880 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A constellation of ten agents — the Orchestrator at center, eight phase agents arranged around it in a ring, the Critique Partner floating below as cross-cutting reviewer">
-          <defs>
-            <radialGradient id="hv-orch" cx="0.32" cy="0.3" r="0.9">
-              <stop offset="0%" stop-color="#3a92ff"/>
-              <stop offset="55%" stop-color="#0066cc"/>
-              <stop offset="100%" stop-color="#004a99"/>
-            </radialGradient>
-            <radialGradient id="hv-crit" cx="0.32" cy="0.3" r="0.9">
-              <stop offset="0%" stop-color="#ff5757"/>
-              <stop offset="55%" stop-color="#dc2626"/>
-              <stop offset="100%" stop-color="#9b1b1b"/>
-            </radialGradient>
-            <radialGradient id="hv-disc" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#a5bcd9"/><stop offset="55%" stop-color="#5e81ac"/><stop offset="100%" stop-color="#3d5a7f"/></radialGradient>
-            <radialGradient id="hv-comp" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#76b0a4"/><stop offset="55%" stop-color="#2c7d6f"/><stop offset="100%" stop-color="#1a574c"/></radialGradient>
-            <radialGradient id="hv-pos" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f6b15c"/><stop offset="55%" stop-color="#d97706"/><stop offset="100%" stop-color="#a05905"/></radialGradient>
-            <radialGradient id="hv-pri" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e09257"/><stop offset="55%" stop-color="#b45309"/><stop offset="100%" stop-color="#7a3905"/></radialGradient>
-            <radialGradient id="hv-idea" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#c4a9fa"/><stop offset="55%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#5e37c2"/></radialGradient>
-            <radialGradient id="hv-inter" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="55%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
-            <radialGradient id="hv-usab" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#6ed393"/><stop offset="55%" stop-color="#16a34a"/><stop offset="100%" stop-color="#0e6e32"/></radialGradient>
-            <radialGradient id="hv-hand" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#a8a8a8"/><stop offset="55%" stop-color="#525252"/><stop offset="100%" stop-color="#2e2e2e"/></radialGradient>
-            <filter id="hv-shadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-              <feOffset dx="0" dy="6" result="off"/>
-              <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
-              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="hv-shadow-lg" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
-              <feOffset dx="0" dy="10" result="off"/>
-              <feComponentTransfer><feFuncA type="linear" slope="0.24"/></feComponentTransfer>
-              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <linearGradient id="hv-line" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#0066cc" stop-opacity="0.5"/>
-              <stop offset="100%" stop-color="#0066cc" stop-opacity="0.1"/>
-            </linearGradient>
-          </defs>
-
-          <g class="hv-lines" stroke="#d6d6db" stroke-width="1" fill="none" opacity="0.7">
-            <line class="hv-link" x1="440" y1="270" x2="440" y2="80"/>
-            <line class="hv-link" x1="440" y1="270" x2="600" y2="120"/>
-            <line class="hv-link" x1="440" y1="270" x2="660" y2="270"/>
-            <line class="hv-link" x1="440" y1="270" x2="600" y2="420"/>
-            <line class="hv-link" x1="440" y1="270" x2="440" y2="460"/>
-            <line class="hv-link" x1="440" y1="270" x2="280" y2="420"/>
-            <line class="hv-link" x1="440" y1="270" x2="220" y2="270"/>
-            <line class="hv-link" x1="440" y1="270" x2="280" y2="120"/>
-          </g>
-
-          <g stroke="#dc2626" stroke-width="1" fill="none" opacity="0.32" stroke-dasharray="4 4">
-            <line class="hv-link" x1="440" y1="510" x2="440" y2="270"/>
-          </g>
-
-          <circle class="hv-node" data-agent="disc" style="--c: #5e81ac;" cx="440" cy="80" r="22" fill="url(#hv-disc)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="comp" style="--c: #2c7d6f;" cx="600" cy="120" r="22" fill="url(#hv-comp)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="pos" style="--c: #d97706;" cx="660" cy="270" r="22" fill="url(#hv-pos)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="pri" style="--c: #b45309;" cx="600" cy="420" r="22" fill="url(#hv-pri)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="idea" style="--c: #8b5cf6;" cx="440" cy="460" r="22" fill="url(#hv-idea)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="inter" style="--c: #ec4899;" cx="280" cy="420" r="22" fill="url(#hv-inter)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="usab" style="--c: #16a34a;" cx="220" cy="270" r="22" fill="url(#hv-usab)" filter="url(#hv-shadow)"/>
-          <circle class="hv-node" data-agent="hand" style="--c: #525252;" cx="280" cy="120" r="22" fill="url(#hv-hand)" filter="url(#hv-shadow)"/>
-
-          <circle class="hv-node" data-agent="orch" style="--c: #0066cc;" cx="440" cy="270" r="52" fill="url(#hv-orch)" filter="url(#hv-shadow-lg)"/>
-          <circle class="hv-node" data-agent="crit" style="--c: #dc2626;" cx="440" cy="510" r="28" fill="url(#hv-crit)" filter="url(#hv-shadow)"/>
-        </svg>
-      </div>
-
       <div class="hero-cases">
         <div class="hc-label">See it in action</div>
         <div class="hc-tabs" role="tablist">
@@ -824,9 +857,14 @@
           <button class="hc-tab" role="tab" data-case="positioning">Sharpen positioning</button>
           <button class="hc-tab" role="tab" data-case="handoff">Spec for engineering</button>
         </div>
-        <div class="hc-info">
-          <p class="hc-desc" id="hc-desc">Pick a scenario above to see how the agents collaborate.</p>
-        </div>
+      </div>
+
+      <div class="hero-workspace">
+        <div class="flow-track" id="flow-track"></div>
+      </div>
+
+      <div class="hc-info">
+        <p class="hc-desc" id="hc-desc">Pick a scenario above to see how the agents collaborate.</p>
       </div>
     </div>
   </section>
@@ -1343,78 +1381,129 @@
 
   <script>
     (function () {
+      const AGENTS = {
+        orch:  { label: 'orchestrator',          color: '#0066cc' },
+        disc:  { label: 'discovery-researcher',  color: '#5e81ac' },
+        comp:  { label: 'competitive-analyst',   color: '#2c7d6f' },
+        pos:   { label: 'product-positioner',    color: '#d97706' },
+        pri:   { label: 'feature-prioritizer',   color: '#b45309' },
+        idea:  { label: 'ideation-facilitator',  color: '#8b5cf6' },
+        inter: { label: 'interaction-designer',  color: '#ec4899' },
+        usab:  { label: 'usability-tester',      color: '#16a34a' },
+        hand:  { label: 'handoff-engineer',      color: '#525252' },
+        crit:  { label: 'critique-partner',      color: '#dc2626' }
+      };
+
       const useCases = [
         {
           id: 'bootstrap',
           desc: 'Full <strong>Discovery → Define → Deliver</strong> cycle. The orchestrator routes through every phase; critique-partner stress-tests the handoff.',
-          steps: [['orch'], ['disc', 'comp'], ['pos', 'pri', 'idea'], ['inter', 'usab', 'hand'], ['crit']]
+          steps: [
+            { title: 'Orchestrate', desc: 'Decompose the goal into phases.',     accent: '#0066cc', agents: ['orch'] },
+            { title: 'Discover',    desc: 'Find the real problem.',              accent: '#5e81ac', agents: ['disc', 'comp'] },
+            { title: 'Define',      desc: 'Sharpen the bet.',                    accent: '#d97706', agents: ['pos', 'pri', 'idea'] },
+            { title: 'Deliver',     desc: 'Ship something usable.',              accent: '#ec4899', agents: ['inter', 'usab', 'hand'] },
+            { title: 'Review',      desc: 'Stress-test the handoff.',            accent: '#dc2626', agents: ['crit'] }
+          ]
         },
         {
           id: 'audit',
           desc: 'Mode B audit. <strong>interaction-designer</strong> reads the file, then <strong>critique-partner</strong> stress-tests the gaps.',
-          steps: [['inter'], ['crit']]
+          steps: [
+            { title: 'Audit',    desc: 'Inventory states + edge cases.',        accent: '#ec4899', agents: ['inter'] },
+            { title: 'Critique', desc: 'Surface weak reasoning + gaps.',        accent: '#dc2626', agents: ['crit'] }
+          ]
         },
         {
           id: 'positioning',
           desc: 'Define phase only. <strong>orchestrator</strong> routes, <strong>positioner</strong> picks the angle, <strong>prioritizer</strong> scores the backlog against it.',
-          steps: [['orch'], ['pos'], ['pri'], ['crit']]
+          steps: [
+            { title: 'Plan',       desc: 'Route the define cycle.',              accent: '#0066cc', agents: ['orch'] },
+            { title: 'Position',   desc: 'Pick the sharpest angle.',             accent: '#d97706', agents: ['pos'] },
+            { title: 'Prioritize', desc: 'Score the backlog against it.',        accent: '#b45309', agents: ['pri'] },
+            { title: 'Critique',   desc: 'Name what we are giving up.',          accent: '#dc2626', agents: ['crit'] }
+          ]
         },
         {
           id: 'handoff',
           desc: 'Dev-ready spec from <strong>handoff-engineer</strong>; state coverage validated by <strong>usability-tester</strong> before it ships.',
-          steps: [['hand'], ['usab']]
+          steps: [
+            { title: 'Spec',     desc: 'Dev-ready spec + token audit.',          accent: '#525252', agents: ['hand'] },
+            { title: 'Validate', desc: 'Verify state coverage.',                 accent: '#16a34a', agents: ['usab'] }
+          ]
         }
       ];
 
-      const svg = document.querySelector('.hero-visual svg');
-      if (!svg) return;
-      const allNodes = Array.from(svg.querySelectorAll('.hv-node'));
-      const tabs = Array.from(document.querySelectorAll('.hc-tab'));
+      const track  = document.getElementById('flow-track');
       const descEl = document.getElementById('hc-desc');
+      const tabs   = Array.from(document.querySelectorAll('.hc-tab'));
+      if (!track) return;
+
       let timers = [];
+      function clearTimers() { timers.forEach(clearTimeout); timers = []; }
 
-      function clearTimers() {
-        timers.forEach(clearTimeout);
-        timers = [];
+      const ARROW_SVG =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M5 12h13M13 6l6 6-6 6"/>' +
+        '</svg>';
+
+      function buildCardHTML(step, index) {
+        const agentRows = step.agents.map(function (key) {
+          const a = AGENTS[key];
+          if (!a) return '';
+          return '<span class="flow-agent" style="--ac:' + a.color + ';">' +
+                   '<span class="flow-agent-dot"></span>' + a.label +
+                 '</span>';
+        }).join('');
+
+        const stepNum = 'Step ' + String(index + 1).padStart(2, '0');
+        return (
+          '<div class="flow-card" style="--c:' + step.accent + ';">' +
+            '<div class="flow-step">' + stepNum + '</div>' +
+            '<div class="flow-title">' + step.title + '</div>' +
+            '<div class="flow-desc">' + step.desc + '</div>' +
+            '<div class="flow-agents">' + agentRows + '</div>' +
+          '</div>'
+        );
       }
 
-      function resetNodes() {
-        allNodes.forEach(n => {
-          n.classList.remove('hv-active', 'hv-pulse');
-          n.classList.add('hv-dim');
-        });
-      }
-
-      function activate(agentIds) {
-        agentIds.forEach(id => {
-          const n = svg.querySelector('[data-agent="' + id + '"]');
-          if (!n) return;
-          n.classList.remove('hv-dim');
-          n.classList.add('hv-active');
-          n.classList.remove('hv-pulse');
-          // Force reflow so the pulse animation restarts each step
-          void n.getBBox;
-          requestAnimationFrame(() => n.classList.add('hv-pulse'));
-        });
-      }
-
-      function play(caseId) {
-        const uc = useCases.find(u => u.id === caseId);
+      function render(caseId) {
+        const uc = useCases.find(function (u) { return u.id === caseId; });
         if (!uc) return;
+
         clearTimers();
-        tabs.forEach(t => t.classList.toggle('active', t.dataset.case === caseId));
+        tabs.forEach(function (t) {
+          t.classList.toggle('active', t.dataset.case === caseId);
+        });
         if (descEl) descEl.innerHTML = uc.desc;
-        resetNodes();
-        uc.steps.forEach((step, i) => {
-          timers.push(setTimeout(() => activate(step), 220 + i * 720));
+
+        // Build markup with arrows between cards
+        const parts = [];
+        uc.steps.forEach(function (step, i) {
+          if (i > 0) parts.push('<div class="flow-arrow">' + ARROW_SVG + '</div>');
+          parts.push(buildCardHTML(step, i));
+        });
+        track.innerHTML = parts.join('');
+
+        // Animate in sequence
+        const cards  = Array.from(track.querySelectorAll('.flow-card'));
+        const arrows = Array.from(track.querySelectorAll('.flow-arrow'));
+
+        cards.forEach(function (card, i) {
+          timers.push(setTimeout(function () { card.classList.add('show'); }, 120 + i * 620));
+        });
+        arrows.forEach(function (arrow, i) {
+          timers.push(setTimeout(function () { arrow.classList.add('show'); }, 380 + i * 620));
         });
       }
 
-      tabs.forEach(t => t.addEventListener('click', () => play(t.dataset.case)));
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () { render(t.dataset.case); });
+      });
 
-      // Auto-play the first case shortly after load so the page feels alive
-      window.addEventListener('load', () => {
-        setTimeout(() => play('bootstrap'), 700);
+      // Auto-play the first case on load so the page feels alive
+      window.addEventListener('load', function () {
+        setTimeout(function () { render('bootstrap'); }, 500);
       });
     })();
   </script>
