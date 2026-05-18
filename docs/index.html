@@ -165,126 +165,106 @@
       display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
       margin-top: 40px;
     }
-    /* Hero workflow workspace — labeled cards that animate in sequence */
+    /* Hero workflow — activity feed style, no cards */
     .hero-workspace {
       margin: 24px auto 0;
-      max-width: 1100px;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0, 102, 204, 0.04) 0%, transparent 70%),
-        var(--parchment);
+      max-width: 760px;
+      background: var(--parchment);
       border: 1px solid var(--hairline);
-      border-radius: 28px;
-      padding: 40px 24px;
-      min-height: 320px;
-      display: flex;
-      align-items: center;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+      border-radius: 24px;
+      padding: 28px 40px;
+      min-height: 300px;
     }
-    .flow-track {
-      display: flex;
-      align-items: stretch;
-      gap: 10px;
-      justify-content: center;
-      min-width: max-content;
-      margin: 0 auto;
-      padding: 4px 8px;
-    }
-    .flow-card {
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: 16px;
-      padding: 22px 22px 20px;
-      min-width: 208px;
-      max-width: 230px;
-      display: flex;
-      flex-direction: column;
+    .flow-track { position: relative; }
+    .feed {
       position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px) scale(0.96);
-      transition: opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform .55s cubic-bezier(0.22, 1, 0.36, 1),
-                  border-color .25s ease,
-                  box-shadow .25s ease;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
-    .flow-card::before {
+    .feed::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--c, var(--primary));
+      left: 18px;
+      top: 36px;
+      bottom: 36px;
+      width: 1.5px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        var(--hairline) 12%,
+        var(--hairline) 88%,
+        transparent 100%);
+      z-index: 0;
     }
-    .flow-card.show {
+    .feed-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      padding: 18px 0;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform .55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .feed-row.show {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
-    .flow-card.show:hover {
-      border-color: color-mix(in srgb, var(--c) 30%, var(--hairline));
-      box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--c) 22%, rgba(0, 0, 0, 0.12));
+    .feed-avatars {
+      display: flex;
+      align-items: center;
+      min-width: 36px;
+      position: relative;
+      z-index: 1;
+      margin-top: 2px;
     }
-    .flow-step {
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      color: var(--ink-muted-48);
-      text-transform: uppercase;
+    .feed-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      background: var(--c);
+      border: 3px solid var(--parchment);
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 32%, var(--hairline)),
+                  0 2px 6px color-mix(in srgb, var(--c) 22%, transparent);
     }
-    .flow-title {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--ink);
-      margin-top: 8px;
-      letter-spacing: -0.022em;
-      line-height: 1.18;
-    }
-    .flow-desc {
-      font-size: 13px;
-      color: var(--ink-muted-80);
-      margin-top: 6px;
-      line-height: 1.45;
-      letter-spacing: -0.12px;
-    }
-    .flow-agents {
+    .feed-dot + .feed-dot { margin-left: -8px; }
+    .feed-content {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--divider-soft);
+      min-width: 0;
+      padding-top: 1px;
     }
-    .flow-agent {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 13px;
-      font-weight: 500;
+    .feed-names {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      font-weight: 600;
       color: var(--ink);
-      letter-spacing: -0.18px;
+      letter-spacing: -0.014em;
+      line-height: 1.3;
     }
-    .flow-agent-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 9999px;
-      background: var(--ac, var(--primary));
-      flex-shrink: 0;
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac, #ccc) 14%, transparent);
-    }
-    .flow-arrow {
-      align-self: center;
-      display: flex;
-      align-items: center;
+    .feed-name-sep {
       color: var(--ink-muted-48);
-      opacity: 0;
-      transform: translateX(-6px);
-      transition: opacity .4s ease, transform .4s cubic-bezier(0.22, 1, 0.36, 1);
+      font-weight: 400;
+      margin: 0 6px;
     }
-    .flow-arrow.show { opacity: 1; transform: translateX(0); }
-    .flow-arrow svg { width: 22px; height: 22px; display: block; }
+    .feed-msg {
+      font-size: 14px;
+      color: var(--ink-muted-80);
+      margin-top: 5px;
+      line-height: 1.5;
+      letter-spacing: -0.011em;
+    }
+    .feed-step {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 10px;
+      color: var(--ink-muted-48);
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 6px;
+    }
 
     /* Use case picker */
     .hero-cases {
@@ -781,9 +761,10 @@
       .tile { padding: 72px 24px; }
       .hero { padding: 80px 24px 72px; }
       .hero-lede { font-size: 19px; }
-      .hero-workspace { margin-top: 20px; padding: 28px 16px; border-radius: 22px; }
-      .flow-card { min-width: 200px; max-width: 220px; padding: 20px 20px 18px; }
-      .flow-title { font-size: 18px; }
+      .hero-workspace { margin-top: 20px; padding: 20px 22px; border-radius: 22px; }
+      .feed-row { grid-template-columns: auto 1fr; gap: 18px; padding: 14px 0; }
+      .feed-step { grid-column: 2; margin-top: 2px; padding-left: 0; }
+      .feed::before { left: 16px; top: 30px; bottom: 30px; }
       .hero-cases { margin-top: 36px; }
       .hc-tabs { padding: 4px; }
       .hc-tab { padding: 8px 14px; font-size: 12px; }
@@ -1442,27 +1423,27 @@
       let timers = [];
       function clearTimers() { timers.forEach(clearTimeout); timers = []; }
 
-      const ARROW_SVG =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M5 12h13M13 6l6 6-6 6"/>' +
-        '</svg>';
-
-      function buildCardHTML(step, index) {
-        const agentRows = step.agents.map(function (key) {
+      function buildRowHTML(step, index) {
+        const dotsHTML = step.agents.map(function (key) {
           const a = AGENTS[key];
           if (!a) return '';
-          return '<span class="flow-agent" style="--ac:' + a.color + ';">' +
-                   '<span class="flow-agent-dot"></span>' + a.label +
-                 '</span>';
+          return '<span class="feed-dot" style="--c:' + a.color + ';"></span>';
         }).join('');
 
+        const namesHTML = step.agents.map(function (key) {
+          return AGENTS[key] ? AGENTS[key].label : '';
+        }).join('<span class="feed-name-sep">·</span>');
+
         const stepNum = 'Step ' + String(index + 1).padStart(2, '0');
+
         return (
-          '<div class="flow-card" style="--c:' + step.accent + ';">' +
-            '<div class="flow-step">' + stepNum + '</div>' +
-            '<div class="flow-title">' + step.title + '</div>' +
-            '<div class="flow-desc">' + step.desc + '</div>' +
-            '<div class="flow-agents">' + agentRows + '</div>' +
+          '<div class="feed-row" style="--c:' + step.accent + ';">' +
+            '<div class="feed-avatars">' + dotsHTML + '</div>' +
+            '<div class="feed-content">' +
+              '<div class="feed-names">' + namesHTML + '</div>' +
+              '<div class="feed-msg">' + step.desc + '</div>' +
+            '</div>' +
+            '<div class="feed-step">' + stepNum + '</div>' +
           '</div>'
         );
       }
@@ -1477,23 +1458,12 @@
         });
         if (descEl) descEl.innerHTML = uc.desc;
 
-        // Build markup with arrows between cards
-        const parts = [];
-        uc.steps.forEach(function (step, i) {
-          if (i > 0) parts.push('<div class="flow-arrow">' + ARROW_SVG + '</div>');
-          parts.push(buildCardHTML(step, i));
-        });
-        track.innerHTML = parts.join('');
+        const parts = uc.steps.map(function (step, i) { return buildRowHTML(step, i); });
+        track.innerHTML = '<div class="feed">' + parts.join('') + '</div>';
 
-        // Animate in sequence
-        const cards  = Array.from(track.querySelectorAll('.flow-card'));
-        const arrows = Array.from(track.querySelectorAll('.flow-arrow'));
-
-        cards.forEach(function (card, i) {
-          timers.push(setTimeout(function () { card.classList.add('show'); }, 120 + i * 620));
-        });
-        arrows.forEach(function (arrow, i) {
-          timers.push(setTimeout(function () { arrow.classList.add('show'); }, 380 + i * 620));
+        const rows = Array.from(track.querySelectorAll('.feed-row'));
+        rows.forEach(function (row, i) {
+          timers.push(setTimeout(function () { row.classList.add('show'); }, 140 + i * 520));
         });
       }
 
