@@ -4,6 +4,21 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-18 — v3.4: Success-Metrics Gate — force metrics + confirmation before Deliver
+
+After Define is done, you should never just glide into Deliver without naming what success looks like. v3.4 codifies that as a second hard gate, mirroring the Research-First Gate but firing at the Define → Deliver boundary instead of nothing → Discovery.
+
+- **Success-Metrics Gate (Hard Block)** — once any Define-phase artifact exists in `./design-workspace/<project-slug>/` (handoff from `product-positioner`, `feature-prioritizer`, `ideation-facilitator`, or `pm-strategist`), the Deliver-phase agents (`interaction-designer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked** until `pm-metrics-architect` has run AND the user has explicitly confirmed the metrics with `y`. Same Hybrid pattern as Research-First Gate — strict default plus an explicit opt-out phrase.
+- **Auto-routing in the Alignment Loop** — when Define artifacts exist and `pm-metrics-architect` hasn't run, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A. Not a Deliver agent. The TL;DR explicitly frames this as the gate-clearer: *"Define is complete. Before we move to Deliver, let's lock in success metrics so we know what we're optimizing for."*
+- **Opt-out exists** — for users who have metrics outside Agent Harry, the phrases *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* (and equivalents) clear the gate without running `pm-metrics-architect`. Same shape as the Research-First Gate opt-out.
+- **Confirmation framing in `pm-metrics-architect`** — when invoked as the gate-clearer (the orchestrator's invocation prompt says so), the agent switches its output framing: Decision Data panel label becomes `Success metrics · pending your confirmation`, the TL;DR's open-question bullet becomes an explicit *"Confirm these metrics so Deliver can proceed?"* prompt, and the dashboard's `y` chip hint becomes `confirm success metrics` instead of generic `proceed`. The suggested-next strip names the first Deliver agent that will unblock on confirmation.
+- **`/audit-pipeline` extended** — reports the Success-Metrics Gate status alongside the Research-First Gate. (Slash command file unchanged; the rule lives in the orchestrator's check, which `/audit-pipeline` already routes to.)
+- **Demo state updated** — state 10 (PM Metrics Architect) in `docs/dashboard-demo.html` now shows the v3.4 confirmation framing. Click the state to preview: notice the new TL;DR confirmation copy, the changed chip hint, and the annotation explaining the gate's role.
+
+Why this rule: without confirmed success metrics, Deliver artifacts optimize for nothing in particular — or worse, for the designer's implicit metrics, not the team's actual ones. The hidden-assumption problem surfaces post-launch when someone asks "is this working?" and the answer depends on who you ask. Forcing the metrics step + explicit confirmation makes the optimization target a deliberate decision instead of an inherited default.
+
+Token-cost impact: zero. The gate routes an agent that was already in the lineup (`pm-metrics-architect`); it just changes WHEN it runs (always before Deliver, instead of opportunistically). The agent's own run cost (~$0.12 sonnet) is unchanged.
+
 ## 2026-05-18 — v3.3: Decision Data panel — surface critical data inline
 
 v3.1/v3.2 made the dashboard interactive but kept the actual decision-critical data (research evidence, scoring tables, the bet, named accounts, measurement plan) hidden in MD handoff files. To make a `y / revise / pivot` call you'd often still open the MD file — which defeated the v3.1 intent of "the dashboard is where you read." v3.3 adds a **Decision Data panel** between the stat cells and the TL;DR so the headline data is visible inline.

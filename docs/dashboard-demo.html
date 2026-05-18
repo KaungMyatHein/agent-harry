@@ -1320,7 +1320,7 @@
         ],
         decisionData: {
           type: 'metrics',
-          label: '4-layer measurement plan · north-star · input · health · counter',
+          label: 'Success metrics · pending your confirmation',
           layers: [
             {
               layer: 'North-star',
@@ -1346,17 +1346,17 @@
             },
           ],
         },
-        tldrLabel: 'TL;DR · 4-layer measurement plan',
+        tldrLabel: 'TL;DR · Success-Metrics Gate · awaiting confirmation',
         tldr: [
-          { html: '<strong>North-star: Completed checkouts per active merchant per day.</strong> One number. Tracks what the user gets, not what we ship. Falsifiable.' },
-          { html: '<strong>3 input metrics, 3 health, 1 counter</strong> — full layer below in the handoff. Health metrics lead north-star by 2-5 days (e.g. time-to-first-completed-checkout for new merchants).' },
-          { html: '<strong>Open question</strong> — instrument now or wait until launch? <em>Default = instrument now (tracking debt compounds); <code>revise — wait until launch</code> only if eng capacity is tight.</em>', open_q: true },
+          { html: '<strong>North-star + 3 input + 3 health + 1 counter</strong> — full 4-layer plan above. Optimization target is "completed checkouts per active merchant per day"; counter-metric "support-ticket rate" catches winning the wrong way.' },
+          { html: '<strong>This run is the Success-Metrics Gate</strong> — Deliver agents (interaction-designer, usability-tester, handoff-engineer, pm-launch-architect) are <em>blocked</em> until you confirm these metrics, so the team knows what we\'re optimizing for before any screens get built.' },
+          { html: '<strong>Confirm these metrics so Deliver can proceed?</strong> Type <code>y</code> to lock in; <code>revise — &lt;delta&gt;</code> to adjust before locking; <code>pivot — &lt;new direction&gt;</code> if the whole measurement approach needs rethinking.', open_q: true },
         ],
-        suggest: '<span class="suggest-label">Next move suggested</span> <code>handoff-engineer</code> Mode A — write the spec doc, including the event taxonomy from this metrics plan. The tracking plan and the dev spec ship together.',
-        chips: { show: true, hint: 'approve the metrics plan' },
+        suggest: '<span class="suggest-label">If you confirm</span> The Success-Metrics Gate clears and <code>interaction-designer</code> Mode A becomes the next unblocked move — building screens against the now-explicit optimization target.',
+        chips: { show: true, hint: 'confirm success metrics' },
         annotation: {
-          title: 'PM Metrics Architect — lime green phase pill',
-          body: '<p>v3 cross-cutting PM agent. <strong>Lime-green phase pill</strong> (<code>--c-metrics</code>). Stat cells surface the north-star and counter-metric directly — the two most important numbers in any metrics plan.</p><ul><li>TL;DR opens with the one-sentence north-star — discipline rule: ONE number, not 5.</li><li>The counter-metric is named ("support-ticket rate") — without it, you risk optimizing for vanity.</li><li>The suggested-next strip explicitly ties metrics to the dev handoff — tracking plan + spec should ship together so engineering instruments correctly.</li></ul>',
+          title: 'PM Metrics Architect — Success-Metrics Gate confirmation (v3.4)',
+          body: '<p>v3.4\'s new gate moment. After Define artifacts exist (positioning, prioritization, ideation, strategy), the orchestrator <strong>refuses to route to Deliver agents</strong> until the user has confirmed success metrics. This is the dashboard state where that confirmation is asked for.</p><ul><li>The Decision Data panel label changes to <strong>"Success metrics · pending your confirmation"</strong> — explicit framing.</li><li>The TL;DR\'s third bullet is the confirmation prompt (not the usual open question) — it asks <code>y</code> / <code>revise</code> / <code>pivot</code> explicitly.</li><li>The chip hint on <code>y</code> becomes <strong>"confirm success metrics"</strong> — not "proceed". Click language matches intent.</li><li>The suggested-next strip names the FIRST Deliver agent that unblocks on confirmation (<code>interaction-designer</code> here, but could be <code>pm-launch-architect</code> for GTM-led pipelines).</li><li>Opt-out exists for users who have metrics outside Agent Harry: <em>"I have metrics already, skip the confirmation"</em>.</li></ul>',
         },
       },
 

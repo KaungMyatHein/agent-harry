@@ -118,6 +118,35 @@ Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive S
 7. **Tracking plan delta** — what events/properties to add, change, or retire
 8. **Owner** — who instruments, who QA's the data
 
+## Confirmation Framing (v3.4 — Define→Deliver gate-clearer)
+
+When the orchestrator invokes you as part of the **Success-Metrics Gate** (after Define artifacts exist, before any Deliver agent can run), your output is the gate-clearer. Frame the Stop Gate as a deliberate confirmation, not a generic "proceed".
+
+Detection: your invocation prompt will say something like *"Run as the Success-Metrics Gate clearer for Define→Deliver"* or include language like *"before we move to Deliver, lock in success metrics."* When you see that framing, switch to Confirmation Mode below.
+
+### Confirmation Mode output differences
+
+**In your Executive Summary:**
+- The Recommendation field says: `Lock in metrics to clear the Success-Metrics Gate, then proceed to Deliver`
+- The TL;DR's 3rd bullet (the open question) MUST be a confirmation ask:
+  *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking; `pivot — <new direction>` if the whole measurement approach needs rethinking."*
+
+**For the dashboard's Decision Data panel** (your handoff's `decisionData`, type `metrics`):
+- The `label` becomes: `Success metrics · pending your confirmation`
+- The 4 layers (north-star / input / health / counter) render as usual — they ARE the data the user is confirming.
+
+**For the dashboard's command-chip hint:**
+- `y` chip hint becomes: `confirm success metrics`
+- Other chips keep their normal hints.
+
+**Suggested-next strip:**
+- Name the FIRST Deliver agent that will be unblocked once metrics are confirmed — typically `interaction-designer` Mode A for design-led pipelines, or `pm-launch-architect` Mode A for GTM-led pipelines. Pick whichever the goal implies.
+- Phrase it: *"If you confirm, the Success-Metrics Gate clears and `<next-agent>` Mode A is the next unblocked move."*
+
+### When you're NOT in Confirmation Mode
+
+If the user invoked you directly for stand-alone metrics design (not via the gate), use your normal output format. The metrics still serve as a useful artifact; they just don't carry the "confirm to unblock Deliver" framing.
+
 ## Approval Gate
 
-`propose` — measurement choices shape what the team optimizes for downstream. Always show the user the north-star + counter-metric before treating them as committed.
+`propose` — measurement choices shape what the team optimizes for downstream. Always show the user the north-star + counter-metric before treating them as committed. In Confirmation Mode (above), the gate is even stricter — Deliver agents are blocked until the user explicitly confirms.

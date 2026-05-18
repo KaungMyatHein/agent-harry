@@ -214,6 +214,23 @@ The slash command `/audit-pipeline` runs this check on demand and reports what's
 
 ---
 
+## Success-Metrics Gate (Hard Block — v3.4)
+
+A second hard block, fires at the Define → Deliver boundary.
+
+The Deliver-phase agents (`interaction-designer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
+
+1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND the user has explicitly confirmed it with `y` on the Stop Gate that followed the metrics run.
+2. The user has explicitly opted out with: *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* / equivalent phrasing.
+
+When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics (chip hint becomes `confirm success metrics`, TL;DR ends with *"Confirm these metrics so Deliver can proceed?"*).
+
+Reason for this rule: without confirmed success metrics, Deliver artifacts optimize for nothing in particular — or worse, for the designer's implicit metrics, not the team's actual ones. Forcing the metrics step + explicit confirmation makes the optimization target a deliberate decision instead of a default.
+
+The slash command `/audit-pipeline` reports this gate's status alongside the Research-First Gate.
+
+---
+
 ## PM Skills Map
 
 Agent Harry agents are skill-aware. When the user has Claude Code's PM skill packs installed (`pm-execution`, `pm-market-research`, `pm-marketing-growth`, `pm-product-strategy`, `pm-go-to-market`, `pm-product-discovery`, `pm-toolkit`, `product-management`, `product-tracking-skills`), agents can invoke specific skills via the Skill tool rather than re-deriving PM artifacts from scratch.
