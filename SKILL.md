@@ -37,23 +37,31 @@ Use when the user wants the standard system without project-specific tuning.
 
 Steps:
 1. Confirm the project root directory with the user (or use cwd if obvious)
-2. Check if `.claude/agents/`, `.claude/commands/`, `SHARED_CONTEXT.md`, or `dashboard.html` already exist — if yes, ask before overwriting
+2. Check if `.claude/agents/`, `.claude/commands/`, `SHARED_CONTEXT.md`, `dashboard.html`, `dashboard-server.py`, or `.harry-queue.json` already exist — if yes, ask before overwriting
 3. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/`
 4. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/`
 5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
-6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (this seeds the file with a sample state so the user sees something immediately; the orchestrator overwrites it at the first Stop Gate)
-7. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-8. Confirm completion with file list and a quick "try this next" prompt
+6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (seeded sample; orchestrator overwrites at first Stop Gate)
+7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (v3.2: HTTP server for click-driven mode)
+8. Copy `templates/.harry-queue.json` → `<project>/.harry-queue.json` (v3.2: queue state file)
+9. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
+10. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 13 Agent Harry subagents + /audit-pipeline command + SHARED_CONTEXT.md + dashboard.html into <project>/
+Installed 13 Agent Harry subagents + 2 slash commands + dashboard server + SHARED_CONTEXT.md + dashboard.html into <project>/
 
-Try this:
-1. Open dashboard.html in the Claude Preview MCP panel — you'll see a seeded sample state. The orchestrator overwrites it with real state at every Stop Gate.
+Try this — chat-only mode (simplest):
+1. Open dashboard.html in the Claude Preview MCP panel.
 2. "/audit-pipeline" — confirm the project is set up correctly.
-3. "Use the orchestrator agent — I want to <outcome>." (Alignment Loop default — orchestrator asks you 1-2 questions and proposes the smallest next move. Dashboard updates on every Stop Gate.)
+3. "Use the orchestrator agent — I want to <outcome>." Stop Gates fire in chat; type y/revise/pivot/grill me/cancel to drive.
+
+Or — click-driven mode (v3.2):
+1. Terminal 1: cd into the project and run `python3 dashboard-server.py`
+2. Open http://localhost:3737 in a browser tab.
+3. Terminal 2: cd into the project and start `claude`, then run `/agent-harry-loop <your goal>`
+4. Click chips in the browser — orchestrator wakes within ~60s and processes them. Chat goes mostly silent.
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
@@ -61,8 +69,9 @@ Quick reference:
 - Deliver: interaction-designer, usability-tester, handoff-engineer, pm-launch-architect (gated by Research-First check)
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
-- Commands: /audit-pipeline
+- Commands: /audit-pipeline · /agent-harry-loop
 - Visual: dashboard.html (auto-regenerated at every Stop Gate)
+- Click-driven: dashboard-server.py + .harry-queue.json (v3.2 opt-in)
 ```
 
 Done. Don't over-explain.
@@ -120,16 +129,18 @@ Steps:
 3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
 5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
-6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; this resets the seed sample — the orchestrator will overwrite it again at the first Stop Gate). If `dashboard.html` is missing from the project, this also brings v3.1 to a pre-v3.1 install.
-7. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
-8. Do **not** touch `README.md`.
-9. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
+6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; seeds the sample state — orchestrator overwrites at the first Stop Gate).
+7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (overwriting; v3.2).
+8. If `<project>/.harry-queue.json` doesn't exist, copy `templates/.harry-queue.json` → `<project>/.harry-queue.json`. If it exists, **do not overwrite** — it may contain in-flight session state.
+9. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion", "Queue Mode"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
+10. Do **not** touch `README.md`.
+11. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
 
 Expected output:
 
 ```
-Refreshed 13 agent files + /audit-pipeline command + dashboard.html in <project>/
-Preserved: SHARED_CONTEXT.md, README.md
+Refreshed 13 agent files + 2 slash commands + dashboard.html + dashboard-server.py in <project>/
+Preserved: SHARED_CONTEXT.md, README.md, .harry-queue.json (if existed)
 SHARED_CONTEXT.md v2/v3 sections check: <present | MISSING — see below>
 
 Templates source: ~/.claude/skills/agent-harry/
@@ -191,11 +202,14 @@ templates/
 │                                 v2.1: Always-On Stop Gate
 │                                 v3: PM Skills Map
 │                                 v3.1: Dashboard companion spec
-├── dashboard.html              ← v3.1: visual Stop Gate companion, rendered in
-│                                       Claude Preview MCP panel
+│                                 v3.2: Queue Mode spec
+├── dashboard.html              ← v3.1: visual Stop Gate companion
+│                                 v3.2: clickable buttons + inline inputs + fetch handlers
+├── dashboard-server.py         ← v3.2: Python stdlib HTTP server on :3737
+├── .harry-queue.json           ← v3.2: queue state file for click→orchestrator handoff
 └── .claude/
     ├── agents/
-    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; v3.1: writes dashboard.html
+    │   ├── orchestrator.md          (opus)   ← v3: Alignment Loop default; v3.1/v3.2: writes dashboard.html + Queue Mode
     │   ├── critique-partner.md      (opus)
     │   ├── discovery-researcher.md  (sonnet)
     │   ├── competitive-analyst.md   (sonnet)
@@ -209,7 +223,8 @@ templates/
     │   ├── pm-launch-architect.md   (sonnet) ← v3: GTM / beachhead / ICP / growth loops
     │   └── pm-metrics-architect.md  (sonnet) ← v3: north-star / OKRs / tracking plans
     └── commands/
-        └── audit-pipeline.md   ← /audit-pipeline — enforces Research-First Gate
+        ├── audit-pipeline.md         ← /audit-pipeline — enforces Research-First Gate
+        └── agent-harry-loop.md       ← /agent-harry-loop — v3.2 click-driven polling loop
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.

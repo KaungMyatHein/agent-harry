@@ -73,6 +73,48 @@ The dashboard is **read-only**. Command chips display the literal text you type 
 
 If you don't have Claude Preview MCP connected, the dashboard file still renders fine in any browser. Open it manually if you want to glance at the visual TL;DR.
 
+## Click-driven mode — Queue Mode (v3.2)
+
+In v3.2 the dashboard goes from passive to **interactive**: the chips are real buttons that drive the orchestrator without needing you to type in chat. Click `y` and within ~60 seconds the orchestrator wakes up, processes it, and rewrites the dashboard with the next state.
+
+How it works:
+
+- **`dashboard-server.py`** — tiny Python stdlib HTTP server (no deps). Serves `dashboard.html` and accepts button POSTs at `/api/action`. Writes click intent to `.harry-queue.json`.
+- **`/agent-harry-loop`** — slash command that runs in the Claude Code session. Uses `ScheduleWakeup` (a dynamic-loop mechanism only available in the main session, not in subagents) to poll the queue file every ~60s.
+- **`.harry-queue.json`** — the queue state file. Owns the click → orchestrator handoff.
+
+Setup steps:
+
+```bash
+# Terminal 1: start the dashboard server (project root)
+cd <project>
+python3 dashboard-server.py
+# Output: server running on http://localhost:3737
+
+# Browser: open the dashboard
+open http://localhost:3737
+
+# Terminal 2: start Claude Code in the project
+cd <project>
+claude
+
+# In Claude Code, invoke the loop with your initial goal:
+/agent-harry-loop audit my existing PRD and propose the smallest next move
+```
+
+The loop will:
+
+1. Print a 3-line greeting + invoke the orchestrator with your goal
+2. Orchestrator diagnoses, proposes smallest-next-move, writes `dashboard.html`, fires Stop Gate
+3. Dashboard tab in browser auto-refreshes (or refresh manually) showing the proposed move
+4. You click `y` (or revise/pivot/etc.)
+5. Loop wakes within ~60s, sees the queue, dispatches to orchestrator
+6. Repeat until you click `cancel` or hit the idle timeout (20 polls ≈ 20 min)
+
+You can still type in chat anytime — chat input takes priority over the queue. Queue Mode is opt-in; if you don't run the server or the slash command, Agent Harry works exactly as in v3.1 (chat-only).
+
+**Token-cost note:** idle polling costs ~$0.015 per cycle. 20-poll idle cap = ~$0.30 worst-case waste if you walk away. Still well within the $3 ceiling.
+
 ## Slash Commands
 
 | Command | Purpose |
@@ -193,8 +235,10 @@ Agents are **framework-agnostic but context-aware**. They will draw from Double 
 ```
 product-designer-agents/
 ├── README.md                          ← you are here
-├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate + Dashboard spec
+├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate + Dashboard + Queue Mode
 ├── dashboard.html                     ← visual Stop Gate companion (overwritten by orchestrator each turn)
+├── dashboard-server.py                ← v3.2 HTTP server for click-driven mode (Python stdlib)
+├── .harry-queue.json                  ← v3.2 queue state file (click → orchestrator handoff)
 └── .claude/
     ├── agents/
     │   ├── orchestrator.md          (opus)
@@ -211,5 +255,6 @@ product-designer-agents/
     │   ├── pm-launch-architect.md   (sonnet)
     │   └── pm-metrics-architect.md  (sonnet)
     └── commands/
-        └── audit-pipeline.md        ← /audit-pipeline
+        ├── audit-pipeline.md        ← /audit-pipeline
+        └── agent-harry-loop.md      ← /agent-harry-loop (v3.2 click-driven)
 ```

@@ -167,6 +167,31 @@ Architecture:
 
 The dashboard does NOT replace chat. Chat is the source of truth, the audit trail, and the input surface. The dashboard is a visual surface to *read* the TL;DR more easily.
 
+### Queue Mode (v3.2 — autonomous click-driven loop)
+
+In v3.2 the dashboard goes from passive (read-only) to **interactive**. The chips are real buttons. Clicking one POSTs to a local HTTP server (`dashboard-server.py`, Python stdlib, no deps) which writes the click intent to `<project-root>/.harry-queue.json`. A new `/agent-harry-loop` slash command runs the polling loop via `ScheduleWakeup` — it reads the queue file every ~60s, and when a click arrives it dispatches to the orchestrator subagent. This delivers click-and-walk-away UX without breaking the chat-as-source-of-truth invariant (the user can still type in chat anytime; chat input takes priority).
+
+Architecture summary:
+
+| Piece | Role |
+|---|---|
+| `dashboard-server.py` | Tiny HTTP server on :3737. Serves dashboard.html. Accepts button POSTs at `/api/action`. Writes to `.harry-queue.json`. No deps; Python 3.8+ stdlib. |
+| `dashboard.html` | Now interactive: chips are `<button>` elements that POST to the server. Inline text inputs appear for `revise` and `pivot`. Connection-status indicator + toast notifications. Polls `/api/queue` every 3s to reflect queued state. |
+| `.harry-queue.json` | Queue state file. Schema: `{queued_action, last_action_processed, poll_count, max_polls, session_started}`. Source of truth for the click→orchestrator handoff. |
+| `/agent-harry-loop <goal>` | Slash command that drives the polling loop. Uses `ScheduleWakeup` (only available in main-session dynamic-loop mode). Idle cycles cost ~$0.015 each, capped at 20 polls. |
+
+Setup steps for queue mode:
+
+1. `cd <project>` and start the server: `python3 dashboard-server.py`
+2. Open browser to `http://localhost:3737`
+3. Start Claude Code in the project: `claude`
+4. Invoke the loop: `/agent-harry-loop <your goal>`
+5. Click chips in the browser; chat goes mostly silent while the dashboard owns input + visual.
+
+Queue Mode is opt-in. If you don't run the server or use the slash command, Agent Harry works in chat-only mode exactly as in v3.1 — Stop Gates fire in chat, the dashboard is read-only.
+
+Stop conditions for the loop: user clicks `cancel`, idle timeout (20 polls ≈ 20 min), orchestrator returns `complete`, user types `/end-loop` in chat, or queue corruption (after one retry).
+
 ---
 
 ## Research-First Gate (Hard Block)

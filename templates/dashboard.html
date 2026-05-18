@@ -282,7 +282,7 @@
       color: var(--ink);
     }
 
-    /* ---------- Command chips ---------- */
+    /* ---------- Command chips (v3.2 clickable) ---------- */
     .now-prompt {
       padding: 18px 24px 22px;
       background: linear-gradient(180deg, transparent 0%, var(--parchment) 100%);
@@ -307,23 +307,130 @@
       font-size: 13px;
       color: var(--ink);
       letter-spacing: -0.12px;
+      cursor: pointer;
+      transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+      font-weight: 500;
     }
+    .chip:hover { transform: translateY(-1px); border-color: var(--ink-muted); }
+    .chip:active { transform: translateY(0); }
+    .chip:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
     .chip.primary {
       background: var(--ink);
       border-color: var(--ink);
       color: #fff;
     }
+    .chip.primary:hover { background: #2c2c2e; border-color: #2c2c2e; }
     .chip.muted {
       color: var(--ink-muted);
       background: transparent;
       border-color: var(--divider-soft);
+    }
+    .chip.muted:hover { border-color: var(--hairline); }
+    .chip.success {
+      background: var(--status-done);
+      border-color: var(--status-done);
+      color: #fff;
     }
     .chip .chip-hint {
       color: var(--ink-faint);
       margin-left: 6px;
       font-size: 11px;
     }
-    .chip.primary .chip-hint { color: #a1a1a6; }
+    .chip.primary .chip-hint, .chip.success .chip-hint { color: rgba(255,255,255,0.7); }
+
+    /* Inline input row for revise/pivot */
+    .chip-input-row {
+      display: none;
+      margin-top: 10px;
+      gap: 8px;
+      align-items: center;
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 9px;
+      padding: 6px 6px 6px 12px;
+    }
+    .chip-input-row.open { display: flex; }
+    .chip-input-row .chip-input-prefix {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+    .chip-input-row input {
+      flex: 1; min-width: 0;
+      border: 0; outline: 0;
+      padding: 6px 4px;
+      background: transparent;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--ink);
+      letter-spacing: -0.12px;
+    }
+    .chip-input-row input::placeholder { color: var(--ink-faint); font-style: italic; }
+    .chip-input-row button.chip-submit {
+      padding: 6px 12px;
+      background: var(--ink);
+      color: #fff;
+      border: 0;
+      border-radius: 7px;
+      font-family: "SF Pro Text", system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: -0.12px;
+    }
+    .chip-input-row button.chip-submit:hover { background: #2c2c2e; }
+    .chip-input-row button.chip-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .chip-input-row button.chip-cancel {
+      padding: 6px 8px;
+      background: transparent;
+      color: var(--ink-faint);
+      border: 0;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+    }
+    .chip-input-row button.chip-cancel:hover { color: var(--ink); }
+
+    /* Toast for click feedback */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-family: "SF Pro Text", system-ui, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      z-index: 100;
+    }
+    .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--c-critique); }
+    .toast.success { background: var(--status-done); }
+
+    /* Connection status indicator */
+    .conn-status {
+      position: fixed;
+      top: 8px; right: 8px;
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--divider-soft);
+      border-radius: 9999px;
+      font-family: "SF Pro Text", system-ui, sans-serif;
+      font-size: 10.5px;
+      color: var(--ink-faint);
+      letter-spacing: -0.12px;
+      z-index: 50;
+    }
+    .conn-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--status-pending); }
+    .conn-dot.live { background: var(--status-done); box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.16); }
+    .conn-dot.offline { background: var(--c-critique); }
 
     /* ---------- Suggested-next strip ---------- */
     .next-strip {
@@ -479,13 +586,27 @@
       </div>
 
       <div class="now-prompt">
-        <div class="prompt-instruction">Type one of these in chat ↓</div>
+        <div class="prompt-instruction">Click a chip — the orchestrator wakes within ~60s and processes it. You can still type in chat anytime.</div>
         <div class="chips">
-          <span class="chip primary">y<span class="chip-hint">proceed</span></span>
-          <span class="chip">revise &lt;delta&gt;<span class="chip-hint">refine this step</span></span>
-          <span class="chip">pivot — &lt;direction&gt;<span class="chip-hint">steer the loop</span></span>
-          <span class="chip">grill me<span class="chip-hint">stress-test</span></span>
-          <span class="chip muted">cancel<span class="chip-hint">halt</span></span>
+          <button class="chip primary" data-cmd="y" type="button">y<span class="chip-hint">proceed</span></button>
+          <button class="chip" data-cmd-expand="revise" type="button">revise &lt;delta&gt;<span class="chip-hint">refine this step</span></button>
+          <button class="chip" data-cmd-expand="pivot" type="button">pivot — &lt;direction&gt;<span class="chip-hint">steer the loop</span></button>
+          <button class="chip" data-cmd="grill_me" type="button">grill me<span class="chip-hint">stress-test</span></button>
+          <button class="chip muted" data-cmd="cancel" type="button">cancel<span class="chip-hint">halt</span></button>
+        </div>
+
+        <div class="chip-input-row" data-input-for="revise">
+          <span class="chip-input-prefix">revise —</span>
+          <input type="text" placeholder="focus on enterprise users only" maxlength="500" data-cmd-delta="revise" />
+          <button class="chip-submit" type="button" data-cmd-submit="revise">Send</button>
+          <button class="chip-cancel" type="button" data-cmd-cancel="revise" aria-label="Close">×</button>
+        </div>
+
+        <div class="chip-input-row" data-input-for="pivot">
+          <span class="chip-input-prefix">pivot —</span>
+          <input type="text" placeholder="actually let's drop the audit and design fresh" maxlength="500" data-cmd-delta="pivot" />
+          <button class="chip-submit" type="button" data-cmd-submit="pivot">Send</button>
+          <button class="chip-cancel" type="button" data-cmd-cancel="pivot" aria-label="Close">×</button>
         </div>
       </div>
 
@@ -509,9 +630,201 @@
     </div>
 
     <div class="foot">
-      Read-only view · Open <code>SHARED_CONTEXT.md</code> for the handoff schema · Codified in CHANGELOG v2 / v2.1 / v3
+      Click-driven view · Server at <code>localhost:3737</code> · Codified in CHANGELOG v2 / v2.1 / v3 / v3.1 / v3.2
     </div>
 
   </div>
+
+  <div class="conn-status" id="connStatus">
+    <span class="conn-dot" id="connDot"></span>
+    <span id="connLabel">connecting…</span>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const API = {
+        action: '/api/action',
+        queue: '/api/queue',
+        health: '/api/health',
+      };
+
+      const toast = document.getElementById('toast');
+      const connDot = document.getElementById('connDot');
+      const connLabel = document.getElementById('connLabel');
+      let connState = 'unknown';
+
+      function showToast(message, kind) {
+        toast.textContent = message;
+        toast.className = 'toast visible' + (kind ? ' ' + kind : '');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => {
+          toast.className = 'toast' + (kind ? ' ' + kind : '');
+        }, 1800);
+      }
+
+      function setConn(state, label) {
+        connState = state;
+        connDot.className = 'conn-dot' + (state === 'live' ? ' live' : state === 'offline' ? ' offline' : '');
+        connLabel.textContent = label || state;
+      }
+
+      async function postAction(command, delta) {
+        const body = { command, delta: delta || null };
+        const res = await fetch(API.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || ('HTTP ' + res.status));
+        }
+        return data;
+      }
+
+      async function pollQueue() {
+        try {
+          const res = await fetch(API.queue, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (connState !== 'live') setConn('live', 'connected · polling every 3s');
+
+          // If queue has a pending action, mark the related chip as "queued"
+          if (data.queued_action && data.queued_action.command) {
+            const cmd = data.queued_action.command;
+            highlightQueued(cmd);
+          } else {
+            clearQueuedHighlight();
+          }
+        } catch (err) {
+          setConn('offline', 'server offline · start dashboard-server.py');
+        }
+      }
+
+      function highlightQueued(cmd) {
+        document.querySelectorAll('.chip[data-cmd]').forEach(btn => {
+          if (btn.dataset.cmd === cmd) {
+            btn.classList.add('success');
+            const hint = btn.querySelector('.chip-hint');
+            if (hint && !hint.dataset.original) {
+              hint.dataset.original = hint.textContent;
+              hint.textContent = 'queued · waiting for orchestrator';
+            }
+          }
+        });
+      }
+
+      function clearQueuedHighlight() {
+        document.querySelectorAll('.chip[data-cmd].success').forEach(btn => {
+          btn.classList.remove('success');
+          const hint = btn.querySelector('.chip-hint');
+          if (hint && hint.dataset.original) {
+            hint.textContent = hint.dataset.original;
+            delete hint.dataset.original;
+          }
+        });
+      }
+
+      function disableAllChips(except) {
+        document.querySelectorAll('.chip').forEach(btn => {
+          if (btn !== except) btn.disabled = true;
+        });
+      }
+
+      function enableAllChips() {
+        document.querySelectorAll('.chip').forEach(btn => { btn.disabled = false; });
+      }
+
+      // ---- Direct-action chip clicks (y / grill_me / cancel) ----
+      document.querySelectorAll('.chip[data-cmd]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const cmd = btn.dataset.cmd;
+          btn.disabled = true;
+          try {
+            await postAction(cmd, null);
+            showToast('Queued: ' + cmd, 'success');
+            pollQueue(); // immediate refresh
+          } catch (err) {
+            showToast('Failed: ' + err.message, 'error');
+            btn.disabled = false;
+          }
+          // Don't re-enable on success — the polling loop will when queue clears.
+          setTimeout(() => { btn.disabled = false; }, 4000); // safety re-enable
+        });
+      });
+
+      // ---- Expand-to-input chips (revise / pivot) ----
+      document.querySelectorAll('.chip[data-cmd-expand]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.cmdExpand;
+          // Close any other open row first
+          document.querySelectorAll('.chip-input-row.open').forEach(row => {
+            if (row.dataset.inputFor !== target) row.classList.remove('open');
+          });
+          const row = document.querySelector('.chip-input-row[data-input-for="' + target + '"]');
+          if (!row) return;
+          row.classList.toggle('open');
+          if (row.classList.contains('open')) {
+            const input = row.querySelector('input');
+            input.focus();
+          }
+        });
+      });
+
+      // ---- Inline input submission ----
+      document.querySelectorAll('.chip-submit').forEach(submit => {
+        submit.addEventListener('click', async () => {
+          const cmd = submit.dataset.cmdSubmit;
+          const row = submit.closest('.chip-input-row');
+          const input = row.querySelector('input');
+          const delta = input.value.trim();
+          if (!delta) {
+            input.focus();
+            showToast('Delta is required for ' + cmd, 'error');
+            return;
+          }
+          submit.disabled = true;
+          try {
+            await postAction(cmd, delta);
+            showToast('Queued: ' + cmd + ' — ' + (delta.length > 40 ? delta.slice(0, 40) + '…' : delta), 'success');
+            input.value = '';
+            row.classList.remove('open');
+            pollQueue();
+          } catch (err) {
+            showToast('Failed: ' + err.message, 'error');
+          } finally {
+            submit.disabled = false;
+          }
+        });
+      });
+
+      // Enter-to-submit on the inline inputs
+      document.querySelectorAll('.chip-input-row input').forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const row = input.closest('.chip-input-row');
+            row.querySelector('.chip-submit').click();
+          } else if (e.key === 'Escape') {
+            input.closest('.chip-input-row').classList.remove('open');
+          }
+        });
+      });
+
+      // Cancel buttons on the inline rows
+      document.querySelectorAll('.chip-cancel').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('.chip-input-row').classList.remove('open');
+        });
+      });
+
+      // Initial connection check + start polling
+      setConn('unknown', 'connecting…');
+      pollQueue();
+      setInterval(pollQueue, 3000);
+    })();
+  </script>
 </body>
 </html>
