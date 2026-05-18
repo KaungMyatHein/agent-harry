@@ -165,105 +165,179 @@
       display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
       margin-top: 40px;
     }
-    /* Hero workflow — activity feed style, no cards */
+    /* Hero workflow workspace — Kanban + File Tree dual view */
     .hero-workspace {
       margin: 24px auto 0;
-      max-width: 760px;
+      max-width: 880px;
       background: var(--parchment);
       border: 1px solid var(--hairline);
       border-radius: 24px;
-      padding: 28px 40px;
-      min-height: 300px;
+      overflow: hidden;
     }
-    .flow-track { position: relative; }
-    .feed {
-      position: relative;
+    .ws-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--hairline);
+      background: var(--canvas);
+      gap: 16px;
     }
-    .feed::before {
-      content: '';
-      position: absolute;
-      left: 18px;
-      top: 36px;
-      bottom: 36px;
-      width: 1.5px;
-      background: linear-gradient(to bottom,
-        transparent 0%,
-        var(--hairline) 12%,
-        var(--hairline) 88%,
-        transparent 100%);
-      z-index: 0;
-    }
-    .feed-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 24px;
-      padding: 18px 0;
-      align-items: start;
-      position: relative;
-      z-index: 1;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .55s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform .55s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .feed-row.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .feed-avatars {
-      display: flex;
-      align-items: center;
-      min-width: 36px;
-      position: relative;
-      z-index: 1;
-      margin-top: 2px;
-    }
-    .feed-dot {
-      width: 22px;
-      height: 22px;
-      border-radius: 9999px;
-      background: var(--c);
-      border: 3px solid var(--parchment);
-      flex-shrink: 0;
-      position: relative;
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 32%, var(--hairline)),
-                  0 2px 6px color-mix(in srgb, var(--c) 22%, transparent);
-    }
-    .feed-dot + .feed-dot { margin-left: -8px; }
-    .feed-content {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      padding-top: 1px;
-    }
-    .feed-names {
-      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--ink);
-      letter-spacing: -0.014em;
-      line-height: 1.3;
-    }
-    .feed-name-sep {
+    .ws-toolbar-label {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
       color: var(--ink-muted-48);
-      font-weight: 400;
-      margin: 0 6px;
     }
-    .feed-msg {
-      font-size: 14px;
+    .ws-views {
+      display: inline-flex;
+      background: var(--parchment);
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .ws-view {
+      font: inherit;
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border: 0;
+      border-radius: 9999px;
+      background: transparent;
       color: var(--ink-muted-80);
-      margin-top: 5px;
-      line-height: 1.5;
+      cursor: pointer;
+      transition: background .2s ease, color .2s ease;
       letter-spacing: -0.011em;
     }
-    .feed-step {
-      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
-      font-size: 10px;
+    .ws-view:hover { color: var(--ink); }
+    .ws-view.active {
+      background: var(--canvas);
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .ws-stage { padding: 26px; min-height: 360px; }
+    .ws-pane { display: none; }
+    .ws-pane.active { display: block; }
+
+    /* Kanban view */
+    .kanban {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .kb-meta {
+      grid-column: 1 / -1;
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .5s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform .5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .kb-meta.show { opacity: 1; transform: translateY(0); }
+    .kb-meta .dot {
+      width: 14px; height: 14px; border-radius: 9999px;
+      background: var(--c);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 12%, transparent);
+    }
+    .kb-meta .label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+      letter-spacing: -0.011em;
+    }
+    .kb-meta .msg {
+      font-size: 13px;
+      color: var(--ink-muted-80);
+      margin-left: auto;
+      font-style: italic;
+    }
+    .kb-col {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 160px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .kb-col h4 {
+      font: inherit;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--phase, var(--ink-muted-48));
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--divider-soft);
+    }
+    .kb-col.empty h4 {
       color: var(--ink-muted-48);
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      margin-top: 6px;
+      opacity: 0.55;
+    }
+    .kb-col-empty {
+      font-family: "SF Pro Text", system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--ink-muted-48);
+      font-style: italic;
+      align-self: center;
+      margin: auto 0;
+      letter-spacing: -0.011em;
+    }
+    .kb-card {
+      background: var(--parchment);
+      border-radius: 9px;
+      padding: 10px 12px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px;
+      letter-spacing: -0.011em;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .4s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform .4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .kb-card.show { opacity: 1; transform: translateY(0); }
+    .kb-card .d {
+      width: 8px; height: 8px; border-radius: 9999px;
+      background: var(--c);
+      flex-shrink: 0;
+    }
+
+    /* File Tree view */
+    .tree {
+      font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+      font-size: 13px;
+      line-height: 1.95;
+      color: var(--ink);
+    }
+    .tr-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity .35s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform .35s cubic-bezier(0.22, 1, 0.36, 1);
+      min-height: 22px;
+    }
+    .tr-line.show { opacity: 1; transform: translateX(0); }
+    .tr-branch { color: var(--ink-muted-48); white-space: pre; }
+    .tr-folder { color: var(--ink-muted-80); font-weight: 600; }
+    .tr-file { color: var(--ink); }
+    .tr-badge {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      background: var(--c);
+      margin-left: 8px;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 14%, transparent);
+    }
+    .tr-who {
+      color: var(--ink-muted-48);
+      font-size: 11px;
+      margin-left: 8px;
+      letter-spacing: 0.4px;
     }
 
     /* Use case picker */
@@ -761,10 +835,14 @@
       .tile { padding: 72px 24px; }
       .hero { padding: 80px 24px 72px; }
       .hero-lede { font-size: 19px; }
-      .hero-workspace { margin-top: 20px; padding: 20px 22px; border-radius: 22px; }
-      .feed-row { grid-template-columns: auto 1fr; gap: 18px; padding: 14px 0; }
-      .feed-step { grid-column: 2; margin-top: 2px; padding-left: 0; }
-      .feed::before { left: 16px; top: 30px; bottom: 30px; }
+      .hero-workspace { margin-top: 20px; border-radius: 20px; }
+      .ws-toolbar { padding: 10px 14px; }
+      .ws-stage { padding: 18px; }
+      .kanban { grid-template-columns: 1fr; gap: 10px; }
+      .kb-col { min-height: auto; }
+      .kb-meta .msg { display: none; }
+      .tree { font-size: 12px; line-height: 1.85; }
+      .tr-line { min-height: 20px; }
       .hero-cases { margin-top: 36px; }
       .hc-tabs { padding: 4px; }
       .hc-tab { padding: 8px 14px; font-size: 12px; }
@@ -841,7 +919,17 @@
       </div>
 
       <div class="hero-workspace">
-        <div class="flow-track" id="flow-track"></div>
+        <div class="ws-toolbar">
+          <span class="ws-toolbar-label">Workflow</span>
+          <div class="ws-views" role="tablist">
+            <button class="ws-view active" role="tab" data-view="kanban">Team</button>
+            <button class="ws-view" role="tab" data-view="tree">Artifacts</button>
+          </div>
+        </div>
+        <div class="ws-stage">
+          <div class="ws-pane active" id="ws-kanban"></div>
+          <div class="ws-pane" id="ws-tree"></div>
+        </div>
       </div>
 
       <div class="hc-info">
@@ -1375,105 +1463,251 @@
         crit:  { label: 'critique-partner',      color: '#dc2626' }
       };
 
+      const PHASE_COLOR = {
+        discovery: '#5e81ac',
+        define:    '#d97706',
+        deliver:   '#ec4899'
+      };
+
       const useCases = [
         {
           id: 'bootstrap',
           desc: 'Full <strong>Discovery → Define → Deliver</strong> cycle. The orchestrator routes through every phase; critique-partner stress-tests the handoff.',
-          steps: [
-            { title: 'Orchestrate', desc: 'Decompose the goal into phases.',     accent: '#0066cc', agents: ['orch'] },
-            { title: 'Discover',    desc: 'Find the real problem.',              accent: '#5e81ac', agents: ['disc', 'comp'] },
-            { title: 'Define',      desc: 'Sharpen the bet.',                    accent: '#d97706', agents: ['pos', 'pri', 'idea'] },
-            { title: 'Deliver',     desc: 'Ship something usable.',              accent: '#ec4899', agents: ['inter', 'usab', 'hand'] },
-            { title: 'Review',      desc: 'Stress-test the handoff.',            accent: '#dc2626', agents: ['crit'] }
+          kanban: {
+            meta: { id: 'orch', msg: 'Decomposing the goal' },
+            discovery: ['disc', 'comp'],
+            define:    ['pos', 'pri', 'idea'],
+            deliver:   ['inter', 'usab', 'hand'],
+            crit:      { id: 'crit', msg: 'Reviewing the handoff' }
+          },
+          tree: [
+            { branch: '',         type: 'folder', name: '/agent-harry-project/' },
+            { branch: '├── ',     type: 'folder', name: 'plan/',                  agent: 'orch' },
+            { branch: '│   └── ', type: 'file',   name: 'phases.md',              agent: 'orch' },
+            { branch: '├── ',     type: 'folder', name: 'discovery/',             agent: 'disc' },
+            { branch: '│   ├── ', type: 'file',   name: 'interviews.md',          agent: 'disc' },
+            { branch: '│   └── ', type: 'file',   name: 'competitors.md',         agent: 'comp' },
+            { branch: '├── ',     type: 'folder', name: 'define/',                agent: 'pos' },
+            { branch: '│   ├── ', type: 'file',   name: 'positioning.md',         agent: 'pos' },
+            { branch: '│   ├── ', type: 'file',   name: 'priorities.md',          agent: 'pri' },
+            { branch: '│   └── ', type: 'file',   name: 'concepts.md',            agent: 'idea' },
+            { branch: '├── ',     type: 'folder', name: 'deliver/',               agent: 'inter' },
+            { branch: '│   ├── ', type: 'file',   name: 'flows.fig',              agent: 'inter' },
+            { branch: '│   ├── ', type: 'file',   name: 'usability-report.md',    agent: 'usab' },
+            { branch: '│   └── ', type: 'file',   name: 'spec.md',                agent: 'hand' },
+            { branch: '└── ',     type: 'file',   name: 'critique.md',            agent: 'crit' }
           ]
         },
         {
           id: 'audit',
           desc: 'Mode B audit. <strong>interaction-designer</strong> reads the file, then <strong>critique-partner</strong> stress-tests the gaps.',
-          steps: [
-            { title: 'Audit',    desc: 'Inventory states + edge cases.',        accent: '#ec4899', agents: ['inter'] },
-            { title: 'Critique', desc: 'Surface weak reasoning + gaps.',        accent: '#dc2626', agents: ['crit'] }
+          kanban: {
+            meta: null,
+            discovery: [],
+            define:    [],
+            deliver:   ['inter'],
+            crit:      { id: 'crit', msg: 'Stress-testing the audit' }
+          },
+          tree: [
+            { branch: '',     type: 'folder', name: '/figma-audit/' },
+            { branch: '├── ', type: 'file',   name: 'states-inventory.md',  agent: 'inter' },
+            { branch: '├── ', type: 'file',   name: 'gaps.md',              agent: 'inter' },
+            { branch: '└── ', type: 'file',   name: 'critique-notes.md',    agent: 'crit' }
           ]
         },
         {
           id: 'positioning',
           desc: 'Define phase only. <strong>orchestrator</strong> routes, <strong>positioner</strong> picks the angle, <strong>prioritizer</strong> scores the backlog against it.',
-          steps: [
-            { title: 'Plan',       desc: 'Route the define cycle.',              accent: '#0066cc', agents: ['orch'] },
-            { title: 'Position',   desc: 'Pick the sharpest angle.',             accent: '#d97706', agents: ['pos'] },
-            { title: 'Prioritize', desc: 'Score the backlog against it.',        accent: '#b45309', agents: ['pri'] },
-            { title: 'Critique',   desc: 'Name what we are giving up.',          accent: '#dc2626', agents: ['crit'] }
+          kanban: {
+            meta: { id: 'orch', msg: 'Routing the define cycle' },
+            discovery: [],
+            define:    ['pos', 'pri'],
+            deliver:   [],
+            crit:      { id: 'crit', msg: 'Naming what we are giving up' }
+          },
+          tree: [
+            { branch: '',     type: 'folder', name: '/q3-positioning/' },
+            { branch: '├── ', type: 'file',   name: 'angles.md',            agent: 'orch' },
+            { branch: '├── ', type: 'file',   name: 'positioning.md',       agent: 'pos' },
+            { branch: '├── ', type: 'file',   name: 'priorities.md',        agent: 'pri' },
+            { branch: '└── ', type: 'file',   name: 'critique.md',          agent: 'crit' }
           ]
         },
         {
           id: 'handoff',
           desc: 'Dev-ready spec from <strong>handoff-engineer</strong>; state coverage validated by <strong>usability-tester</strong> before it ships.',
-          steps: [
-            { title: 'Spec',     desc: 'Dev-ready spec + token audit.',          accent: '#525252', agents: ['hand'] },
-            { title: 'Validate', desc: 'Verify state coverage.',                 accent: '#16a34a', agents: ['usab'] }
+          kanban: {
+            meta: null,
+            discovery: [],
+            define:    [],
+            deliver:   ['hand', 'usab'],
+            crit:      null
+          },
+          tree: [
+            { branch: '',     type: 'folder', name: '/feature-spec/' },
+            { branch: '├── ', type: 'file',   name: 'spec.md',              agent: 'hand' },
+            { branch: '├── ', type: 'file',   name: 'tokens-audit.md',      agent: 'hand' },
+            { branch: '└── ', type: 'file',   name: 'state-coverage.md',    agent: 'usab' }
           ]
         }
       ];
 
-      const track  = document.getElementById('flow-track');
-      const descEl = document.getElementById('hc-desc');
-      const tabs   = Array.from(document.querySelectorAll('.hc-tab'));
-      if (!track) return;
+      const kanbanPane = document.getElementById('ws-kanban');
+      const treePane   = document.getElementById('ws-tree');
+      const descEl     = document.getElementById('hc-desc');
+      const caseTabs   = Array.from(document.querySelectorAll('.hc-tab'));
+      const viewTabs   = Array.from(document.querySelectorAll('.ws-view'));
+      if (!kanbanPane || !treePane) return;
 
       let timers = [];
+      let currentCase = 'bootstrap';
+      let currentView = 'kanban';
+
       function clearTimers() { timers.forEach(clearTimeout); timers = []; }
 
-      function buildRowHTML(step, index) {
-        const dotsHTML = step.agents.map(function (key) {
-          const a = AGENTS[key];
-          if (!a) return '';
-          return '<span class="feed-dot" style="--c:' + a.color + ';"></span>';
-        }).join('');
+      function buildKanbanHTML(uc) {
+        const k = uc.kanban;
+        let html = '<div class="kanban">';
 
-        const namesHTML = step.agents.map(function (key) {
-          return AGENTS[key] ? AGENTS[key].label : '';
-        }).join('<span class="feed-name-sep">·</span>');
+        if (k.meta) {
+          const a = AGENTS[k.meta.id];
+          html +=
+            '<div class="kb-meta" data-anim="meta" style="--c:' + a.color + ';">' +
+              '<span class="dot"></span>' +
+              '<span class="label">' + a.label + '</span>' +
+              '<span class="msg">' + k.meta.msg + '</span>' +
+            '</div>';
+        }
 
-        const stepNum = 'Step ' + String(index + 1).padStart(2, '0');
+        ['discovery', 'define', 'deliver'].forEach(function (phase) {
+          const agents = k[phase] || [];
+          const phaseTitle = phase.charAt(0).toUpperCase() + phase.slice(1);
+          const isEmpty = agents.length === 0;
+          html += '<div class="kb-col' + (isEmpty ? ' empty' : '') +
+                  '" style="--phase:' + PHASE_COLOR[phase] + ';">' +
+                  '<h4>' + phaseTitle + '</h4>';
+          if (isEmpty) {
+            html += '<div class="kb-col-empty">Not in this flow</div>';
+          } else {
+            agents.forEach(function (id) {
+              const a = AGENTS[id];
+              if (!a) return;
+              html +=
+                '<div class="kb-card" data-anim="card" data-phase="' + phase + '" style="--c:' + a.color + ';">' +
+                  '<span class="d"></span>' + a.label +
+                '</div>';
+            });
+          }
+          html += '</div>';
+        });
 
-        return (
-          '<div class="feed-row" style="--c:' + step.accent + ';">' +
-            '<div class="feed-avatars">' + dotsHTML + '</div>' +
-            '<div class="feed-content">' +
-              '<div class="feed-names">' + namesHTML + '</div>' +
-              '<div class="feed-msg">' + step.desc + '</div>' +
-            '</div>' +
-            '<div class="feed-step">' + stepNum + '</div>' +
-          '</div>'
-        );
+        if (k.crit) {
+          const a = AGENTS[k.crit.id];
+          html +=
+            '<div class="kb-meta" data-anim="crit" style="--c:' + a.color + ';">' +
+              '<span class="dot"></span>' +
+              '<span class="label">' + a.label + '</span>' +
+              '<span class="msg">' + k.crit.msg + '</span>' +
+            '</div>';
+        }
+
+        html += '</div>';
+        return html;
       }
 
-      function render(caseId) {
-        const uc = useCases.find(function (u) { return u.id === caseId; });
-        if (!uc) return;
+      function buildTreeHTML(uc) {
+        let html = '<div class="tree">';
+        uc.tree.forEach(function (line) {
+          html += '<div class="tr-line">' +
+            '<span class="tr-branch">' + line.branch + '</span>' +
+            '<span class="tr-' + line.type + '">' + line.name + '</span>';
+          if (line.agent) {
+            const a = AGENTS[line.agent];
+            html +=
+              '<span class="tr-badge" style="--c:' + a.color + ';"></span>' +
+              '<span class="tr-who">' + a.label + '</span>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+        return html;
+      }
 
+      function animateKanban() {
+        let delay = 100;
+        const meta = kanbanPane.querySelector('[data-anim="meta"]');
+        if (meta) {
+          timers.push(setTimeout(function () { meta.classList.add('show'); }, delay));
+          delay += 350;
+        }
+        ['discovery', 'define', 'deliver'].forEach(function (phase) {
+          const cards = kanbanPane.querySelectorAll('[data-anim="card"][data-phase="' + phase + '"]');
+          if (!cards.length) return;
+          cards.forEach(function (card, i) {
+            timers.push(setTimeout(function () { card.classList.add('show'); }, delay + i * 140));
+          });
+          delay += Math.max(cards.length * 140, 350);
+        });
+        const crit = kanbanPane.querySelector('[data-anim="crit"]');
+        if (crit) {
+          timers.push(setTimeout(function () { crit.classList.add('show'); }, delay));
+        }
+      }
+
+      function animateTree() {
+        const lines = Array.from(treePane.querySelectorAll('.tr-line'));
+        lines.forEach(function (line, i) {
+          timers.push(setTimeout(function () { line.classList.add('show'); }, 120 + i * 140));
+        });
+      }
+
+      function render() {
+        const uc = useCases.find(function (u) { return u.id === currentCase; });
+        if (!uc) return;
         clearTimers();
-        tabs.forEach(function (t) {
+        if (descEl) descEl.innerHTML = uc.desc;
+        kanbanPane.innerHTML = buildKanbanHTML(uc);
+        treePane.innerHTML   = buildTreeHTML(uc);
+        if (currentView === 'kanban') animateKanban();
+        else animateTree();
+      }
+
+      function setView(view) {
+        currentView = view;
+        viewTabs.forEach(function (t) {
+          t.classList.toggle('active', t.dataset.view === view);
+        });
+        kanbanPane.classList.toggle('active', view === 'kanban');
+        treePane.classList.toggle('active', view === 'tree');
+        // Re-animate the now-visible view
+        clearTimers();
+        if (view === 'kanban') {
+          kanbanPane.querySelectorAll('.show').forEach(function (el) { el.classList.remove('show'); });
+          animateKanban();
+        } else {
+          treePane.querySelectorAll('.show').forEach(function (el) { el.classList.remove('show'); });
+          animateTree();
+        }
+      }
+
+      function setCase(caseId) {
+        currentCase = caseId;
+        caseTabs.forEach(function (t) {
           t.classList.toggle('active', t.dataset.case === caseId);
         });
-        if (descEl) descEl.innerHTML = uc.desc;
-
-        const parts = uc.steps.map(function (step, i) { return buildRowHTML(step, i); });
-        track.innerHTML = '<div class="feed">' + parts.join('') + '</div>';
-
-        const rows = Array.from(track.querySelectorAll('.feed-row'));
-        rows.forEach(function (row, i) {
-          timers.push(setTimeout(function () { row.classList.add('show'); }, 140 + i * 520));
-        });
+        render();
       }
 
-      tabs.forEach(function (t) {
-        t.addEventListener('click', function () { render(t.dataset.case); });
+      caseTabs.forEach(function (t) {
+        t.addEventListener('click', function () { setCase(t.dataset.case); });
+      });
+      viewTabs.forEach(function (t) {
+        t.addEventListener('click', function () { setView(t.dataset.view); });
       });
 
-      // Auto-play the first case on load so the page feels alive
+      // Auto-play on load
       window.addEventListener('load', function () {
-        setTimeout(function () { render('bootstrap'); }, 500);
+        setTimeout(function () { setCase('bootstrap'); }, 500);
       });
     })();
   </script>
