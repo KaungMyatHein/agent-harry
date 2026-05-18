@@ -221,6 +221,109 @@
     .stat-cell-value.confidence-high { color: var(--status-done); }
     .stat-cell-value.confidence-low { color: var(--c-critique); }
 
+    /* ---------- Decision Data panel (v3.3) ---------- */
+    .now-decision {
+      padding: 18px 24px 22px;
+      border-bottom: 1px solid var(--divider-soft);
+      background: var(--canvas);
+    }
+    .now-decision-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--ink-faint);
+      letter-spacing: 0.8px; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    /* Type 1: insight list */
+    .decision-insights { display: flex; flex-direction: column; gap: 10px; }
+    .decision-insight {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--parchment);
+      border-radius: 10px;
+    }
+    .decision-insight-num {
+      width: 22px; height: 22px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background: var(--c-discovery);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+      margin-top: 1px;
+    }
+    .decision-insight-body { flex: 1; min-width: 0; }
+    .decision-insight-text { font-size: 14px; color: var(--ink); line-height: 1.42; letter-spacing: -0.12px; }
+    .decision-insight-evidence { font-size: 12.5px; color: var(--ink-muted); font-style: italic; margin-top: 4px; letter-spacing: -0.12px; line-height: 1.42; }
+    .decision-conf {
+      display: inline-block; padding: 1px 7px; border-radius: 4px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.4px; margin-left: 6px; vertical-align: 2px;
+    }
+    .decision-conf.high { background: rgba(22,163,74,0.15); color: var(--status-done); }
+    .decision-conf.medium { background: rgba(217,119,6,0.15); color: var(--c-positioner); }
+    .decision-conf.low { background: rgba(220,38,38,0.15); color: var(--c-critique); }
+
+    /* Type 2: scoring table */
+    .decision-table-wrap { overflow-x: auto; }
+    .decision-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .decision-table th {
+      text-align: left; font-size: 10.5px; font-weight: 600;
+      color: var(--ink-faint); letter-spacing: 0.6px; text-transform: uppercase;
+      padding: 8px 10px; border-bottom: 1px solid var(--hairline);
+    }
+    .decision-table th.num { text-align: right; }
+    .decision-table td {
+      padding: 9px 10px; border-bottom: 1px solid var(--divider-soft);
+      vertical-align: top; font-size: 13px;
+    }
+    .decision-table td.num { text-align: right; font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace; font-size: 12.5px; }
+    .decision-table tr:last-child td { border-bottom: 0; }
+    .decision-table td .delta-up { color: var(--status-done); font-weight: 600; }
+    .decision-table td .delta-down { color: var(--c-critique); font-weight: 600; }
+    .decision-table tr.dropped td { color: var(--ink-faint); }
+    .decision-table tr.dropped td.label { text-decoration: line-through; }
+    .decision-table .pill-in { display: inline-block; padding: 1px 7px; border-radius: 4px; background: rgba(22,163,74,0.15); color: var(--status-done); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+    .decision-table .pill-out { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--parchment); color: var(--ink-faint); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+    .decision-table .pill-open { display: inline-block; padding: 1px 7px; border-radius: 4px; background: rgba(217,119,6,0.15); color: var(--c-positioner); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    /* Type 3: callout (strategist's "the bet", launch's beachhead) */
+    .decision-callout {
+      padding: 18px 22px;
+      background: linear-gradient(135deg, #ecfeff 0%, #ffffff 100%);
+      border-left: 3px solid var(--c-strategist);
+      border-radius: 0 12px 12px 0;
+    }
+    .decision-callout.launch { background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%); border-left-color: var(--c-launch); }
+    .decision-callout-quote {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 17px; font-weight: 500; line-height: 1.35;
+      letter-spacing: -0.374px; color: var(--ink); margin-bottom: 12px;
+    }
+    .decision-callout-quote em { font-style: italic; color: var(--c-strategist); font-weight: 600; }
+    .decision-callout.launch .decision-callout-quote em { color: var(--c-launch); }
+    .decision-callout-meta { font-size: 13px; color: var(--ink-muted); line-height: 1.5; }
+    .decision-callout-meta strong { color: var(--ink); font-weight: 600; }
+    .decision-callout-meta em { font-style: italic; color: var(--ink-faint); }
+
+    /* Type 4: metric layers (pm-metrics-architect) */
+    .decision-metrics { display: flex; flex-direction: column; gap: 8px; }
+    .decision-metric-row {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 12px 14px; background: var(--parchment); border-radius: 9px;
+    }
+    .decision-metric-layer {
+      flex-shrink: 0; width: 96px;
+      font-size: 10.5px; font-weight: 700;
+      color: var(--ink-faint); letter-spacing: 0.6px; text-transform: uppercase;
+      padding-top: 3px;
+    }
+    .decision-metric-layer.northstar { color: var(--c-metrics); }
+    .decision-metric-layer.counter { color: var(--c-critique); }
+    .decision-metric-body { flex: 1; font-size: 14px; line-height: 1.4; letter-spacing: -0.12px; }
+    .decision-metric-body strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+    .decision-metric-body small { display: block; color: var(--ink-muted); font-size: 12px; margin-top: 3px; }
+
     /* ---------- TL;DR ---------- */
     .now-tldr {
       padding: 22px 24px 8px;
@@ -569,6 +672,23 @@
           <div class="stat-cell-label">Step cost</div>
           <div class="stat-cell-value">$0.04</div>
         </div>
+      </div>
+
+      <div class="now-decision">
+        <div class="now-decision-label">Re-scored backlog · top 6 with deltas + MVP call</div>
+        <div class="decision-table-wrap"><table class="decision-table">
+          <thead><tr>
+            <th>Feature</th><th class="num">Reach</th><th class="num">Impact</th><th class="num">Effort</th><th class="num">RICE</th><th>MVP</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><strong>Guest checkout</strong></td><td class="num">9</td><td class="num">8</td><td class="num">3</td><td class="num">76 <span class="delta-up">↑</span></td><td><span class="pill-in">in</span></td></tr>
+            <tr><td>Phone-verify retry</td><td class="num">7</td><td class="num">7</td><td class="num">2</td><td class="num">65 <span class="delta-up">↑</span></td><td><span class="pill-in">in</span></td></tr>
+            <tr><td>Cash reconciliation flow</td><td class="num">5</td><td class="num">9</td><td class="num">5</td><td class="num">32</td><td><span class="pill-in">in</span></td></tr>
+            <tr><td>Apple Pay</td><td class="num">8</td><td class="num">6</td><td class="num">8?</td><td class="num">18 ?</td><td><span class="pill-open">open</span></td></tr>
+            <tr><td>Order history filter</td><td class="num">3</td><td class="num">4</td><td class="num">4</td><td class="num">9</td><td><span class="pill-out">out</span></td></tr>
+            <tr class="dropped"><td class="label">Wishlist sync</td><td class="num">2</td><td class="num">3</td><td class="num">6</td><td class="num">0.4 <span class="delta-down">↓</span></td><td><span class="pill-out">dropped</span></td></tr>
+          </tbody>
+        </table></div>
       </div>
 
       <div class="now-tldr">

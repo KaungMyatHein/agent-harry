@@ -4,6 +4,24 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-18 — v3.3: Decision Data panel — surface critical data inline
+
+v3.1/v3.2 made the dashboard interactive but kept the actual decision-critical data (research evidence, scoring tables, the bet, named accounts, measurement plan) hidden in MD handoff files. To make a `y / revise / pivot` call you'd often still open the MD file — which defeated the v3.1 intent of "the dashboard is where you read." v3.3 adds a **Decision Data panel** between the stat cells and the TL;DR so the headline data is visible inline.
+
+- **New `.now-decision` panel in `templates/dashboard.html`** — renders between `.now-stats` and `.now-tldr` in the NOW card. Four shape variants for different agent types:
+  - **`insights`** — numbered list, each row text + verbatim evidence + high/medium/low confidence chip. Used by `discovery-researcher`, `ideation-facilitator`, `usability-tester`, `critique-partner`.
+  - **`table`** — scoring/comparison table with deltas (green ↑ / red ↓) and in/out/open pills. Used by `feature-prioritizer`, `competitive-analyst`, `interaction-designer`, `handoff-engineer`.
+  - **`callout`** — single highlighted quote (the bet, beachhead) + supporting meta block. Used by `product-positioner`, `pm-strategist`, `pm-launch-architect` (with `flavor: launch` orange palette).
+  - **`metrics`** — stacked rows for measurement-plan layers (north-star · input · health · counter). Used by `pm-metrics-architect`.
+- **`SHARED_CONTEXT.md` gets a Decision Data Shapes appendix** — full spec of the 4 shape types, the per-agent shape map (which agent uses which shape), and length discipline (caps stay aligned with v2 token-budget rules).
+- **`orchestrator.md` Dashboard Rendering updated** — orchestrator now reads the just-completed sub-agent's `decisionData` and embeds it in `dashboard.html` at every Stop Gate. If decisionData is missing, the panel is omitted; the dashboard degrades gracefully.
+- **TL;DR vs Decision Data — clear split** — the TL;DR (3 bullets) now *references* the panel ("Top 2 insights are high-confidence" / "Guest checkout jumped to #2") rather than duplicating it. The panel owns the data; the TL;DR owns the framing.
+- **Demo updated (`docs/dashboard-demo.html`)** — 5 states now showcase the Decision Data panel: a new "02. After Discovery" state with the insight list + evidence, "03. Mid-pipeline" with the scoring table, "08. PM Strategist" with the bet callout, "09. PM Launch Architect" with the beachhead callout (orange flavor), "10. PM Metrics Architect" with the 4-layer measurement plan. State count grows 10 → 11.
+
+Token-cost impact: +1–2k output per Stop Gate (dashboard write goes ~2–3k from ~1–2k). Across a 5–8 step pipeline, +$0.05–0.15. Still well within the v2 $3 ceiling.
+
+What stays in MD files (not on dashboard): full methodology, sample bias audit, dropped ideas, interview transcripts, full event taxonomy, edge-case state diagrams. The dashboard is the decision surface; the MD is the audit trail.
+
 ## 2026-05-18 — v3.2: Click-driven mode — local server + polling loop
 
 v3.1 made the Stop Gate visual but the chips were read-only — you still had to type in chat. v3.2 makes the dashboard genuinely interactive: clickable chips POST to a local HTTP server, a new slash command runs a polling loop that drives the orchestrator on browser clicks. Click-and-walk-away UX without breaking the chat-as-source-of-truth invariant.

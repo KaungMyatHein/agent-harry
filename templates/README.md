@@ -66,7 +66,8 @@ What's on it:
 
 - **Top bar** — project name + step count + elapsed time + cumulative cost (turns yellow at $1.50, red at $2.50 — keeps the $3 ceiling visible)
 - **History breadcrumb** — every completed sub-agent in this session, compressed
-- **NOW card** — the visual centerpiece. Status dot + agent name + Mode tag + phase pill + 4 stat cells + 3-bullet TL;DR + next-move suggestion + 5 command chips
+- **NOW card** — the visual centerpiece. Status dot + agent name + Mode tag + phase pill + 4 stat cells + **Decision Data panel** (v3.3) + 3-bullet TL;DR + next-move suggestion + 5 command chips
+- **Decision Data panel** (v3.3) — surfaces the actual decision-critical content inline: scoring tables (feature-prioritizer), insight lists with evidence (discovery-researcher), "the bet" callouts (pm-strategist, pm-launch-architect), measurement-plan layers (pm-metrics-architect). 4 shape variants — see `SHARED_CONTEXT.md` Decision Data Shapes appendix
 - **Suggested-next strip** — if `y` leads to a clear next agent, shown here with cost estimate
 
 The dashboard is **read-only**. Command chips display the literal text you type in chat (`y / revise <delta> / pivot — <direction> / grill me / cancel`). Clicks do nothing — chat is still the source of truth and where input happens. Silence is still not consent.
