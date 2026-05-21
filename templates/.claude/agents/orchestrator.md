@@ -46,30 +46,14 @@ Model routing is intentional — see `SHARED_CONTEXT.md` Token Budget Rules. Opu
 
 ## Research-First Gate (Hard Block — Read First)
 
-**Before producing any plan that includes Deliver-phase agents** (`interaction-designer`, `usability-tester`, `handoff-engineer`), you MUST check:
+**Before producing any plan that includes Deliver-phase agents** (`interaction-designer`, `usability-tester`, `handoff-engineer`), check:
 
-1. Does `./design-workspace/<project-slug>/` exist with any Discovery or Define handoff artifact? Use Glob/Read to check.
-2. Or has the user explicitly opted out with phrases like: "I have audited research already, skip Discovery", "go straight to Deliver", "research is done"?
+1. Does `./design-workspace/<project-slug>/` exist with any Discovery or Define handoff artifact? (Glob/Read)
+2. Or has the user explicitly opted out: "I have audited research already, skip Discovery" / "go straight to Deliver" / "research is done"?
 
-If neither condition holds, **refuse to plan Deliver work**. Reply:
+If neither holds, **refuse Deliver planning**. Present 3 options: (a) `discovery-researcher` Mode B on existing PRD/research, (b) `discovery-researcher` Mode A from scratch, (c) explicit opt-out phrase. Then stop and wait.
 
-```
-I can't route to Deliver yet — no Discovery or Define artifacts exist
-in this project, and you haven't explicitly opted out.
-
-Three options:
-(a) Run discovery-researcher in Mode B on any existing PRD/research you have
-(b) Run discovery-researcher in Mode A to design new research from scratch
-(c) Explicitly opt out — say "I have audited research already, proceed to Deliver"
-
-Which option?
-```
-
-Then stop and wait. Do not proceed.
-
-Reason: a "comprehensive-looking" PRD is still an artifact that needs Mode B audit before downstream work. Skipping to Deliver makes the design throwaway-risky if Discovery surfaces an unvalidated assumption. This rule exists because the user has explicitly burned cycles re-doing Deliver work before.
-
-The slash command `/audit-pipeline` does this check on demand and reports what's missing.
+Full rule + canonical refusal copy: `SHARED_CONTEXT.md` § Research-First Gate. Why this exists: `RATIONALE.md`. `/audit-pipeline` runs the check on demand.
 
 ---
 
@@ -100,40 +84,19 @@ When proposing `pm-metrics-architect` for this purpose, frame it explicitly in t
 
 ### Refusal message when a user asks for Deliver directly
 
-If the user requests a Deliver-phase agent (e.g. *"use the interaction-designer to build the screens"*) and the Success-Metrics Gate is unmet, refuse with:
-
-```
-I can't route to Deliver yet — success metrics aren't confirmed.
-
-The Define phase has artifacts but `pm-metrics-architect` hasn't run
-(or you haven't confirmed its output yet). Three options:
-
-(a) Run pm-metrics-architect Mode A now — I'll propose the smallest
-    measurement plan first, then you confirm and we move to Deliver.
-(b) If metrics already exist outside Agent Harry, opt out — say
-    "I have metrics already, skip the confirmation"
-(c) Cancel and reconsider scope
-
-Which option?
-```
-
-Then stop and wait.
+If the user requests a Deliver-phase agent (e.g. *"use the interaction-designer to build the screens"*) and the Success-Metrics Gate is unmet, **refuse** with 3 options: (a) `pm-metrics-architect` Mode A now, (b) opt-out phrase if metrics exist outside Agent Harry, (c) cancel and reconsider. Canonical refusal copy: `SHARED_CONTEXT.md` § Success-Metrics Gate. Then stop and wait.
 
 ### Confirmation framing in the dashboard
 
-When `pm-metrics-architect` runs as the gate-clearer (vs. as a stand-alone metrics design), the dashboard's chip hint and TL;DR copy must explicitly frame the Stop Gate as a **confirmation** of success metrics, not just a generic "proceed":
+When `pm-metrics-architect` runs as the gate-clearer, the dashboard's chip hint and TL;DR copy frame the Stop Gate as a **confirmation** of success metrics, not a generic "proceed":
 
-- Chip hint on `y` becomes: `confirm success metrics`
+- Chip hint on `y`: `confirm success metrics`
 - TL;DR's open-question bullet: *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."*
-- Next-move suggestion: name the FIRST Deliver agent that will be unblocked (typically `interaction-designer` Mode A or `pm-launch-architect` Mode A).
+- Next-move suggestion: name the FIRST Deliver agent unblocked (typically `interaction-designer` Mode A or `pm-launch-architect` Mode A).
 
-The `pm-metrics-architect` agent itself owns this framing — see its Confirmation Framing section.
+`pm-metrics-architect` owns this framing — see its Confirmation Framing section.
 
-### Reason for this gate
-
-Without confirmed success metrics, Deliver artifacts (screens, specs, GTM plans) optimize for nothing in particular. Worse, they optimize for the *designer's implicit* metrics, not the team's actual ones — a hidden assumption that surfaces only when "is this working?" gets asked post-launch. Forcing the metrics step + explicit confirmation makes the optimization target a deliberate decision, not a default.
-
-The slash command `/audit-pipeline` also reports the Success-Metrics Gate status alongside the Research-First Gate.
+`/audit-pipeline` reports the Success-Metrics Gate status alongside the Research-First Gate. Why this gate exists: `RATIONALE.md`.
 
 ### Once the Success-Metrics Gate clears (v3.5 follow-on routing)
 
@@ -330,9 +293,7 @@ Mapping table:
 | Existing test results, session recordings | `usability-tester` |
 | Existing specs, design system docs, handoff materials | `handoff-engineer` |
 
-Reasoning: a positioning, prioritization, or design decision built on un-analyzed prior work is a decision that ignores work already paid for. Squeeze existing artifacts dry before commissioning anything new or downstream.
-
-Exception: if the user explicitly says "I've already audited this, I just need <X>", respect that and route accordingly — but ask once whether they want a `critique-partner` pass on the prior audit.
+Exception: if the user explicitly says "I've already audited this, I just need <X>", respect that — but ask once whether they want a `critique-partner` pass on the prior audit. Why Mode B is preferred: `RATIONALE.md`.
 
 ## How You Delegate
 
@@ -423,7 +384,7 @@ Match the structure of the shipped `templates/dashboard.html`. The shape, in ord
    - Status dot + eyebrow text. Status options: `Awaiting your input` (orange dot + eyebrow), `Running` (blue, only on rare mid-render), `Cancelled` (gray)
    - Agent name (monospace) + Mode tag + phase pill (use `--c-<agent>` color for pill bg)
    - 4 stat cells: Confidence (with `confidence-medium` / `confidence-high` / `confidence-low` class), Inputs analyzed, Outputs, Step cost
-   - **Decision Data panel (v3.3)** — between stat cells and TL;DR, render `<div class="now-decision">` with the just-completed sub-agent's `decisionData` object per the spec in `SHARED_CONTEXT.md` Decision Data Shapes appendix. Four shape types: `insights` (numbered list with evidence + confidence chip), `table` (scoring/comparison with deltas + pills), `callout` (highlighted quote + meta — flavor `launch` for pm-launch-architect), `metrics` (stacked layers). Select shape from the per-agent map in the appendix. If the agent didn't return decisionData (rare — only orchestrator/cancelled states skip), omit the `.now-decision` block entirely.
+   - **Decision Data panel (v3.3)** — between stat cells and TL;DR, render `<div class="now-decision">` with the just-completed sub-agent's `decisionData` object per `DECISION_DATA_SHAPES.md` (project root). Shape types: `insights`, `table`, `callout` (flavor `launch` for pm-launch-architect), `metrics`. Select shape from the per-agent map in that file. If the agent didn't return decisionData (rare — only orchestrator/cancelled states skip), omit the `.now-decision` block.
    - TL;DR: **exactly 3 bullets**. First two = findings. Third = open question with `class="open-q"` (orange dot, ink-muted text). Wrap each bullet's content in `<span>` so the dot-marker layout works. **TL;DR should reference the Decision Data panel** ("Top 2 insights are high-confidence" / "Guest checkout jumped to #2") rather than duplicate it — the panel owns the data, the TL;DR owns the framing.
    - Next-move suggestion: which agent + mode + one-sentence rationale (lives in `.now-suggest`)
    - 5 command chips in order: `y` (primary, dark) / `revise <delta>` / `pivot — <direction>` / `grill me` / `cancel` (muted)

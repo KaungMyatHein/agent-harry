@@ -41,16 +41,18 @@ Steps:
 3. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/`
 4. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/`
 5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
-6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (seeded sample; orchestrator overwrites at first Stop Gate)
-7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (v3.2: HTTP server for click-driven mode)
-8. Copy `templates/.harry-queue.json` → `<project>/.harry-queue.json` (v3.2: queue state file)
-9. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-10. Confirm completion with file list and a quick "try this next" prompt
+6. Copy `templates/PM_SKILLS_MAP.md` → `<project>/PM_SKILLS_MAP.md` (v3.6: lazy-loaded skill ownership map)
+7. Copy `templates/DECISION_DATA_SHAPES.md` → `<project>/DECISION_DATA_SHAPES.md` (v3.6: lazy-loaded dashboard shape spec)
+8. Copy `templates/dashboard.html` → `<project>/dashboard.html` (seeded sample; orchestrator overwrites at first Stop Gate)
+9. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (v3.2: HTTP server for click-driven mode)
+10. Copy `templates/.harry-queue.json` → `<project>/.harry-queue.json` (v3.2: queue state file)
+11. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
+12. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 14 Agent Harry subagents + 3 slash commands + dashboard server + SHARED_CONTEXT.md + dashboard.html into <project>/
+Installed 14 Agent Harry subagents + 3 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html into <project>/
 
 Try this — chat-only mode (simplest):
 1. Open dashboard.html in the Claude Preview MCP panel.
@@ -133,9 +135,10 @@ Steps:
 6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; seeds the sample state — orchestrator overwrites at the first Stop Gate).
 7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (overwriting; v3.2).
 8. If `<project>/.harry-queue.json` doesn't exist, copy `templates/.harry-queue.json` → `<project>/.harry-queue.json`. If it exists, **do not overwrite** — it may contain in-flight session state.
-9. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion", "Queue Mode"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
-10. Do **not** touch `README.md`.
-11. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
+9. If `<project>/PM_SKILLS_MAP.md` or `<project>/DECISION_DATA_SHAPES.md` don't exist (pre-v3.6 install), copy them from `templates/`. If they exist, leave them alone unless the user opts in — they're reference appendices that users may have lightly customized.
+10. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion", "Queue Mode"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
+11. Do **not** touch `README.md`.
+12. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
 
 Expected output:
 
@@ -201,12 +204,15 @@ templates/
 ├── README.md
 ├── SHARED_CONTEXT.md           ← v2: Executive Summary, Token Budget, Research-First Gate
 │                                 v2.1: Always-On Stop Gate
-│                                 v3: PM Skills Map
+│                                 v3: PM Skills Map (extracted in v3.6)
 │                                 v3.1: Dashboard companion spec
 │                                 v3.2: Queue Mode spec
-│                                 v3.3: Decision Data Shapes appendix
+│                                 v3.3: Decision Data Shapes appendix (extracted in v3.6)
 │                                 v3.4: Success-Metrics Gate
 │                                 v3.5: Notion Sync section
+│                                 v3.6: dedup'd against orchestrator; verbose rationale moved to RATIONALE.md
+├── PM_SKILLS_MAP.md            ← v3.6: per-agent skill ownership (lazy-loaded)
+├── DECISION_DATA_SHAPES.md     ← v3.6: dashboard decisionData spec (lazy-loaded)
 ├── dashboard.html              ← v3.1: visual Stop Gate companion
 │                                 v3.2: clickable buttons + inline inputs + fetch handlers
 │                                 v3.3: Decision Data panel

@@ -208,9 +208,7 @@ The orchestrator enforces this gate. If a user requests Deliver work without Dis
 
 > Orchestrator response: "I can't route to Deliver yet — no Discovery or Define artifacts exist in this project. Options: (a) run discovery-researcher in Mode B on any existing PRD/research you have, (b) run discovery-researcher in Mode A to design new research, or (c) explicitly opt out: tell me 'I have audited research already, proceed to Deliver.'"
 
-Reason for this rule: a "comprehensive-looking" PRD is still an artifact that needs Mode B audit before downstream work. Skipping to Deliver makes the downstream design throwaway-risky.
-
-The slash command `/audit-pipeline` runs this check on demand and reports what's missing.
+`/audit-pipeline` runs this check on demand. See `RATIONALE.md` for the why behind the gate.
 
 ---
 
@@ -225,46 +223,15 @@ The Deliver-phase agents (`interaction-designer`, `usability-tester`, `handoff-e
 
 When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics (chip hint becomes `confirm success metrics`, TL;DR ends with *"Confirm these metrics so Deliver can proceed?"*).
 
-Reason for this rule: without confirmed success metrics, Deliver artifacts optimize for nothing in particular — or worse, for the designer's implicit metrics, not the team's actual ones. Forcing the metrics step + explicit confirmation makes the optimization target a deliberate decision instead of a default.
-
-The slash command `/audit-pipeline` reports this gate's status alongside the Research-First Gate.
+`/audit-pipeline` reports this gate's status alongside the Research-First Gate. See `RATIONALE.md` for the why.
 
 ---
 
 ## PM Skills Map
 
-Agent Harry agents are skill-aware. When the user has Claude Code's PM skill packs installed (`pm-execution`, `pm-market-research`, `pm-marketing-growth`, `pm-product-strategy`, `pm-go-to-market`, `pm-product-discovery`, `pm-toolkit`, `product-management`, `product-tracking-skills`), agents can invoke specific skills via the Skill tool rather than re-deriving PM artifacts from scratch.
+Agents are skill-aware. When the user has PM skill packs installed (`pm-execution`, `pm-market-research`, `pm-marketing-growth`, `pm-product-strategy`, `pm-go-to-market`, `pm-product-discovery`, `pm-toolkit`, `product-management`, `product-tracking-skills`), agents invoke specific skills via the Skill tool instead of re-deriving artifacts.
 
-The mapping below is the source of truth. Agents read this and decide when to invoke a skill vs. produce their own analysis.
-
-| Agent | Owns PM skills |
-|---|---|
-| `discovery-researcher` | pm-market-research:analyze-feedback, pm-market-research:research-users, pm-market-research:user-segmentation, pm-product-discovery:interview, pm-product-discovery:summarize-interview |
-| `competitive-analyst` | pm-market-research:competitive-analysis, pm-go-to-market:competitive-battlecard, product-management:competitive-brief |
-| `product-positioner` | pm-product-strategy:value-proposition, pm-marketing-growth:value-prop-statements, pm-marketing-growth:positioning-ideas, pm-marketing-growth:product-name |
-| `feature-prioritizer` | pm-product-discovery:prioritize-features, pm-execution:prioritization-frameworks, pm-product-discovery:analyze-feature-requests, pm-product-discovery:triage-requests |
-| `ideation-facilitator` | pm-product-discovery:brainstorm, pm-product-discovery:brainstorm-ideas-new, pm-product-discovery:brainstorm-ideas-existing, pm-product-discovery:opportunity-solution-tree |
-| `usability-tester` | pm-execution:test-scenarios, pm-product-discovery:identify-assumptions-existing, pm-product-discovery:prioritize-assumptions |
-| `handoff-engineer` | pm-execution:user-stories, pm-execution:job-stories, pm-execution:wwas, pm-execution:create-prd, product-management:write-spec |
-| `pm-strategist` *(v3)* | pm-product-strategy:strategy, pm-product-strategy:product-vision, pm-product-strategy:business-model, pm-product-strategy:lean-canvas, pm-product-strategy:startup-canvas, pm-product-strategy:swot-analysis, pm-product-strategy:porters-five-forces, pm-product-strategy:pestle-analysis, pm-product-strategy:ansoff-matrix, pm-product-strategy:pricing-strategy, pm-product-strategy:monetization-strategy, pm-marketing-growth:north-star-metric, pm-marketing-growth:marketing-ideas, pm-market-research:market-sizing |
-| `pm-launch-architect` *(v3)* | pm-go-to-market:gtm-strategy, pm-go-to-market:beachhead-segment, pm-go-to-market:ideal-customer-profile, pm-go-to-market:gtm-motions, pm-go-to-market:growth-loops, pm-execution:pre-mortem, pm-execution:release-notes, pm-execution:stakeholder-map, product-management:stakeholder-update |
-| `pm-metrics-architect` *(v3)* | pm-product-discovery:metrics-dashboard, pm-execution:plan-okrs, pm-execution:brainstorm-okrs, pm-marketing-growth:north-star, product-tracking-skills:product-tracking-design-tracking-plan, product-tracking-skills:product-tracking-instrument-new-feature, product-tracking-skills:product-tracking-model-product, product-management:metrics-review |
-| `prd-author` *(v3.5)* | pm-execution:create-prd, pm-execution:write-prd, pm-execution:user-stories, pm-execution:job-stories, pm-execution:wwas, pm-execution:test-scenarios |
-| `orchestrator` | product-management:product-brainstorming, pm-execution:sprint-plan, pm-execution:retro, pm-execution:summarize-meeting, pm-execution:meeting-notes, product-management:roadmap-update, pm-execution:outcome-roadmap |
-| `critique-partner` | pm-execution:pre-mortem, grill-me (when user explicitly invokes) |
-
-### How agents use the map
-
-When an agent's Goal could be served by a specific skill:
-
-1. Check if the skill is available in this session (system reminder lists installed skills)
-2. If yes — invoke the skill via the Skill tool instead of producing the artifact long-form. This is faster, more standardized, and respects the user's skill investments.
-3. If no — produce the artifact in the agent's own voice using the body sections.
-4. Either way, the Executive Summary + Stop Gate still fire.
-
-The skill's output is treated as the agent's draft. The agent may refine, critique, or merge skill output with its own analysis before producing the final handoff.
-
-Anti-pattern: invoking a PM skill without telling the user. Always name the skill you invoked in the Executive Summary's `inputs_used` field.
+**Per-agent skill ownership lives in `PM_SKILLS_MAP.md`** (same project root). Each agent loads only its own row when it needs to confirm what it owns. Anti-pattern: invoking a PM skill without naming it in the Executive Summary's `inputs_used` field.
 
 ---
 
@@ -343,118 +310,11 @@ Agents NEVER fabricate context. If something isn't available in the hierarchy ab
 
 ---
 
-## Decision Data Shapes (v3.3) — Appendix
+## Decision Data Shapes (v3.3)
 
-Every agent's handoff includes a `decisionData` structured object that the orchestrator embeds in the dashboard's Decision Data panel. The shape depends on the agent. Four shape variants are defined:
+Every agent's handoff includes a `decisionData` structured object that the orchestrator embeds in the dashboard's Decision Data panel. **Full spec, all 4 shape types, and the per-agent shape map live in `DECISION_DATA_SHAPES.md`** (same project root). Load that file only when you're producing or embedding decisionData.
 
-### Type 1 — `insights` (used by: discovery-researcher, ideation-facilitator, critique-partner)
-
-Numbered list of decision-critical findings with evidence and per-item confidence.
-
-```yaml
-decisionData:
-  type: insights
-  label: "Top 5 insights · with evidence + confidence"  # one-line section heading
-  items:
-    - text: "<strong>Cart abandonment peaks at the verify-phone step</strong>"
-      evidence: "\"I gave up because the SMS never came\" — 6/12 interviews · GA4 funnel drop 41%"
-      conf: high   # high | medium | low
-    - text: "..."
-      evidence: "..."
-      conf: medium
-    # Max 5 items per insights panel. Trim aggressively.
-```
-
-### Type 2 — `table` (used by: feature-prioritizer, competitive-analyst)
-
-Structured comparison/scoring table. Use for any data where rows × columns is the natural shape.
-
-```yaml
-decisionData:
-  type: table
-  label: "Re-scored backlog · top 6 with deltas + MVP call"
-  cols:
-    - { label: "Feature" }
-    - { label: "Reach",  num: true }   # num: true → right-aligned, monospace
-    - { label: "Impact", num: true }
-    - { label: "Effort", num: true }
-    - { label: "RICE",   num: true }
-    - { label: "MVP" }
-  rows:
-    - cells:
-        - { html: "<strong>Guest checkout</strong>" }
-        - { num: true, html: "9" }
-        - { num: true, html: "8" }
-        - { num: true, html: "3" }
-        - { num: true, html: "76 <span class=\"delta-up\">↑</span>" }
-        - { html: "<span class=\"pill-in\">in</span>" }
-    - dropped: true                    # dropped: true → muted text + strikethrough label
-      cells:
-        - { html: "Wishlist sync", cls: "label" }
-        - { num: true, html: "0.4 <span class=\"delta-down\">↓</span>" }
-        # ...
-```
-
-Inline span classes available: `.delta-up` (green ↑), `.delta-down` (red ↓), `.pill-in` (green "in"), `.pill-out` (gray "out"), `.pill-open` (orange "open"). Max 10 rows per scoring panel.
-
-### Type 3 — `callout` (used by: product-positioner, pm-strategist, pm-launch-architect)
-
-Single highlighted quote with supporting context. Use for strategic decisions where ONE sentence carries the whole bet, plus elaborate underneath.
-
-```yaml
-decisionData:
-  type: callout
-  flavor: launch   # optional — "launch" uses orange palette instead of strategist cyan
-  label: "The bet · one sentence + falsification + tradeoffs"
-  quote: 'We win by being the <em>fastest</em> mobile checkout in Southeast Asia for cash-on-delivery merchants — not by feature breadth.'
-  meta: '<strong>Falsifiable:</strong> if 3-tap doesn\'t lift conversion ≥18% by week 6, the bet fails.<br><br><strong>Tradeoffs we accept:</strong> ...'
-```
-
-The `<em>` in the quote gets accent color. The `meta` field is freeform HTML — usually 2–4 short paragraphs.
-
-### Type 4 — `metrics` (used by: pm-metrics-architect)
-
-Stacked rows of measurement-plan layers (north-star / input / health / counter).
-
-```yaml
-decisionData:
-  type: metrics
-  label: "4-layer measurement plan · north-star · input · health · counter"
-  layers:
-    - layer: "North-star"
-      layerKey: "northstar"     # optional class for color emphasis
-      title: "Completed checkouts per active merchant per day"
-      small: "ONE number · falsifiable · tracks what users get, not what we ship"
-    - layer: "Input × 3"
-      title: "New activations / day · Sessions per merchant · Cart conversion %"
-      small: "Variables the team can move weekly"
-    - layer: "Counter × 1"
-      layerKey: "counter"
-      title: "Support tickets per merchant per week"
-      small: "Catches winning the wrong way"
-```
-
-### Per-agent shape map
-
-| Agent | decisionData.type | What goes in it |
-|---|---|---|
-| `discovery-researcher` | insights | Top 5 insights (text + evidence + confidence) |
-| `competitive-analyst` | table | Pattern matrix: pattern · apps · convention · risk (max 7 rows) |
-| `product-positioner` | callout | The positioning statement; meta has the value-prop options |
-| `feature-prioritizer` | table | Scoring table (top 8) with deltas and MVP pills |
-| `ideation-facilitator` | insights | 3–5 concept candidates with one-line tradeoff |
-| `interaction-designer` | table | Flow list: flow · state count · key decisions · Figma node (max 6) |
-| `usability-tester` | insights | Findings (max 5) with severity in the conf chip |
-| `handoff-engineer` | table | Spec scope: screens · component states · tokens · open dev questions |
-| `pm-strategist` | callout | The bet · falsification · tradeoffs |
-| `pm-launch-architect` | callout (flavor: launch) | Beachhead + ICP · meta has named accounts + motion + kill-switch |
-| `pm-metrics-architect` | metrics | 4 layers — north-star / input / health / counter |
-| `critique-partner` | insights | Concerns (max 5); conf chip carries severity |
-| `orchestrator` | (skip) | Orchestrator itself never produces decisionData — it embeds what the just-completed sub-agent produced |
-
-### Length discipline
-
-Each agent's decisionData stays within the v2 output caps (max 6 insights / 4 gaps / 10 scoring rows / etc.). The Decision Data panel is for the *headline* data the user needs to decide; full methodology, sample bias audit, dropped ideas, etc. still live in the MD handoff file. The dashboard's job is to make the `y / revise / pivot` choice possible without opening MD; the MD is the audit trail.
+Length discipline: each agent's decisionData stays within the output caps above (max 6 insights / 4 gaps / 10 scoring rows / etc.). The panel is for headline data only; full methodology stays in the MD handoff.
 
 ---
 

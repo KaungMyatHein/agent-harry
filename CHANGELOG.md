@@ -4,6 +4,31 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-20 — v3.6: Token-budget refactor — quality-safe ~35% cut
+
+The system was loading ~33k tokens per full pipeline run, mostly from duplicate rules and verbose rationale paragraphs being re-read on every agent invocation. v3.6 splits load-bearing rules from explanatory prose, extracts two appendix tables into lazy-loaded files, and dedups orchestrator.md against SHARED_CONTEXT.md. Behavior, gates, and decisionData shapes are **unchanged** — only the file layout shifts so agents read less per run.
+
+- **New `templates/PM_SKILLS_MAP.md`** — the per-agent skill ownership table moved out of `SHARED_CONTEXT.md`. Every agent used to load the whole 13-row table on every run; now only the agents that actually invoke PM skills (`pm-strategist`, `pm-launch-architect`, `pm-metrics-architect`) reference it. SHARED keeps a 4-line pointer.
+- **New `templates/DECISION_DATA_SHAPES.md`** — the 4 decisionData shape specs + per-agent shape map moved out of `SHARED_CONTEXT.md`. Only the orchestrator (at dashboard-render time) and agents producing decisionData need the full spec. SHARED keeps a 3-line pointer.
+- **New `RATIONALE.md` (repo root, NOT in `templates/`)** — verbose "Reason for this rule:" / "Reasoning:" paragraphs that explained WHY each rule exists moved out of runtime files. Agents follow rules; they don't need to be persuaded of them. The file is dev-facing only; agents never load it.
+- **`orchestrator.md` dedup against `SHARED_CONTEXT.md`** — Research-First Gate and Success-Metrics Gate sections in orchestrator no longer restate the rule verbatim from SHARED. They keep orchestrator-specific routing logic + dashboard framing + post-gate routing; they delegate the canonical rule text and refusal copy to SHARED. The full refusal-message templates (which appeared twice — once in SHARED, once in orchestrator) now live only in SHARED.
+- **Agent references updated** — `pm-strategist.md`, `pm-launch-architect.md`, `pm-metrics-architect.md` now point to `PM_SKILLS_MAP.md` directly instead of `SHARED_CONTEXT.md PM Skills Map`.
+- **`SKILL.md` install/refresh steps** — copy `PM_SKILLS_MAP.md` and `DECISION_DATA_SHAPES.md` alongside `SHARED_CONTEXT.md` on install; on refresh, only seed them if missing (pre-v3.6 projects) — never overwrite user customizations.
+
+Quality preservation: every rule, gate, opt-out phrase, refusal option, and routing decision stays identical. The only thing that changed is **where the text lives** — load-bearing rules in SHARED, lazy-loadable appendices in dedicated files, dev rationale in `RATIONALE.md` outside the runtime path.
+
+Token impact (measured on file line counts):
+
+| File | Lines before | Lines after | Delta |
+|---|---|---|---|
+| `SHARED_CONTEXT.md` | 509 | ~370 | -139 lines / ~1,800 tokens per agent that loads it |
+| `orchestrator.md` | 493 | ~454 | -39 lines / ~500 tokens per orchestrator invocation |
+| `PM_SKILLS_MAP.md` | — | 34 | new, lazy-loaded |
+| `DECISION_DATA_SHAPES.md` | — | 114 | new, lazy-loaded by orchestrator only |
+| `RATIONALE.md` | — | 91 | new, **never loaded at runtime** |
+
+Per full pipeline (orchestrator + 5–8 sub-agents): estimated ~30–40% reduction in input tokens.
+
 ## 2026-05-19 — v3.5: PRD-per-sub-feature + Notion sync
 
 After v3.4's Success-Metrics Gate clears, two new capabilities ship to make the confirmed artifacts actionable for the rest of the team: per-feature PRDs (so engineering has something concrete to build against), and a one-shot Notion publish (so non-Claude-Code teammates can read what was decided).

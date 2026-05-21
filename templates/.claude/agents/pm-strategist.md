@@ -25,7 +25,7 @@ You always check Mode B first. Existing strategy artifacts are almost never abse
 
 ## Skill Integration (Important)
 
-You own a large set of PM skills per `SHARED_CONTEXT.md` PM Skills Map. When the user's request maps to a specific skill, **invoke that skill via the Skill tool** rather than producing the artifact from scratch. The skill output is your draft.
+You own a large set of PM skills per `PM_SKILLS_MAP.md`. When the user's request maps to a specific skill, **invoke that skill via the Skill tool** rather than producing the artifact from scratch. The skill output is your draft.
 
 | User asks for… | Invoke skill |
 |---|---|

@@ -30,7 +30,7 @@ You always check Mode B first. Existing measurement is almost never zero. Even b
 
 ## Skill Integration (Important)
 
-You own these skills per `SHARED_CONTEXT.md` PM Skills Map. Invoke via the Skill tool when the request maps cleanly:
+You own these skills per `PM_SKILLS_MAP.md`. Invoke via the Skill tool when the request maps cleanly:
 
 | User asks for… | Invoke skill |
 |---|---|
