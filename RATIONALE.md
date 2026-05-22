@@ -84,6 +84,72 @@ Notion sync is a `/agent-harry-notion-sync` slash command — the user invokes i
 
 ---
 
+## Why a centralized Subagent Audit Protocol (v3.8 post-grill)
+
+The Q3 + Q5 grilling decisions (subagent writes its own `stop_gate` ledger entry; subagent derives iteration count from the ledger) created an implementation gap: every one of 14 subagents needs ~5 lines of identical boilerplate explaining session_id derivation, ledger append format, slug propagation, and iteration-count algorithm. 14 × 5 = 70 lines of duplication, with predictable drift over time as one agent's copy diverges from another's.
+
+The fix is the same pattern Agent Harry already uses for two other appendix-style specs:
+
+- `PM_SKILLS_MAP.md` (v3.6) — per-agent PM skill ownership extracted from inline duplication in each agent file
+- `DECISION_DATA_SHAPES.md` (v3.6 / v3.3) — dashboard decision-data shapes extracted from inline schemas
+
+`SUBAGENT_AUDIT_PROTOCOL.md` is the third extracted appendix: single source of truth for the audit protocol; lazy-loaded by subagents only when they need to perform a protocol step; never loaded by the orchestrator (which has its own audit rules in `orchestrator.md` directly).
+
+Each subagent's Output Format adds ONE line — *"Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, and slug propagation"* — replacing the 5-line per-agent boilerplate. When the protocol evolves (say, a new event type is added), it changes in one file instead of fourteen.
+
+Anti-pattern this avoids: agent prompts that *describe* mechanical procedures instead of *referencing* them. Long agent files dilute the agent's voice and load-bearing instructions with logistics. Extract the logistics; let the agent file stay about the agent's job.
+
+---
+
+## Why a passive ledger over a dedicated logging agent (v3.8)
+
+The intuitive answer to *"we need a cross-session audit trail"* is *"add a `logging-agent` that runs after every Stop Gate."* The intuitive answer was wrong here. Logging is mechanical — no judgment, no synthesis, no tradeoff-weighing. An LLM agent for it is paying $0.02–0.05 per Stop Gate to do what a 2-line file append does for free.
+
+The bundled philosophy in `RATIONALE.md` § "Why Opus only on orchestrator + critique-partner" applies broadly: **agents exist where judgment is needed.** Mechanical work — token counting, file appending, schema validation — belongs in deterministic code paths (here, the orchestrator's existing Stop Gate write moment), not in new agents.
+
+What the orchestrator already does at every Stop Gate:
+1. Reads sub-agent handoff Executive Summary
+2. Estimates cost, updates running total
+3. Writes `dashboard.html` with current state
+4. Presents Stop Gate prompt to user
+
+Adding *"append one JSONL line to `.harry-audit.jsonl`"* as step 3.5 is structurally trivial — all the data is already in the orchestrator's hand. A logging agent would have to be re-invoked, re-loaded, re-paid for the same data the orchestrator has in context.
+
+What got dropped by NOT making it an agent: extensibility. A real agent could (hypothetically) summarize patterns ("you tend to pivot on Tuesdays"), spot anomalies ("this session's cost is 3× your average"), or escalate ("you've cancelled the same pipeline 4 times — is the goal wrong?"). The passive ledger captures the raw data those analyses would need; the analyses themselves can be future skills/commands that read the ledger when invoked, not always-on agent runs.
+
+The render command (`/agent-harry-audit`) is the right shape for those analyses anyway — user-triggered, on-demand, parameterized. Always-on logging agent would compound token cost every Stop Gate; on-demand render pays only when the user actually wants to read.
+
+Cost comparison:
+- **Logging agent:** ~$0.02 × ~8 Stop Gates/pipeline = $0.16/pipeline × ~10 pipelines/week = ~$1.60/week of pure overhead
+- **Passive ledger:** ~$0.01/pipeline (50 extra orchestrator tokens) + ~$0.02 per audit render (maybe twice a week) = ~$0.14/week
+
+The savings (~$1.46/week) goes to the actual agents doing actual work.
+
+---
+
+## Why interaction-designer was split into low-fi-designer + design-engineer (v3.7)
+
+The bundled `interaction-designer.md` was a 187-line file trying to be three different agents at once:
+
+1. A low-fi wireframer answering *"does the screen architecture make sense?"*
+2. A hi-fi visual designer producing Figma mockups
+3. A code-prototyper writing real HTML/React with state coverage
+
+Three distinct fidelity disciplines, three distinct output contracts, three distinct conversation partners (PM for flow, design system for visual, engineering for code). One agent could technically do all three, but in practice the user kept asking *"which mode do I invoke it in?"* and the orchestrator's routing had to embed compound conditionals (*"if user has Figjam → start at hi-fi; if user has prototype → audit; otherwise → start at lo-fi"*).
+
+The split at v3.7 picks the two seams where the crafts diverge most:
+
+- **`low-fi-designer` (Define phase)** owns flow + ASCII wireframes + DS component identification. Output is decision-shaping, not visual.
+- **`design-engineer` (Deliver phase)** owns production-ready frontend code with real state coverage. Output is buildable, demoable, and engineering-handoff-grade.
+
+What got dropped: explicit hi-fi-Figma-only workflow. That craft is now either upstream of `design-engineer` (DS / Figma library exists, agent uses tokens directly) or downstream (`handoff-engineer` audits a Figma file against the built prototype). The user can re-install the retired `interaction-designer.md` from a v3.6 backup if pure Figma hi-fi is the workflow they want.
+
+Cost: agent count grew 14 → 15 (one new file net). But routing logic in the orchestrator got simpler (no more "which mode of interaction-designer?"), and each new agent's intake questions / output format / anti-patterns are sharper because each agent has one job. The Stop Gate UX also gets cleaner — `low-fi-designer`'s gate asks *"pick a layout"*, `design-engineer`'s gate asks *"run the prototype locally and decide"*. Different decisions, different prompts.
+
+The orphan-check step in Refresh mode exists because pre-v3.7 installs have `interaction-designer.md` in `.claude/agents/` that's no longer in templates. Without the check, that file sits as a confusing orphan — orchestrator routing won't reference it but the user can still invoke it directly with stale guidance.
+
+---
+
 ## Why this file exists (meta)
 
 Original SHARED_CONTEXT.md and orchestrator.md had multi-paragraph "Reason for this rule:" justification blocks embedded inline. Those paragraphs persuaded the maintainer; they did not change agent behavior at runtime. Every agent that loaded SHARED_CONTEXT paid the token cost to re-read the persuasion every invocation.

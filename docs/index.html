@@ -33,7 +33,8 @@
       --c-positioner: #d97706;
       --c-prioritizer: #b45309;
       --c-ideation: #8b5cf6;
-      --c-interaction: #ec4899;
+      --c-lo-fi: #06b6d4;
+      --c-engineer: #ec4899;
       --c-usability: #16a34a;
       --c-handoff: #525252;
       --c-critique: #dc2626;
@@ -1651,10 +1652,10 @@
           <h3 class="phase-name">Sharpen the bet.</h3>
           <p class="phase-desc">Positioning, prioritization, ideation. Where vague intent becomes a defensible scope decision.</p>
         </div>
-        <div class="phase" style="--phase-c: var(--c-interaction);">
+        <div class="phase" style="--phase-c: var(--c-engineer);">
           <span class="phase-eyebrow">03 — Deliver</span>
           <h3 class="phase-name">Ship something usable.</h3>
-          <p class="phase-desc">Interaction design, usability validation, engineering handoff. Craft-obsessed, systems-aware.</p>
+          <p class="phase-desc">Lo-fi layout, production-ready prototype, usability validation, engineering handoff. Craft-obsessed, systems-aware.</p>
         </div>
       </div>
     </div>
@@ -1814,27 +1815,63 @@
           </div>
         </article>
 
-        <article class="ag-card" style="--c: var(--c-interaction);">
+        <article class="ag-card" style="--c: var(--c-lo-fi);">
           <div class="ag-stage">
             <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
-              <!-- tilted beret -->
-              <g fill="#b41f72"><rect x="5" y="3" width="5" height="1"/><rect x="4" y="4" width="7" height="1"/><rect x="5" y="5" width="5" height="1"/></g>
-              <rect x="3" y="3" width="1" height="1" fill="#b41f72"/>
+              <!-- pencil tucked behind ear (yellow shaft + gray tip) -->
+              <rect x="11" y="5" width="1" height="3" fill="#facc15"/>
+              <rect x="11" y="4" width="1" height="1" fill="#525252"/>
+              <rect x="11" y="8" width="1" height="1" fill="#ef4444"/>
+              <!-- hair -->
+              <g fill="#1d1d1f"><rect x="4" y="3" width="7" height="1"/><rect x="3" y="4" width="9" height="1"/><rect x="3" y="5" width="2" height="1"/><rect x="10" y="5" width="1" height="1"/></g>
               <!-- face -->
-              <g fill="#f5cba7"><rect x="5" y="6" width="5" height="1"/><rect x="4" y="7" width="7" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="6" y="8" width="3" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="4" y="9" width="7" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g>
+              <g fill="#f5cba7"><rect x="5" y="5" width="5" height="1"/><rect x="4" y="6" width="6" height="1"/><rect x="4" y="7" width="7" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="6" y="8" width="3" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="4" y="9" width="7" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g>
               <g fill="#1d1d1f"><rect x="5" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="6" y="10" width="3" height="1"/><rect x="4" y="15" width="2" height="1"/><rect x="9" y="15" width="2" height="1"/></g>
-              <!-- smock -->
+              <!-- blueprint apron (cyan) -->
+              <g fill="#06b6d4"><rect x="3" y="11" width="9" height="1"/><rect x="4" y="12" width="7" height="1"/><rect x="4" y="13" width="7" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="3" height="1"/></g>
+              <!-- grid pattern on apron (lighter cyan dots) -->
+              <rect x="5" y="12" width="1" height="1" fill="#a5f3fc"/>
+              <rect x="7" y="12" width="1" height="1" fill="#a5f3fc"/>
+              <rect x="9" y="12" width="1" height="1" fill="#a5f3fc"/>
+              <rect x="6" y="13" width="1" height="1" fill="#a5f3fc"/>
+              <rect x="8" y="13" width="1" height="1" fill="#a5f3fc"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Define</div>
+            <div class="ag-name">low-fi-designer</div>
+            <div class="ag-role">Pragmatic systems-designer.</div>
+            <p class="ag-desc">Maps the userflow, sketches 3 ASCII layouts (primary / alternative / risky), lists DS components used + new ones needed. Sketches before falling in love.</p>
+          </div>
+        </article>
+
+        <article class="ag-card" style="--c: var(--c-engineer);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
+              <!-- hoodie hood (magenta) covers top of head -->
+              <g fill="#be185d"><rect x="4" y="3" width="7" height="1"/><rect x="3" y="4" width="9" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="11" y="6" width="1" height="1"/></g>
+              <!-- face under hood -->
+              <g fill="#f5cba7"><rect x="4" y="5" width="7" height="1"/><rect x="4" y="6" width="7" height="1"/><rect x="4" y="7" width="7" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="4" y="9" width="7" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g>
+              <!-- glasses (square frames) -->
+              <g fill="#1d1d1f"><rect x="4" y="8" width="3" height="1"/><rect x="8" y="8" width="3" height="1"/><rect x="7" y="8" width="1" height="1"/></g>
+              <rect x="5" y="8" width="1" height="1" fill="#ffffff"/>
+              <rect x="9" y="8" width="1" height="1" fill="#ffffff"/>
+              <!-- mouth + feet -->
+              <g fill="#1d1d1f"><rect x="6" y="10" width="3" height="1"/><rect x="4" y="15" width="2" height="1"/><rect x="9" y="15" width="2" height="1"/></g>
+              <!-- hoodie body (magenta) with kangaroo pocket outline -->
               <g fill="#ec4899"><rect x="3" y="11" width="9" height="1"/><rect x="4" y="12" width="7" height="1"/><rect x="4" y="13" width="7" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="3" height="1"/></g>
-              <!-- paint splatter on smock -->
-              <rect x="6" y="13" width="1" height="1" fill="#67e8f9"/>
+              <!-- kangaroo pocket (darker pink) -->
+              <rect x="5" y="13" width="5" height="1" fill="#be185d"/>
+              <!-- code badge on hoodie: { } -->
+              <rect x="6" y="12" width="1" height="1" fill="#facc15"/>
               <rect x="8" y="12" width="1" height="1" fill="#facc15"/>
             </svg>
           </div>
           <div class="ag-body">
             <div class="ag-phase">Deliver</div>
-            <div class="ag-name">interaction-designer</div>
-            <div class="ag-role">Craft-obsessed senior IC.</div>
-            <p class="ag-desc">Designs flows + full state coverage. Spots the empty, loading, error, and edge cases other agents miss.</p>
+            <div class="ag-name">design-engineer</div>
+            <div class="ag-role">Shipping-craft engineer.</div>
+            <p class="ag-desc">Builds production-ready frontend prototypes in the project's actual stack with dummy data. All 5 states wired (empty / loading / populated / error / edge). 1 flow per invocation.</p>
           </div>
         </article>
 
@@ -2056,7 +2093,8 @@
             <radialGradient id="orb-prioritizer" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e09257"/><stop offset="60%" stop-color="#b45309"/><stop offset="100%" stop-color="#7a3905"/></radialGradient>
             <radialGradient id="orb-ideation" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#c4a9fa"/><stop offset="60%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#5e37c2"/></radialGradient>
             <radialGradient id="orb-strategist" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#5ac4d8"/><stop offset="60%" stop-color="#0891b2"/><stop offset="100%" stop-color="#055b73"/></radialGradient>
-            <radialGradient id="orb-interaction" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="60%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
+            <radialGradient id="orb-lo-fi" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#67e8f9"/><stop offset="60%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0e7490"/></radialGradient>
+            <radialGradient id="orb-engineer" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="60%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
             <radialGradient id="orb-usability" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#6ed393"/><stop offset="60%" stop-color="#16a34a"/><stop offset="100%" stop-color="#0e6e32"/></radialGradient>
             <radialGradient id="orb-handoff" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#9a9a9a"/><stop offset="60%" stop-color="#525252"/><stop offset="100%" stop-color="#2e2e2e"/></radialGradient>
             <radialGradient id="orb-launch" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e87650"/><stop offset="60%" stop-color="#c2410c"/><stop offset="100%" stop-color="#7e2807"/></radialGradient>
@@ -2108,11 +2146,16 @@
           <text x="376" y="475" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">pm-strategist</text>
           <text x="376" y="492" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">quarter bets · roadmap</text>
 
+          <rect x="340" y="520" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#06b6d4" stroke-width="1.5"/>
+          <circle cx="360" cy="548" r="6" fill="url(#orb-lo-fi)"/>
+          <text x="376" y="543" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">low-fi-designer</text>
+          <text x="376" y="560" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">userflow · ASCII layouts · DS</text>
+
           <text x="740" y="232" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">DELIVER</text>
           <rect x="640" y="248" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#ec4899" stroke-width="1.5"/>
-          <circle cx="660" cy="276" r="6" fill="url(#orb-interaction)"/>
-          <text x="676" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">interaction-designer</text>
-          <text x="676" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">flows · states · craft</text>
+          <circle cx="660" cy="276" r="6" fill="url(#orb-engineer)"/>
+          <text x="676" y="271" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">design-engineer</text>
+          <text x="676" y="288" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">prototype · code · 5 states</text>
 
           <rect x="640" y="316" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#16a34a" stroke-width="1.5"/>
           <circle cx="660" cy="344" r="6" fill="url(#orb-usability)"/>
@@ -2292,10 +2335,10 @@
                 <span>Audit the onboarding flow in Figma — surface IxD gaps.</span>
               </div>
 
-              <div class="uc-msg-agent" style="--c: var(--c-interaction);">
-                <span class="uc-agent-tag"><span class="uc-dot"></span>interaction-designer</span>
+              <div class="uc-msg-agent" style="--c: var(--c-engineer);">
+                <span class="uc-agent-tag"><span class="uc-dot"></span>design-engineer</span>
                 <div class="uc-msg-body">
-                  Read 14 frames. Inventory of <em>states + edge cases</em>:
+                  Audited 14 frames. Inventory of <em>states + edge cases</em>:
                   <ul class="uc-output-list">
                     <li>Empty / loading / error states — <em>3 of 7 missing</em></li>
                     <li>Network-loss recovery — <em>not handled</em></li>
@@ -2612,7 +2655,8 @@
       'feature-prioritizer':  '#b45309',
       'ideation-facilitator': '#8b5cf6',
       'pm-strategist':        '#0891b2',
-      'interaction-designer': '#ec4899',
+      'low-fi-designer':      '#06b6d4',
+      'design-engineer':      '#ec4899',
       'usability-tester':     '#16a34a',
       'handoff-engineer':     '#525252',
       'pm-launch-architect':  '#c2410c',
@@ -2636,17 +2680,19 @@
     const RIGHT_X      =  8.7;          // agent x so monitor sits near right wall (x=+10.2)
 
     const PLACEMENTS = {
-      // Whiteboard panel — all 4 back-wall desks face the HALL (chairs against
+      // Whiteboard panel — 5 back-wall desks face the HALL (chairs against
       // the wall, monitors extending into the room) like a leadership panel.
-      'discovery-researcher': { x: -6, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
-      'competitive-analyst':  { x: -2, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
-      'ideation-facilitator': { x:  2, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
-      'pm-strategist':        { x:  6, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
+      // v3.7: low-fi-designer joins the Define-phase panel.
+      'discovery-researcher': { x: -6.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
+      'competitive-analyst':  { x: -3.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
+      'low-fi-designer':      { x: -0.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
+      'ideation-facilitator': { x:  2.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
+      'pm-strategist':        { x:  5.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
 
-      // Left wall — 4 desks (back → front)
+      // Left wall — 4 desks (back → front). v3.7: design-engineer replaces interaction-designer.
       'product-positioner':   { x: LEFT_X, y: 0, z: -5, ry: FACE_LEFT },
       'feature-prioritizer':  { x: LEFT_X, y: 0, z: -2, ry: FACE_LEFT },
-      'interaction-designer': { x: LEFT_X, y: 0, z:  1, ry: FACE_LEFT },
+      'design-engineer':      { x: LEFT_X, y: 0, z:  1, ry: FACE_LEFT },
       'usability-tester':     { x: LEFT_X, y: 0, z:  4, ry: FACE_LEFT },
 
       // Right wall — 4 desks (back → front)
@@ -2668,7 +2714,8 @@
       'product-positioner':   'positioner',
       'feature-prioritizer':  'prioritizer',
       'ideation-facilitator': 'ideation',
-      'interaction-designer': 'interaction',
+      'low-fi-designer':      'lo-fi',
+      'design-engineer':      'engineer',
       'usability-tester':     'usability',
       'handoff-engineer':     'handoff',
       'critique partner':     'critique',
@@ -2712,10 +2759,17 @@
         'How might we cut the SMS step entirely?',
         'Concept C is the dark horse. Worth a sketch.',
       ],
-      'interaction-designer': [
-        'Flow A passes the tap-budget. Flow B is greedy.',
-        '6 states specced. Two empty-states still open.',
-        'Mobbin shows this pattern in 4 fintech apps.',
+      'low-fi-designer': [
+        'Three layouts on the board. Primary feels safest.',
+        'Risky layout: command bar instead of sidebar.',
+        'DS has TopBar, Sidebar, Tabs. Need new: CommandPalette.',
+        'Userflow Figjam: 5 nodes, 2 error branches.',
+      ],
+      'design-engineer': [
+        'All 5 states wired. Loading skeleton at 800ms.',
+        'prototypes/checkout/page.tsx — 240 lines so far.',
+        'Iteration 2 of 3. One more revise then pivot.',
+        'Mock API returns realistic delay. Empty state ready.',
       ],
       'usability-tester': [
         '4/5 users completed in <90s. One stuck on autofill.',
@@ -3635,7 +3689,8 @@
       'feature-prioritizer':  '#b45309',
       'ideation-facilitator': '#8b5cf6',
       'pm-strategist':        '#0891b2',
-      'interaction-designer': '#ec4899',
+      'low-fi-designer':      '#06b6d4',
+      'design-engineer':      '#ec4899',
       'usability-tester':     '#16a34a',
       'handoff-engineer':     '#525252',
       'pm-launch-architect':  '#c2410c',

@@ -83,7 +83,7 @@ When the user provides existing concept docs, brainstorm outputs, sketches, or a
 
 ## Output Format
 
-Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
+Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, and slug propagation (v3.8). Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
 
 1. **Problem framing(s)** — the HMW statements you worked from
 2. **Method used** + why
@@ -93,4 +93,4 @@ Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive S
 
 ## Approval Gate
 
-`autonomous`. But after producing concepts, recommend handing to `interaction-designer` for prototyping the 2–3 most promising. Don't assume which the user will pick.
+`autonomous`. But after producing concepts, recommend handing to `low-fi-designer` first (for userflow + ASCII layouts of the 2–3 most promising concepts), then to `design-engineer` once a layout is chosen. Don't assume which concept the user will pick.

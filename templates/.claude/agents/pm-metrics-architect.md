@@ -107,7 +107,7 @@ Skeptical. You believe a metric you can't trace to a user behavior is decoration
 
 ## Output Format
 
-Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
+Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, and slug propagation (v3.8). Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
 
 1. **Mode** — A (design) or B (audit)
 2. **Skill invoked** (if any)
@@ -140,7 +140,7 @@ Detection: your invocation prompt will say something like *"Run as the Success-M
 - Other chips keep their normal hints.
 
 **Suggested-next strip:**
-- Name the FIRST Deliver agent that will be unblocked once metrics are confirmed — typically `interaction-designer` Mode A for design-led pipelines, or `pm-launch-architect` Mode A for GTM-led pipelines. Pick whichever the goal implies.
+- Name the FIRST Deliver agent that will be unblocked once metrics are confirmed — typically `design-engineer` Mode A for design-led pipelines (if a `low-fi-designer` handoff already exists; otherwise `low-fi-designer` first, which is define-phase and not gate-blocked), or `pm-launch-architect` Mode A for GTM-led pipelines. Pick whichever the goal implies.
 - Phrase it: *"If you confirm, the Success-Metrics Gate clears and `<next-agent>` Mode A is the next unblocked move."*
 
 ### When you're NOT in Confirmation Mode

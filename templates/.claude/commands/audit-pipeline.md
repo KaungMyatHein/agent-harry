@@ -5,7 +5,7 @@ argument-hint: "[optional: project-slug]"
 
 # /audit-pipeline
 
-Run this before starting any Deliver-phase work (interaction-designer, usability-tester, handoff-engineer, or any code/design implementation). It enforces the **Research-First Gate** defined in `SHARED_CONTEXT.md`.
+Run this before starting any Deliver-phase work (design-engineer, usability-tester, handoff-engineer, or any code/design implementation) — and before late-Define work (low-fi-designer). It enforces the **Research-First Gate** defined in `SHARED_CONTEXT.md`.
 
 ## What this command does
 
@@ -18,8 +18,8 @@ Run this before starting any Deliver-phase work (interaction-designer, usability
 
 1. Use Glob to find all `.md` files under `./design-workspace/` matching the pattern `*_<agent>_*.md`. Group them by phase using the agent name:
    - **Discovery**: `discovery-researcher`, `competitive-analyst`
-   - **Define**: `product-positioner`, `feature-prioritizer`, `ideation-facilitator`
-   - **Deliver**: `interaction-designer`, `usability-tester`, `handoff-engineer`
+   - **Define**: `product-positioner`, `feature-prioritizer`, `ideation-facilitator`, `pm-strategist`, `low-fi-designer`
+   - **Deliver**: `design-engineer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`, `prd-author`
    - **Meta**: `orchestrator`, `critique-partner`
 2. For each artifact found, read **only the Executive Summary block** (don't load long-form bodies — that's the token-budget rule from `SHARED_CONTEXT.md`).
 3. Produce the audit report below.

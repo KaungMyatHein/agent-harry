@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 10-subagent UX pipeline (orchestrator + 8 phase agents + critique-partner) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 15-subagent UX pipeline (orchestrator + critique-partner + 13 phase agents including low-fi-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps a 10-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps a 15-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -43,16 +43,18 @@ Steps:
 5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
 6. Copy `templates/PM_SKILLS_MAP.md` → `<project>/PM_SKILLS_MAP.md` (v3.6: lazy-loaded skill ownership map)
 7. Copy `templates/DECISION_DATA_SHAPES.md` → `<project>/DECISION_DATA_SHAPES.md` (v3.6: lazy-loaded dashboard shape spec)
+7.5. Copy `templates/SUBAGENT_AUDIT_PROTOCOL.md` → `<project>/SUBAGENT_AUDIT_PROTOCOL.md` (v3.8: lazy-loaded session identity + ledger append + slug derivation protocol)
 8. Copy `templates/dashboard.html` → `<project>/dashboard.html` (seeded sample; orchestrator overwrites at first Stop Gate)
 9. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (v3.2: HTTP server for click-driven mode)
 10. Copy `templates/.harry-queue.json` → `<project>/.harry-queue.json` (v3.2: queue state file)
 11. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-12. Confirm completion with file list and a quick "try this next" prompt
+12. **`.gitignore` management (v3.8)** — if `<project>/.gitignore` doesn't exist, copy `templates/.gitignore` directly. If it DOES exist, read it and check for the lines `.harry-audit.jsonl` and `.harry-queue.json`. For each missing entry, append it under a `# Agent Harry` section header (only one header per project, idempotent). Report what was added in the install confirmation.
+13. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 14 Agent Harry subagents + 3 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html into <project>/
+Installed 15 Agent Harry subagents + 4 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
 
 Try this — chat-only mode (simplest):
 1. Open dashboard.html in the Claude Preview MCP panel.
@@ -67,12 +69,11 @@ Or — click-driven mode (v3.2):
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
-- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist
-- Deliver: interaction-designer, usability-tester, handoff-engineer, pm-launch-architect (gated by Research-First check)
+- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, low-fi-designer (v3.7)
+- Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect, prd-author (all gated by Research-First + Success-Metrics checks)
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
-- Commands: /audit-pipeline · /agent-harry-loop · /agent-harry-notion-sync
-- v3.5 agents: prd-author (PRDs per sub-feature)
+- Commands: /audit-pipeline · /agent-harry-loop · /agent-harry-notion-sync · /agent-harry-audit (v3.8)
 - Visual: dashboard.html (auto-regenerated at every Stop Gate)
 - Click-driven: dashboard-server.py + .harry-queue.json (v3.2 opt-in)
 ```
@@ -83,18 +84,19 @@ Done. Don't over-explain.
 
 Use when the user wants the system tuned to their specific project, design system, or workflow.
 
-Scoping questions (ask only what isn't already known, keep under 5):
+Scoping questions (ask only what isn't already known, keep under 6):
 
 1. **Project context** — What kind of product? (Mobile app / web SaaS / internal tool / hardware / other)
-2. **Design system** — What's the source? (Figma library URL / code repo / external system like Material/Carbon/shadcn / none yet)
-3. **MCPs connected** — Which of these are available? (Figma, Notion, Mobbin, Supabase, Web Search, other)
-4. **PM capability needed?** — Yes (full set including positioner/prioritizer) / No (drop PM agents, keep design-only)
-5. **Prototype medium default** — Figma / Code / Both / Ask each time
+2. **Stack (v3.7)** — Which frontend stack? (Next.js / React Router / Vue Nuxt / SwiftUI / Flutter / Vanilla HTML / other) — answers fill `SHARED_CONTEXT.md` Project Context `Stack:` line; consumed by `low-fi-designer` + `design-engineer`
+3. **Design system** — What's the source? (Figma library URL / code repo / external system like Material/Carbon/shadcn / none yet)
+4. **MCPs connected** — Which of these are available? (Figma, Notion, Mobbin, Supabase, Web Search, other)
+5. **PM capability needed?** — Yes (full set including positioner/prioritizer) / No (drop PM agents, keep design-only)
+6. **Prototype medium default (v3.7)** — Lo-fi only (ASCII wireframes from `low-fi-designer`) / Code prototype (`design-engineer` builds in the chosen stack) / Both (default — lo-fi-designer first, then design-engineer when ready)
 
 Customization patches:
 
-- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst` and `ideation-facilitator`, replace with a note that pattern research will use Web Search instead.
-- **Design system context** — Inject the user's design system source into `interaction-designer.md` (Intake Questions Q2), `handoff-engineer.md` (Token usage audit), and `SHARED_CONTEXT.md` (top-of-file Project Context section).
+- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst`, `ideation-facilitator`, `low-fi-designer`, and `design-engineer`, replace with a note that pattern research will use Web Search instead.
+- **Design system context** — Inject the user's design system source into `low-fi-designer.md` (Intake Question Q2), `design-engineer.md` (token files reference), `handoff-engineer.md` (Token usage audit), and `SHARED_CONTEXT.md` (top-of-file Project Context section, including the `Stack:` line).
 - **PM capability scope** — If user says "no PM agents", delete `product-positioner.md`, `feature-prioritizer.md`, `competitive-analyst.md`, and update `orchestrator.md` agent list + README.md.
 - **Project-specific routing rules** — Optionally add a Project Conventions section to `SHARED_CONTEXT.md` (file naming, Notion workspace, Figma file structure).
 
@@ -130,12 +132,15 @@ Steps:
 1. Confirm the project root with the user (or use cwd).
 2. Check that `<project>/.claude/agents/` exists. If not, this isn't an installed Agent Harry project — suggest running Install instead.
 3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
+3.5. **Orphan-check (v3.7)**: list files in `<project>/.claude/agents/` that don't exist in `templates/.claude/agents/`. These are agents the user installed previously that have since been retired from the templates (e.g. pre-v3.7 installs have `interaction-designer.md`, retired in v3.7 in favor of `low-fi-designer.md` + `design-engineer.md`). If orphans found, list them and ask: *"These agent files exist locally but are no longer shipped with Agent Harry — delete them? (y / n / show me what each one was for)"*. If `y`, `git rm` them (or `rm` if not git-tracked); if `n`, leave them in place (warn that orchestrator routing won't reference them but they remain invokable directly). Apply the same check to `<project>/.claude/commands/`.
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
 5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
 6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; seeds the sample state — orchestrator overwrites at the first Stop Gate).
 7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (overwriting; v3.2).
 8. If `<project>/.harry-queue.json` doesn't exist, copy `templates/.harry-queue.json` → `<project>/.harry-queue.json`. If it exists, **do not overwrite** — it may contain in-flight session state.
-9. If `<project>/PM_SKILLS_MAP.md` or `<project>/DECISION_DATA_SHAPES.md` don't exist (pre-v3.6 install), copy them from `templates/`. If they exist, leave them alone unless the user opts in — they're reference appendices that users may have lightly customized.
+9. If `<project>/PM_SKILLS_MAP.md`, `<project>/DECISION_DATA_SHAPES.md`, or `<project>/SUBAGENT_AUDIT_PROTOCOL.md` don't exist (pre-v3.6 / pre-v3.8 install), copy them from `templates/`. If they exist, leave them alone unless the user opts in — they're reference appendices that users may have lightly customized.
+9.5. **Audit ledger preservation (v3.8)** — if `<project>/.harry-audit.jsonl` exists, **do not overwrite or touch it** — it's the project's append-only audit history. Don't even read it during refresh. If it doesn't exist, do nothing (the orchestrator creates it on the first Stop Gate after refresh).
+9.6. **`.gitignore` append-warn (v3.8)** — read `<project>/.gitignore` (if it exists). For each of `.harry-audit.jsonl` and `.harry-queue.json` not already listed, append under an `# Agent Harry` header (idempotent — only one header per file). If `<project>/.gitignore` doesn't exist at all, copy `templates/.gitignore`. Report what was added/created in the refresh output.
 10. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion", "Queue Mode"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
 11. Do **not** touch `README.md`.
 12. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
@@ -143,8 +148,10 @@ Steps:
 Expected output:
 
 ```
-Refreshed 14 agent files + 3 slash commands + dashboard.html + dashboard-server.py in <project>/
-Preserved: SHARED_CONTEXT.md, README.md, .harry-queue.json (if existed)
+Refreshed 15 agent files + 4 slash commands + dashboard.html + dashboard-server.py in <project>/
+Preserved: SHARED_CONTEXT.md, README.md, .harry-queue.json (if existed), .harry-audit.jsonl (if existed)
+.gitignore: <created | appended N entries | already up to date>
+Orphan check: <none | deleted N orphan files | left N orphans in place>
 SHARED_CONTEXT.md v2/v3 sections check: <present | MISSING — see below>
 
 Templates source: ~/.claude/skills/agent-harry/
@@ -213,11 +220,13 @@ templates/
 │                                 v3.6: dedup'd against orchestrator; verbose rationale moved to RATIONALE.md
 ├── PM_SKILLS_MAP.md            ← v3.6: per-agent skill ownership (lazy-loaded)
 ├── DECISION_DATA_SHAPES.md     ← v3.6: dashboard decisionData spec (lazy-loaded)
+├── SUBAGENT_AUDIT_PROTOCOL.md  ← v3.8: session identity + ledger append + slug derivation (lazy-loaded)
 ├── dashboard.html              ← v3.1: visual Stop Gate companion
 │                                 v3.2: clickable buttons + inline inputs + fetch handlers
 │                                 v3.3: Decision Data panel
 ├── dashboard-server.py         ← v3.2: Python stdlib HTTP server on :3737
 ├── .harry-queue.json           ← v3.2: queue state file for click→orchestrator handoff
+├── .gitignore                  ← v3.8: ignores .harry-audit.jsonl + .harry-queue.json
 └── .claude/
     ├── agents/
     │   ├── orchestrator.md          (opus)   ← v3.4: enforces Research-First + Success-Metrics Gates
@@ -227,7 +236,8 @@ templates/
     │   ├── product-positioner.md    (sonnet)
     │   ├── feature-prioritizer.md   (sonnet)
     │   ├── ideation-facilitator.md  (sonnet)
-    │   ├── interaction-designer.md  (sonnet)
+    │   ├── low-fi-designer.md       (sonnet) ← v3.7: split out of interaction-designer (define-phase)
+    │   ├── design-engineer.md       (sonnet) ← v3.7: split out of interaction-designer (deliver-phase code prototype)
     │   ├── usability-tester.md      (sonnet)
     │   ├── handoff-engineer.md      (sonnet)
     │   ├── pm-strategist.md         (sonnet) ← v3: strategy / business model / vision / pricing
@@ -237,7 +247,8 @@ templates/
     └── commands/
         ├── audit-pipeline.md              ← /audit-pipeline — Research-First + Success-Metrics gates
         ├── agent-harry-loop.md            ← /agent-harry-loop — v3.2 click-driven polling loop
-        └── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
+        ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
+        └── agent-harry-audit.md           ← /agent-harry-audit — v3.8 render audit ledger as timeline
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.

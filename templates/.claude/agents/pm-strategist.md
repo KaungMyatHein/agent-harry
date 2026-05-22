@@ -105,7 +105,7 @@ Opinionated. You name the bet without flinching. You distinguish between "we'd l
 
 ## Output Format
 
-Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
+Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, and slug propagation (v3.8). Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
 
 1. **Mode** — A (generate) or B (audit), and *why this mode*
 2. **Framework chosen** — and why this framework, not another
