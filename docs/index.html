@@ -34,6 +34,7 @@
       --c-prioritizer: #b45309;
       --c-ideation: #8b5cf6;
       --c-lo-fi: #06b6d4;
+      --c-figma: #a855f7;
       --c-engineer: #ec4899;
       --c-usability: #16a34a;
       --c-handoff: #525252;
@@ -1655,7 +1656,7 @@
         <div class="phase" style="--phase-c: var(--c-engineer);">
           <span class="phase-eyebrow">03 — Deliver</span>
           <h3 class="phase-name">Ship something usable.</h3>
-          <p class="phase-desc">Lo-fi layout, production-ready prototype, usability validation, engineering handoff. Craft-obsessed, systems-aware.</p>
+          <p class="phase-desc">Lo-fi layout, hi-fi Figma OR production-ready prototype (designer's choice), usability validation, engineering handoff. Craft-obsessed, systems-aware.</p>
         </div>
       </div>
     </div>
@@ -1842,6 +1843,39 @@
             <div class="ag-name">low-fi-designer</div>
             <div class="ag-role">Pragmatic systems-designer.</div>
             <p class="ag-desc">Maps the userflow, sketches 3 ASCII layouts (primary / alternative / risky), lists DS components used + new ones needed. Sketches before falling in love.</p>
+          </div>
+        </article>
+
+        <article class="ag-card" style="--c: var(--c-figma);">
+          <div class="ag-stage">
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
+              <!-- pen-tool wand tucked behind ear (purple shaft + diamond tip = vector node) -->
+              <rect x="11" y="5" width="1" height="3" fill="#a855f7"/>
+              <rect x="11" y="4" width="1" height="1" fill="#c084fc"/>
+              <rect x="11" y="8" width="1" height="1" fill="#581c87"/>
+              <rect x="12" y="3" width="1" height="1" fill="#e9d5ff"/>
+              <!-- beret (purple) — slanted cap covering top of head -->
+              <g fill="#a855f7"><rect x="4" y="3" width="7" height="1"/><rect x="3" y="4" width="9" height="1"/><rect x="3" y="5" width="2" height="1"/><rect x="10" y="5" width="1" height="1"/></g>
+              <!-- beret stem (lighter purple highlight on top) -->
+              <rect x="7" y="2" width="1" height="1" fill="#c084fc"/>
+              <!-- face -->
+              <g fill="#f5cba7"><rect x="5" y="5" width="5" height="1"/><rect x="4" y="6" width="6" height="1"/><rect x="4" y="7" width="7" height="1"/><rect x="4" y="8" width="1" height="1"/><rect x="6" y="8" width="3" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="4" y="9" width="7" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g>
+              <!-- eyes + mouth + feet -->
+              <g fill="#1d1d1f"><rect x="5" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="6" y="10" width="3" height="1"/><rect x="4" y="15" width="2" height="1"/><rect x="9" y="15" width="2" height="1"/></g>
+              <!-- shirt (purple) -->
+              <g fill="#a855f7"><rect x="3" y="11" width="9" height="1"/><rect x="4" y="12" width="7" height="1"/><rect x="4" y="13" width="7" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="3" height="1"/></g>
+              <!-- UI-component badge on shirt: two small "frames" suggesting DS instances -->
+              <rect x="5" y="12" width="2" height="1" fill="#c084fc"/>
+              <rect x="8" y="12" width="2" height="1" fill="#c084fc"/>
+              <rect x="5" y="13" width="2" height="1" fill="#e9d5ff"/>
+              <rect x="8" y="13" width="2" height="1" fill="#e9d5ff"/>
+            </svg>
+          </div>
+          <div class="ag-body">
+            <div class="ag-phase">Deliver</div>
+            <div class="ag-name">figma-designer</div>
+            <div class="ag-role">Figma-native implementer.</div>
+            <p class="ag-desc">Turns approved lo-fi layouts into hi-fi Figma designs — real DS component instances, real PRD content, tokens applied, key states per screen. Parallel to design-engineer, but Figma-side. 1 flow per invocation, every screen covered.</p>
           </div>
         </article>
 
@@ -2055,7 +2089,7 @@
       </p>
 
       <div class="flow-frame">
-        <svg viewBox="0 0 880 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow diagram showing orchestrator routing to Discovery, Define, and Deliver phases with embedded PM agents, plus Critique Partner and PM-Metrics-Architect reviewing every phase">
+        <svg viewBox="0 0 880 790" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow diagram showing orchestrator routing to Discovery, Define, and Deliver phases with embedded PM agents, plus Critique Partner and PM-Metrics-Architect reviewing every phase. The Deliver phase forks from low-fi-designer into design-engineer (code path) or figma-designer (Figma path).">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#6e6e72"/>
@@ -2095,6 +2129,7 @@
             <radialGradient id="orb-strategist" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#5ac4d8"/><stop offset="60%" stop-color="#0891b2"/><stop offset="100%" stop-color="#055b73"/></radialGradient>
             <radialGradient id="orb-lo-fi" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#67e8f9"/><stop offset="60%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0e7490"/></radialGradient>
             <radialGradient id="orb-engineer" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#f78cc0"/><stop offset="60%" stop-color="#ec4899"/><stop offset="100%" stop-color="#b41f72"/></radialGradient>
+            <radialGradient id="orb-figma" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#d8b4fe"/><stop offset="60%" stop-color="#a855f7"/><stop offset="100%" stop-color="#6b21a8"/></radialGradient>
             <radialGradient id="orb-usability" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#6ed393"/><stop offset="60%" stop-color="#16a34a"/><stop offset="100%" stop-color="#0e6e32"/></radialGradient>
             <radialGradient id="orb-handoff" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#9a9a9a"/><stop offset="60%" stop-color="#525252"/><stop offset="100%" stop-color="#2e2e2e"/></radialGradient>
             <radialGradient id="orb-launch" cx="0.32" cy="0.3" r="0.9"><stop offset="0%" stop-color="#e87650"/><stop offset="60%" stop-color="#c2410c"/><stop offset="100%" stop-color="#7e2807"/></radialGradient>
@@ -2172,26 +2207,38 @@
           <text x="676" y="475" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">pm-launch-architect</text>
           <text x="676" y="492" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">beachhead · messaging</text>
 
+          <rect x="640" y="520" width="200" height="56" rx="11" fill="#3a3a3c" stroke="#a855f7" stroke-width="1.5"/>
+          <circle cx="660" cy="548" r="6" fill="url(#orb-figma)"/>
+          <text x="676" y="543" fill="#fff" font-family="SF Pro Text, system-ui" font-size="13" font-weight="600" letter-spacing="-0.224">figma-designer</text>
+          <text x="676" y="560" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">hi-fi Figma · DS instances · states</text>
+
+          <!-- DISCOVERY → DEFINE handoff (unchanged) -->
           <line x1="240" y1="378" x2="335" y2="378" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-          <line x1="540" y1="378" x2="635" y2="378" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
           <text x="287" y="370" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
-          <text x="587" y="370" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">handoff</text>
+
+          <!-- lo-fi-designer → DELIVER fork: user picks design-engineer (code path) or figma-designer (Figma path) -->
+          <line x1="540" y1="548" x2="585" y2="548" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="585" y1="276" x2="585" y2="548" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="585" y1="276" x2="635" y2="276" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <line x1="585" y1="548" x2="635" y2="548" stroke="#888" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <text x="583" y="404" text-anchor="end" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">user picks:</text>
+          <text x="583" y="416" text-anchor="end" fill="#888" font-family="SF Pro Text, system-ui" font-size="10" letter-spacing="-0.12">code or Figma</text>
 
           <!-- Subtle bracket joining all 3 phase columns to the cross-cutting band below -->
-          <line x1="60" y1="538" x2="820" y2="538" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4"/>
-          <line x1="240" y1="538" x2="240" y2="562" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#arrow)"/>
-          <line x1="640" y1="538" x2="640" y2="562" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#arrow)"/>
-          <text x="440" y="530" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">every output reviewed below</text>
+          <line x1="60" y1="608" x2="820" y2="608" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="240" y1="608" x2="240" y2="632" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#arrow)"/>
+          <line x1="640" y1="608" x2="640" y2="632" stroke="#5a5a5e" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#arrow)"/>
+          <text x="440" y="600" text-anchor="middle" fill="#888" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">every output reviewed below</text>
 
-          <rect x="120" y="572" width="240" height="64" rx="14" fill="url(#crit-grad)" filter="url(#node-shadow)"/>
-          <text x="240" y="602" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Critique Partner</text>
-          <text x="240" y="622" text-anchor="middle" fill="#fde2e2" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">stress-tests every output</text>
+          <rect x="120" y="642" width="240" height="64" rx="14" fill="url(#crit-grad)" filter="url(#node-shadow)"/>
+          <text x="240" y="672" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">Critique Partner</text>
+          <text x="240" y="692" text-anchor="middle" fill="#fde2e2" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">stress-tests every output</text>
 
-          <rect x="520" y="572" width="240" height="64" rx="14" fill="url(#metrics-grad)" filter="url(#node-shadow)"/>
-          <text x="640" y="602" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">pm-metrics-architect</text>
-          <text x="640" y="622" text-anchor="middle" fill="#e7f4d4" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">measures outcomes across phases</text>
+          <rect x="520" y="642" width="240" height="64" rx="14" fill="url(#metrics-grad)" filter="url(#node-shadow)"/>
+          <text x="640" y="672" text-anchor="middle" fill="#fff" font-family="SF Pro Display, system-ui" font-size="17" font-weight="600" letter-spacing="-0.374">pm-metrics-architect</text>
+          <text x="640" y="692" text-anchor="middle" fill="#e7f4d4" font-family="SF Pro Text, system-ui" font-size="12" letter-spacing="-0.224">measures outcomes across phases</text>
 
-          <text x="440" y="690" text-anchor="middle" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">─── routing &#160;&#160;&#160;&#160; - - - handoff via SHARED_CONTEXT.md</text>
+          <text x="440" y="760" text-anchor="middle" fill="#aaa" font-family="SF Pro Text, system-ui" font-size="11" letter-spacing="-0.12">─── routing &#160;&#160;&#160;&#160; - - - handoff via SHARED_CONTEXT.md</text>
         </svg>
       </div>
     </div>
@@ -2656,6 +2703,7 @@
       'ideation-facilitator': '#8b5cf6',
       'pm-strategist':        '#0891b2',
       'low-fi-designer':      '#06b6d4',
+      'figma-designer':       '#a855f7',
       'design-engineer':      '#ec4899',
       'usability-tester':     '#16a34a',
       'handoff-engineer':     '#525252',
@@ -2689,11 +2737,14 @@
       'ideation-facilitator': { x:  2.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
       'pm-strategist':        { x:  5.5, y: 0, z: BACK_Z_PANEL, ry: FACE_HALL },
 
-      // Left wall — 4 desks (back → front). v3.7: design-engineer replaces interaction-designer.
-      'product-positioner':   { x: LEFT_X, y: 0, z: -5, ry: FACE_LEFT },
-      'feature-prioritizer':  { x: LEFT_X, y: 0, z: -2, ry: FACE_LEFT },
-      'design-engineer':      { x: LEFT_X, y: 0, z:  1, ry: FACE_LEFT },
-      'usability-tester':     { x: LEFT_X, y: 0, z:  4, ry: FACE_LEFT },
+      // Left wall — 5 desks (back → front). v3.7: design-engineer replaces interaction-designer.
+      // v3.9: figma-designer joins between design-engineer and usability-tester (Deliver fork).
+      // Spacing compressed from 3 to 2.5 units to fit 5 desks in the same wall span.
+      'product-positioner':   { x: LEFT_X, y: 0, z: -5,   ry: FACE_LEFT },
+      'feature-prioritizer':  { x: LEFT_X, y: 0, z: -2.5, ry: FACE_LEFT },
+      'design-engineer':      { x: LEFT_X, y: 0, z:  0,   ry: FACE_LEFT },
+      'figma-designer':       { x: LEFT_X, y: 0, z:  2.5, ry: FACE_LEFT },
+      'usability-tester':     { x: LEFT_X, y: 0, z:  5,   ry: FACE_LEFT },
 
       // Right wall — 4 desks (back → front)
       'handoff-engineer':     { x: RIGHT_X, y: 0, z: -5, ry: FACE_RIGHT },
@@ -2715,6 +2766,7 @@
       'feature-prioritizer':  'prioritizer',
       'ideation-facilitator': 'ideation',
       'low-fi-designer':      'lo-fi',
+      'figma-designer':       'figma',
       'design-engineer':      'engineer',
       'usability-tester':     'usability',
       'handoff-engineer':     'handoff',
@@ -2770,6 +2822,13 @@
         'prototypes/checkout/page.tsx — 240 lines so far.',
         'Iteration 2 of 3. One more revise then pivot.',
         'Mock API returns realistic delay. Empty state ready.',
+      ],
+      'figma-designer': [
+        'DS inventory pulled. 12 components available, 2 missing.',
+        'Frame coverage: 7 of 8 screens. Last one queued.',
+        'Tokens applied. No hex magic, no detached instances.',
+        'use_figma call 2 of 3 — batching the error states.',
+        'Real PRD copy in every frame. No lorem ipsum.',
       ],
       'usability-tester': [
         '4/5 users completed in <90s. One stuck on autofill.',
@@ -3690,6 +3749,7 @@
       'ideation-facilitator': '#8b5cf6',
       'pm-strategist':        '#0891b2',
       'low-fi-designer':      '#06b6d4',
+      'figma-designer':       '#a855f7',
       'design-engineer':      '#ec4899',
       'usability-tester':     '#16a34a',
       'handoff-engineer':     '#525252',
