@@ -4,6 +4,29 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-23 — v3.9: `figma-designer` agent (hi-fi Figma side of the Deliver fork)
+
+Adds a 16th agent: `figma-designer`, the Figma-side counterpart to `design-engineer`. Same pipeline slot (after `low-fi-designer`), same hi-fi expectation, different surface. Designers who live in Claude Code can now generate hi-fi Figma frames for an approved lo-fi flow without manually redrawing every screen.
+
+Motivated by: Agent Harry had a code-side Deliver path (`design-engineer`) but no Figma-side equivalent. Designer-developers (the maintainer's actual workflow) wanted "the design-engineer experience, but for Figma" — same intake discipline, same scope cap, same Stop Gate, output to Figma frames instead of code files.
+
+- **New agent `figma-designer`** — `templates/.claude/agents/figma-designer.md`. Tools: `Read, Write, Glob, Grep, mcp__figma`. Model: sonnet. Decision authority: `propose`. Phase: deliver. Consumes `lo-fi-<feature-slug>.md` + `prds/<feature-slug>.md`, resolves a user-specified Design System, invokes `use_figma` (per `/figma-use` skill) to generate frames with real DS component instances, real PRD content, applied tokens, and the declared state set per screen.
+- **Scope discipline** — 1 flow per invocation, ALL screens in the flow (no artificial cap; batches into multiple `use_figma` calls for >10 screens). Max 3 states per screen by default (default + empty + error); user can opt into a 4th (loading) at intake. Mirrors `design-engineer`'s 1-flow rule but removes its screen subset shortcut — designer cannot ship a half-flow.
+- **DS-or-refuse gate** — Question 3 of the intake (Design System source) is REQUIRED. Without a DS answer, agent refuses with *"Hi-fi Figma without a DS produces meaningless visuals."* User can override with explicit phrase `"proceed with generic Material defaults"` — agent falls back to Material 3 and flags `ds_status: defaulted` in the handoff.
+- **Pipeline slot** — registered in `orchestrator.md` agent table between `low-fi-designer` and `design-engineer`. Both Research-First Gate (line ~50) and Success-Metrics Gate (line ~63) extended to include `figma-designer` in their Deliver-agent lists. Post-metrics routing now offers `design-engineer` OR `figma-designer` off a lo-fi handoff — user picks the surface they want first. If a `figma-hifi` artifact exists with no code prototype, orchestrator proposes `design-engineer` next (code the approved Figma).
+- **Mode B — Existing Figma File Audit** — agent accepts a Figma file URL and audits hi-fi frames against the lo-fi handoff: flow coverage gap matrix, DS divergence (detached instances, hardcoded tokens, bespoke duplicates), content gaps, component sprawl. Mirrors `design-engineer`'s Mode B shape.
+- **Iteration budget** — 3-revise soft cap derived from `.harry-audit.jsonl` per `SUBAGENT_AUDIT_PROTOCOL.md` Step 3, same as `design-engineer`. Cost estimates: ~$0.10 per single-screen tweak, ~$0.30 per multi-screen content refresh, ~$1.00+ for a full re-render (warned).
+- **`SHARED_CONTEXT.md` updates** — Research-First Gate and Success-Metrics Gate Deliver-agent lists extended. New "Per-feature Deliver artifact paths" table under File Conventions documents the four stable slug-derived paths (`lo-fi-`, `prototype-`, `figma-hifi-`, `spec-`) and the per-agent frontmatter keys.
+- **`templates/README.md` updates** — agent count 15 → 16; new row in agent table; `figma-designer` added to Mode B coverage table and `.claude/agents/` file map.
+- **Root `README.md` updates** — agent count 10 → 16 across install/refresh copy; file map under "What's inside" corrected to the actual current agent set.
+- **Spike deferred** — Phase 0 plan called for a live `use_figma` capability spike. The `/figma-use` skill resource was not directly loadable in the build session, so the spike was deferred to first-run validation. The agent's Anti-Patterns include the canonical warning ("Calling `use_figma` without loading the `/figma-use` skill (or `skill://figma/figma-use/SKILL.md` resource) first — common, hard-to-debug failures result"). First user-session invocation is the live capability test; if `use_figma` does not produce DS-instanced hi-fi frames at the requested fidelity, file a v3.9.1 patch updating the agent's "What You Do" with the actual capability surface (e.g. fall back to structured Figma import spec output).
+- **No model routing change** — `figma-designer` is sonnet, same as every phase agent. Opus reserved for orchestrator + critique-partner (per RATIONALE.md cost discipline).
+- **No SKILL.md change needed** — install + refresh both copy all `templates/.claude/agents/*.md` (no allowlist).
+
+Agents total: 15 → **16**. Opus model agents unchanged (orchestrator + critique-partner only). Slash commands unchanged. Token-cost per pipeline: figma-designer single invocation adds ~$0.30–1.00 depending on flow size; the Deliver path is now a user-choice fork (figma-designer XOR design-engineer XOR both sequentially) rather than a mandatory code-only path.
+
+---
+
 ## 2026-05-22 — v3.8: Passive audit ledger + `/agent-harry-audit` render command
 
 Chat compacts. `dashboard.html` overwrites every Stop Gate. Handoff frontmatter is scattered across files. There was no cross-session audit trail answering *"ဘယ်နေ့မှာ ဘယ် agent ဘာလုပ်တယ်, ဘယ်ဖိုင်တွေ touch လုပ်တယ်, ဘယ်လောက်ကုန်တယ်."* v3.8 adds a passive append-only JSONL ledger written by the orchestrator at every Stop Gate, plus a slash command to render it as a human-readable timeline.

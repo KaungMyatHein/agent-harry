@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 15-subagent UX pipeline (orchestrator + critique-partner + 13 phase agents including low-fi-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 16-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents including low-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps a 15-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps a 16-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -54,7 +54,7 @@ Steps:
 Expected output:
 
 ```
-Installed 15 Agent Harry subagents + 4 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
+Installed 16 Agent Harry subagents + 4 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
 
 Try this — chat-only mode (simplest):
 1. Open dashboard.html in the Claude Preview MCP panel.
@@ -95,7 +95,7 @@ Scoping questions (ask only what isn't already known, keep under 6):
 
 Customization patches:
 
-- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst`, `ideation-facilitator`, `low-fi-designer`, and `design-engineer`, replace with a note that pattern research will use Web Search instead.
+- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst`, `ideation-facilitator`, `low-fi-designer`, and `design-engineer`, replace with a note that pattern research will use Web Search instead. If Figma MCP isn't connected, also remove `figma-designer.md` (it hard-refuses without Figma MCP) or drop it entirely from the install — surface the choice to the user.
 - **Design system context** — Inject the user's design system source into `low-fi-designer.md` (Intake Question Q2), `design-engineer.md` (token files reference), `handoff-engineer.md` (Token usage audit), and `SHARED_CONTEXT.md` (top-of-file Project Context section, including the `Stack:` line).
 - **PM capability scope** — If user says "no PM agents", delete `product-positioner.md`, `feature-prioritizer.md`, `competitive-analyst.md`, and update `orchestrator.md` agent list + README.md.
 - **Project-specific routing rules** — Optionally add a Project Conventions section to `SHARED_CONTEXT.md` (file naming, Notion workspace, Figma file structure).
@@ -105,7 +105,7 @@ Patch method: use `view` + `str_replace` for targeted edits. Don't regenerate te
 Expected output:
 
 ```
-Installed 10 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 16 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
 
 Customizations applied:
 - Removed Mobbin MCP from <agents> — using Web Search fallback
