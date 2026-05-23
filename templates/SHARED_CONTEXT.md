@@ -225,7 +225,7 @@ Stop conditions for the loop: user clicks `cancel`, idle timeout (20 polls ≈ 2
 
 ## Research-First Gate (Hard Block)
 
-The Deliver phase agents (`design-engineer`, `usability-tester`, `handoff-engineer`) AND the late-Define agent `low-fi-designer` are **blocked from running** unless one of these conditions is met:
+The Deliver phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`) AND the late-Define agent `low-fi-designer` are **blocked from running** unless one of these conditions is met:
 
 1. A Discovery-phase handoff artifact exists in this project (any of: `discovery-researcher`, `competitive-analyst` Mode A or B output)
 2. A Define-phase handoff exists (any of: `product-positioner`, `feature-prioritizer`, `ideation-facilitator`)
@@ -243,7 +243,7 @@ The orchestrator enforces this gate. If a user requests Deliver work without Dis
 
 A second hard block, fires at the Define → Deliver boundary.
 
-The Deliver-phase agents (`design-engineer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
+The Deliver-phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
 
 Note: `low-fi-designer` is Define-phase and is NOT blocked by this gate — layout exploration can run before metrics are confirmed, and may inform metric selection.
 
@@ -270,6 +270,19 @@ Agents are skill-aware. When the user has PM skill packs installed (`pm-executio
 - File naming: `YYYY-MM-DD_<agent>_<short-topic>.md`
 - Figma node IDs, Notion page IDs, and Mobbin URLs are recorded as **clickable links**, never naked IDs
 - Screenshots/exports go in `./design-workspace/<project-slug>/assets/`
+
+### Per-feature Deliver artifact paths
+
+The Deliver agents that build off a single lo-fi handoff use these stable, slug-derived paths:
+
+| Agent | Artifact path | Frontmatter keys (in addition to standard) |
+|---|---|---|
+| `low-fi-designer` | `./design-workspace/<project-slug>/lo-fi-<feature-slug>.md` | (standard only) |
+| `design-engineer` | `./design-workspace/<project-slug>/prototype-<feature-slug>.md` | `polish_bar`, `routes`, `mock_api_path` |
+| `figma-designer` | `./design-workspace/<project-slug>/figma-hifi-<feature-slug>.md` | `figma_file_url`, `figma_screens` (per-screen + per-state node IDs + components_used + new_components), `ds_source`, `ds_status` |
+| `handoff-engineer` | `./design-workspace/<project-slug>/spec-<feature-slug>.md` | `design_tokens_path`, `component_specs` |
+
+Slugs MUST match the upstream `lo-fi-<feature-slug>.md` — read its frontmatter to be sure. The agent that writes the file owns derivation per `SUBAGENT_AUDIT_PROTOCOL.md` Step 1.
 
 ## Shared Vocabulary
 

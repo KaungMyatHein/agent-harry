@@ -2,7 +2,7 @@
 
 Kaung Myat Hein's personal multi-agent product design skill for [Claude Code](https://claude.com/claude-code).
 
-Installs a 10-subagent UX pipeline (Discovery → Define → Deliver, plus embedded PM capabilities) into any project, then keeps it in sync with this repo.
+Installs a 16-subagent UX pipeline (Discovery → Define → Deliver, plus embedded PM capabilities) into any project, then keeps it in sync with this repo.
 
 ---
 
@@ -30,7 +30,7 @@ Inside any Claude Code project, the skill exposes three modes. Trigger them in p
 "design agent တွေ install လုပ်ပေး"
 ```
 
-Drops 10 agent files into `<project>/.claude/agents/` plus a `SHARED_CONTEXT.md` and `README.md` describing the system. Two sub-modes:
+Drops 16 agent files into `<project>/.claude/agents/` plus a `SHARED_CONTEXT.md` and `README.md` describing the system. Two sub-modes:
 
 - **Bundled** — default templates, no questions asked
 - **Generator** — answers a few scoping questions (design system, MCPs, PM scope) and patches the templates to fit the project
@@ -43,7 +43,7 @@ Drops 10 agent files into `<project>/.claude/agents/` plus a `SHARED_CONTEXT.md`
 "Agent Harry ပြန် refresh"
 ```
 
-Overwrites the 10 agent files with the latest templates. **Preserves `SHARED_CONTEXT.md` and `README.md`** — those are yours to customize per-project. Warns first if any agent file has uncommitted local edits.
+Overwrites the 16 agent files with the latest templates. **Preserves `SHARED_CONTEXT.md` and `README.md`** — those are yours to customize per-project. Warns first if any agent file has uncommitted local edits.
 
 ### Pull the latest skill from GitHub
 
@@ -70,15 +70,21 @@ agent-harry/
     ├── SHARED_CONTEXT.md     ← cross-agent context + handoff schema
     └── .claude/agents/
         ├── orchestrator.md
+        ├── critique-partner.md
         ├── discovery-researcher.md
         ├── competitive-analyst.md
         ├── product-positioner.md
         ├── feature-prioritizer.md
         ├── ideation-facilitator.md
-        ├── interaction-designer.md
+        ├── pm-strategist.md
+        ├── low-fi-designer.md
+        ├── figma-designer.md
+        ├── design-engineer.md
         ├── usability-tester.md
         ├── handoff-engineer.md
-        └── critique-partner.md
+        ├── pm-launch-architect.md
+        ├── pm-metrics-architect.md
+        └── prd-author.md
 ```
 
 For the full breakdown of what each agent does, voices, decision authority, anti-patterns, and usage patterns — see [`templates/README.md`](templates/README.md).
