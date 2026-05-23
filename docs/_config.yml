@@ -1,0 +1,76 @@
+# Jekyll config for the Agent Harry docs site.
+#
+# GitHub Pages serves this directory at https://kaungmyathein.github.io/agent-harry/
+#   - / (root)                  → docs/index.html (the marketing landing page, untouched)
+#   - /wiki/                    → docs/wiki/index.md (the wiki home; Just the Docs theme)
+#   - /wiki/agents/<agent>/     → individual agent reference pages
+#   - /wiki/concepts/<concept>/ → individual concept explainer pages
+#
+# The landing page (docs/index.html) has no Jekyll frontmatter, so Jekyll passes
+# it through unchanged. The wiki pages have frontmatter (parent, nav_order, etc.),
+# so Just the Docs applies its layout, sidebar, and search to them.
+
+title: Agent Harry
+description: Multi-agent product design system for Claude Code — 17 specialized sub-agents covering Discovery → Define → Deliver, plus embedded PM capabilities and a project-level visual + composition fingerprint.
+
+# GitHub Pages URL configuration.
+# When serving from username.github.io/agent-harry/, the baseurl prefix is /agent-harry.
+url: https://kaungmyathein.github.io
+baseurl: /agent-harry
+
+# Theme — Just the Docs, loaded via remote_theme so no Gemfile is required for the
+# GitHub Pages build. Local preview can pin a version via Gemfile (see Gemfile.example).
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+# --- Just the Docs configuration ---
+
+# Color scheme — light is the default; readers can toggle to dark via the UI control
+# Just the Docs renders in the top right.
+color_scheme: light
+
+# Client-side search across all wiki pages (works without a build-time index).
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 2
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s\-/]+/
+  rel_url: true
+  button: false
+
+# External links shown in the top-right of every wiki page.
+aux_links:
+  "GitHub repo":
+    - "https://github.com/KaungMyatHein/agent-harry"
+  "CHANGELOG":
+    - "https://github.com/KaungMyatHein/agent-harry/blob/main/CHANGELOG.md"
+
+aux_links_new_tab: true
+
+# Show a "Back to top" link on long pages.
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Footer rendered on every wiki page.
+footer_content: 'Agent Harry is built by <a href="https://github.com/KaungMyatHein">Kaung Myat Hein</a>. Source on <a href="https://github.com/KaungMyatHein/agent-harry">GitHub</a>. The wiki is part of the main repo (<code>docs/wiki/</code>) — edits land in the same PR as the code change that motivated them.'
+
+# Optional: show last-modified date on each page (requires the Git plugin which
+# GitHub Pages supports). Commented out for now to keep the build minimal.
+# last_edit_timestamp: true
+# last_edit_time_format: "%b %e %Y at %I:%M %p"
+
+# --- Site-wide excludes ---
+# Don't render these in the published site.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - node_modules/
+  - "*.log"
+  - .sass-cache/
+  - .jekyll-cache/
