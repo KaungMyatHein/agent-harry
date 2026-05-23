@@ -6,6 +6,49 @@ If you're an agent and you ended up here, you went down the wrong path. Go back 
 
 ---
 
+## Why the Product Fingerprint exists (v4.0)
+
+DS tokens describe **vocabulary** but not **how it's composed**. Two products with the same DS can feel completely different — one dense and clinical, the other airy and playful. Without a project-level reference for composition idioms, copy tone, density, and anti-patterns, Agent Harry's Deliver agents produced DS-correct but product-foreign work. New screens looked technically right and visibly bolted on.
+
+The fingerprint closes that gap with a small, curated, reusable artifact (`<project-root>/product-fingerprint.md`) extracted from 3–7 designer-picked "exciting" Figma frames. Visual language signals + composition patterns + mandatory anti-patterns. Read by `lo-fi-designer`, `figma-designer`, and `design-engineer` at intake.
+
+### Why user-curated Figma references (not auto-detected)
+
+"Exciting" is a judgment call. Auto-detection by last-modified time, component density, or page name picks the wrong frames — last-edited ≠ most-representative, most-components ≠ most-polished. The designer knows which screens define the product; the agents don't. The cost of a wrong reference set is invisible drift: every new screen anchors to mediocre examples. Worse than no reference at all.
+
+### Why code paths are auto-discovered (not curated)
+
+Composition idioms in code don't need curation — any non-trivial existing screen in the feature area reveals them. The PRD names the feature scope (`checkout`); the codebase has structure (`app/checkout/*`); auto-discovery surfaces the relevant files. Making the designer curate code paths is friction without payoff.
+
+### Why mandatory anti-patterns (3–5 per fingerprint)
+
+Negative signal is half the value. "We don't use playful illustrations" prevents downstream agents from pattern-matching from generic best practices and injecting something that breaks the language. Without explicit negatives, the fingerprint guides what to *do* but not what to *avoid*. Anti-patterns made mandatory because they're the half designers forget to write down.
+
+### Why one fingerprint per project (not per-feature)
+
+The visual language of a product doesn't change between Tuesday and Thursday. Re-curating every session is waste. The whole point of the fingerprint is consistency across features — if it changed per-feature, every feature would have its own "exciting screens," defeating the goal. Refresh happens on real product evolution (rebrand, redesign, DS major version), not on routine work.
+
+### Why refuse-with-explicit-opt-out (not hard-refuse, not silent-skip)
+
+Hard-refuse-no-opt-out is wrong because some teams legitimately don't have curatable references yet (greenfield product, pre-launch). Silent-skip is wrong because drift-by-omission is the failure mode this exists to prevent. The middle path — refuse by default, override only with an explicit phrase (`skip fingerprint` or `proceed with stale fingerprint`) — matches the Research-First Gate and Success-Metrics Gate patterns and forces conscious choice. The audit ledger captures the opt-out so quality drift becomes traceable.
+
+### Why Primary anchors entry-point over fingerprint when they disagree
+
+Continuity beats consistency. If the user just clicked a Checkout button on a sidebar+main Cart page, the next screen should also be sidebar+main even if the fingerprint's hero work is full-bleed. The user's mental model is "I'm still in the same flow," not "now I'm in the brand voice." Entry-point continuity is local; fingerprint consistency is global. Local wins for the first screen of a new flow.
+
+### Why `low-fi → lo-fi` rename was bundled
+
+The artifact files were already `lo-fi-<feature_slug>.md`. The agent identifier was `low-fi-designer`. The user-facing capitalization was "Lo-Fi" in headings. The inconsistency was small but real, and v4.0 touched all three Deliver agents anyway — a clean moment to align naming.
+
+### What's deferred (v4.1+)
+
+- **`critique-partner` using fingerprint anti-patterns as critique criteria** — high value, but adds another integration point. Defer until the v4.0 enforcement has run in real projects and the anti-pattern format has stabilized.
+- **Quality-bar gating purpose** — purpose B from the grilling session ("new screens must be at least as polished as existing hero screens"). Adding a quality gate risks making the pipeline so strict nothing ships. Defer until v4.0 consistency mechanisms are proven; revisit when it's clear the gate is needed.
+- **Screenshots / live URLs as alternative reference inputs** — would help teams with sparse Figma. But screenshots are flat (no structural data) and live URLs add Playwright complexity. Defer until the Figma-only constraint causes real friction.
+- **Auto-staleness detection beyond `lastModified`** — visual hashing would catch silent edits the timestamp misses, but it's effectively re-running the curator on every intake. Cost-prohibitive for marginal value.
+
+---
+
 ## Why the Research-First Gate exists
 
 A "comprehensive-looking" PRD is still an artifact that needs Mode B audit before downstream work. Skipping straight to Deliver makes the design throwaway-risky if Discovery later surfaces an unvalidated assumption that breaks the foundation. This rule exists because the user (Kaung Myat Hein) has explicitly burned cycles re-doing Deliver work after assumptions failed audit.
@@ -127,11 +170,11 @@ The savings (~$1.46/week) goes to the actual agents doing actual work.
 
 ---
 
-## Why interaction-designer was split into low-fi-designer + design-engineer (v3.7)
+## Why interaction-designer was split into lo-fi-designer + design-engineer (v3.7)
 
 The bundled `interaction-designer.md` was a 187-line file trying to be three different agents at once:
 
-1. A low-fi wireframer answering *"does the screen architecture make sense?"*
+1. A lo-fi wireframer answering *"does the screen architecture make sense?"*
 2. A hi-fi visual designer producing Figma mockups
 3. A code-prototyper writing real HTML/React with state coverage
 
@@ -139,12 +182,12 @@ Three distinct fidelity disciplines, three distinct output contracts, three dist
 
 The split at v3.7 picks the two seams where the crafts diverge most:
 
-- **`low-fi-designer` (Define phase)** owns flow + ASCII wireframes + DS component identification. Output is decision-shaping, not visual.
+- **`lo-fi-designer` (Define phase)** owns flow + ASCII wireframes + DS component identification. Output is decision-shaping, not visual.
 - **`design-engineer` (Deliver phase)** owns production-ready frontend code with real state coverage. Output is buildable, demoable, and engineering-handoff-grade.
 
 What got dropped: explicit hi-fi-Figma-only workflow. That craft is now either upstream of `design-engineer` (DS / Figma library exists, agent uses tokens directly) or downstream (`handoff-engineer` audits a Figma file against the built prototype). The user can re-install the retired `interaction-designer.md` from a v3.6 backup if pure Figma hi-fi is the workflow they want.
 
-Cost: agent count grew 14 → 15 (one new file net). But routing logic in the orchestrator got simpler (no more "which mode of interaction-designer?"), and each new agent's intake questions / output format / anti-patterns are sharper because each agent has one job. The Stop Gate UX also gets cleaner — `low-fi-designer`'s gate asks *"pick a layout"*, `design-engineer`'s gate asks *"run the prototype locally and decide"*. Different decisions, different prompts.
+Cost: agent count grew 14 → 15 (one new file net). But routing logic in the orchestrator got simpler (no more "which mode of interaction-designer?"), and each new agent's intake questions / output format / anti-patterns are sharper because each agent has one job. The Stop Gate UX also gets cleaner — `lo-fi-designer`'s gate asks *"pick a layout"*, `design-engineer`'s gate asks *"run the prototype locally and decide"*. Different decisions, different prompts.
 
 The orphan-check step in Refresh mode exists because pre-v3.7 installs have `interaction-designer.md` in `.claude/agents/` that's no longer in templates. Without the check, that file sits as a confusing orphan — orchestrator routing won't reference it but the user can still invoke it directly with stale guidance.
 

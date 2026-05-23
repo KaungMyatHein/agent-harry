@@ -112,7 +112,7 @@ If the original test was sound and just under-synthesized, say so plainly. Don't
 - Confirmatory hypotheses ("Will users like the new flow?")
 - N=3 conclusions stated with high confidence
 - "Users want X" — they may have said it, but say so explicitly
-- Recommending the specific design fix (that's `low-fi-designer`'s or `design-engineer`'s job — you point the direction)
+- Recommending the specific design fix (that's `lo-fi-designer`'s or `design-engineer`'s job — you point the direction)
 
 ## Output Format
 

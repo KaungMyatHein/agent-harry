@@ -6,7 +6,7 @@ Every agent in this system reads this file as part of its working context. It de
 
 ## Project Context
 
-Generator-mode install fills this section. Bundled-mode install leaves it as placeholders — fill it manually before the first real run, or the stack-aware agents (`low-fi-designer`, `design-engineer`) will fall back to repo scan + intake question.
+Generator-mode install fills this section. Bundled-mode install leaves it as placeholders — fill it manually before the first real run, or the stack-aware agents (`lo-fi-designer`, `design-engineer`) will fall back to repo scan + intake question.
 
 | Field | Value |
 |---|---|
@@ -16,7 +16,7 @@ Generator-mode install fills this section. Bundled-mode install leaves it as pla
 | Notion workspace | <URL or "none"> |
 | Figma file | <main project file URL or "none"> |
 
-The **Stack** line is read by `low-fi-designer` and `design-engineer` as the tier-1 source for stack detection (before repo scan, before intake question). Keep it accurate — wrong stack here means wireframes recommend components that don't exist in the codebase.
+The **Stack** line is read by `lo-fi-designer` and `design-engineer` as the tier-1 source for stack detection (before repo scan, before intake question). Keep it accurate — wrong stack here means wireframes recommend components that don't exist in the codebase.
 
 ---
 
@@ -225,7 +225,7 @@ Stop conditions for the loop: user clicks `cancel`, idle timeout (20 polls ≈ 2
 
 ## Research-First Gate (Hard Block)
 
-The Deliver phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`) AND the late-Define agent `low-fi-designer` are **blocked from running** unless one of these conditions is met:
+The Deliver phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`) AND the late-Define agent `lo-fi-designer` are **blocked from running** unless one of these conditions is met:
 
 1. A Discovery-phase handoff artifact exists in this project (any of: `discovery-researcher`, `competitive-analyst` Mode A or B output)
 2. A Define-phase handoff exists (any of: `product-positioner`, `feature-prioritizer`, `ideation-facilitator`)
@@ -245,7 +245,7 @@ A second hard block, fires at the Define → Deliver boundary.
 
 The Deliver-phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
 
-Note: `low-fi-designer` is Define-phase and is NOT blocked by this gate — layout exploration can run before metrics are confirmed, and may inform metric selection.
+Note: `lo-fi-designer` is Define-phase and is NOT blocked by this gate — layout exploration can run before metrics are confirmed, and may inform metric selection.
 
 1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND the user has explicitly confirmed it with `y` on the Stop Gate that followed the metrics run.
 2. The user has explicitly opted out with: *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* / equivalent phrasing.
@@ -253,6 +253,85 @@ Note: `low-fi-designer` is Define-phase and is NOT blocked by this gate — layo
 When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics (chip hint becomes `confirm success metrics`, TL;DR ends with *"Confirm these metrics so Deliver can proceed?"*).
 
 `/audit-pipeline` reports this gate's status alongside the Research-First Gate. See `RATIONALE.md` for the why.
+
+---
+
+## Product Fingerprint (Critical Input — v4.0)
+
+A project-level artifact at `<project-root>/product-fingerprint.md` that captures the existing product's visual language and composition vocabulary from 3–7 designer-picked "exciting" Figma frames. Read by `lo-fi-designer`, `figma-designer`, and `design-engineer` at intake so new feature work matches the product's actual norms — not just DS tokens, not generic best practices.
+
+### Why it exists
+
+DS tokens describe vocabulary but not *how it's composed*. Two products can share the same DS and still feel completely different — one dense and clinical, the other airy and playful. The fingerprint captures that difference. Without it, new features are DS-correct but product-foreign.
+
+### Lifecycle
+
+- **Written once per project** by `product-fingerprint-curator` — the agent owns the file
+- **Read by every future Deliver-agent invocation** — `lo-fi-designer`, `figma-designer`, `design-engineer` load the full file at intake (compact-by-design, ~200 lines max)
+- **Refreshable on explicit user trigger** via `/agent-harry-fingerprint --refresh` (rebrand, redesign, new hero work, DS major version bump)
+- **No auto-staleness detection beyond `lastModified` timestamps** — user-in-the-loop only
+
+### Pre-intake check (mandatory across all three Deliver agents)
+
+Before any other intake question, `lo-fi-designer` / `figma-designer` / `design-engineer` validate the fingerprint:
+
+1. **Existence check** — file exists at `<project-root>/product-fingerprint.md`
+2. **Lightweight freshness check** — for each `figma_node` in Curated References, fetch metadata via `mcp__figma`; compare `node.lastModified` vs frozen `figma_node_last_modified_at_curation`; check for archive-prefix names (`old_` / `deprecated_` / `archive_`)
+3. **Decide:** Missing → refuse; Stale → refuse; Fresh → load into intake context, proceed
+
+### Refusal model
+
+Refuse-with-explicit-opt-out, parallel to Research-First Gate and Success-Metrics Gate:
+
+- `skip fingerprint` — accepts visual-drift risk; logged as `fingerprint_skipped` in audit ledger; Executive Summary flags `visual_drift_risk: true`
+- `proceed with stale fingerprint` — accepts outdated-signal risk; logged as `fingerprint_stale_proceeded`; flags `fingerprint_stale: true`
+- `cancel` — halts
+
+### What the fingerprint contains
+
+| Section | Content |
+|---|---|
+| Curated References | 3–7 entries with `name`, `role`, `figma_node`, `figma_node_last_modified_at_curation`, `why_exciting` |
+| Visual Language Synthesis | Prose headline + structured signal (density, color_stance, typography_stance, copy_tone, motion_stance, imagery, corner_radius, shadow, spacing_rhythm) with evidence pointers |
+| Composition Patterns | Prose headline + table (page scaffolding by role, empty-state, form, data display, primary CTA placement, confirmation/destruction) with evidence pointers |
+| Anti-patterns | 3–5 explicit "this product doesn't do X" statements (mandatory — negative signal is half the value) |
+| Open / Unknown | Things the curator couldn't extract; coverage gaps |
+
+### Anti-patterns and enforcement
+
+- **lo-fi-designer**: Primary + Alternative layout variants MUST NOT violate any fingerprint anti-pattern. Risky variant MAY violate ONLY when explicitly annotated with `breaks_antipattern` + rationale.
+- **figma-designer**: Mode A frames must respect anti-patterns; Mode B audit gains a "Fingerprint divergence" section (max 4 findings, severity-ranked).
+- **design-engineer**: Mode A code must respect anti-patterns; Mode B audit gains the same "Fingerprint divergence" section.
+
+### Asymmetric source curation
+
+- **Figma references — user-curated.** "Exciting" is a judgment call; auto-detection picks wrong frames. Designer names which 3–7 frames define the product.
+- **Code paths — auto-discovered.** `design-engineer` extracts feature scope keywords from PRD + `feature_slug`, Globs/Greps `app/` / `pages/` / `src/` for matching files, plus universal primitives from `components/ui/*` and root layout. Surfaces discovered paths at intake transparently; user overrides via `revise — study X instead of Y`.
+
+### Entry-point input (per-feature, not project-level)
+
+Separate from the project-level fingerprint, `lo-fi-designer` takes a per-feature **entry-point input** at intake:
+
+- Figma node URL of the screen the user is on just before the new flow starts (user-provided)
+- Code path of the entry-point screen (auto-discovered from PRD + feature_slug; user can override)
+- Trigger affordance and return target (read from PRD if present)
+- `type`: `existing_screen` | `new_top_level`
+
+Primary layout anchors on entry-point first, fingerprint second. When they disagree, entry-point wins for continuity.
+
+### Curator and slash command
+
+- `product-fingerprint-curator` — cross-cutting subagent that runs the curation. Owns the file. Supports Mode A (first curation) and Mode B (refresh).
+- `/agent-harry-fingerprint` — slash command for direct invoke. `--refresh` flag for re-curation.
+
+### What's out of scope (v4.0)
+
+- `critique-partner` using fingerprint anti-patterns as critique criteria (deferred to v4.1)
+- `usability-tester` / `handoff-engineer` / `prd-author` fingerprint integration (deferred)
+- Screenshots / live URLs as alternative reference inputs (Figma URLs only in v4.0)
+- Auto-staleness detection beyond `lastModified` timestamps (no visual hashing)
+- Auto-refresh on stale detection (user-in-the-loop only)
+- Quality-bar gating purpose (current scope is consistency, not quality enforcement)
 
 ---
 
@@ -277,10 +356,11 @@ The Deliver agents that build off a single lo-fi handoff use these stable, slug-
 
 | Agent | Artifact path | Frontmatter keys (in addition to standard) |
 |---|---|---|
-| `low-fi-designer` | `./design-workspace/<project-slug>/lo-fi-<feature-slug>.md` | (standard only) |
-| `design-engineer` | `./design-workspace/<project-slug>/prototype-<feature-slug>.md` | `polish_bar`, `routes`, `mock_api_path` |
-| `figma-designer` | `./design-workspace/<project-slug>/figma-hifi-<feature-slug>.md` | `figma_file_url`, `figma_screens` (per-screen + per-state node IDs + components_used + new_components), `ds_source`, `ds_status` |
+| `lo-fi-designer` | `./design-workspace/<project-slug>/lo-fi-<feature-slug>.md` | `entry_point` (object), `fingerprint_compliance` (per-variant), `fingerprint_status` (v4.0) |
+| `design-engineer` | `./design-workspace/<project-slug>/prototype-<feature-slug>.md` | `polish_bar`, `routes`, `mock_api_path`, `fingerprint_status`, `fingerprint_anchors_applied`, `discovered_code_paths` (v4.0) |
+| `figma-designer` | `./design-workspace/<project-slug>/figma-hifi-<feature-slug>.md` | `figma_file_url`, `figma_screens` (per-screen + per-state node IDs + components_used + new_components), `ds_source`, `ds_status`, `fingerprint_status`, `fingerprint_anchors_applied` (v4.0) |
 | `handoff-engineer` | `./design-workspace/<project-slug>/spec-<feature-slug>.md` | `design_tokens_path`, `component_specs` |
+| `product-fingerprint-curator` (v4.0) | `<project-root>/product-fingerprint.md` (project-level — NOT under `design-workspace/`) | `last_validated` (ISO 8601 UTC), `curator_session`, per-entry `figma_node_last_modified_at_curation` (frozen ISO 8601 UTC). `feature_slug` is `null` in standard handoff frontmatter (cross-feature work) |
 
 Slugs MUST match the upstream `lo-fi-<feature-slug>.md` — read its frontmatter to be sure. The agent that writes the file owns derivation per `SUBAGENT_AUDIT_PROTOCOL.md` Step 1.
 
@@ -342,11 +422,12 @@ Sub-agents return:
 When agents need context, they pull in this order:
 
 1. **Current session** — what the user has just said
-2. **Prior agent handoffs** — files in `./design-workspace/<project-slug>/` (read Executive Summary only by default)
-3. **Notion workspace** — research docs, specs
-4. **Figma files** — design source of truth
-5. **Mobbin** — pattern reference (Deliver phase)
-6. **Web search** — last resort for external context
+2. **Product Fingerprint** — `<project-root>/product-fingerprint.md` (read in full by `lo-fi-designer`, `figma-designer`, `design-engineer` at intake; project-level visual + composition vocabulary)
+3. **Prior agent handoffs** — files in `./design-workspace/<project-slug>/` (read Executive Summary only by default)
+4. **Notion workspace** — research docs, specs
+5. **Figma files** — design source of truth
+6. **Mobbin** — pattern reference (Deliver phase)
+7. **Web search** — last resort for external context
 
 Agents NEVER fabricate context. If something isn't available in the hierarchy above, they say so and ask.
 
@@ -404,9 +485,11 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 
 | Event type | Extra fields |
 |---|---|
-| `gate_block` / `gate_clear` | `gate` (`"research_first"` / `"success_metrics"`), `reason` (one-line string) |
+| `gate_block` / `gate_clear` | `gate` (`"research_first"` / `"success_metrics"` / `"fingerprint"`), `reason` (one-line string) |
 | `pivot` / `revise` | `delta_text` (the text user typed after `pivot —` / `revise —`) |
 | `scope_refused` / `iteration_cap_hit` | `cap_hit` (string — which cap fired, e.g. `"design-engineer:1-flow-per-invocation"`) |
+| `fingerprint_stale_detected` | `stale_count` (int), `stale_refs` (string[] — names of stale references), `stale_reasons` (`["lastModified-newer"]` / `["archive-prefix-name"]` / mixed) |
+| `fingerprint_refreshed` | `entries_kept` (string[]), `entries_replaced` (string[]), `entries_removed` (string[]) |
 
 ### Events to log
 
@@ -419,6 +502,10 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `cancel` | User responds `cancel` / `stop` / `ရပ်` |
 | `scope_refused` | Subagent refuses due to scope cap (e.g. `design-engineer` "1 primary flow per invocation") |
 | `iteration_cap_hit` | Iteration soft cap reached (e.g. `design-engineer` 3rd revise) |
+| `fingerprint_skipped` (v4.0) | User typed `skip fingerprint` at a Deliver-agent pre-intake check |
+| `fingerprint_stale_detected` (v4.0) | Pre-intake check found ≥1 stale reference (regardless of user decision) |
+| `fingerprint_stale_proceeded` (v4.0) | User typed `proceed with stale fingerprint` at a Deliver-agent pre-intake check |
+| `fingerprint_refreshed` (v4.0) | `product-fingerprint-curator` ran in refresh mode and the user confirmed |
 
 ### Who writes the ledger — ownership by event type (v3.8 final)
 
@@ -433,6 +520,10 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `gate_clear` | **Orchestrator** | Same as above |
 | `pivot` | **Orchestrator** | User input at orchestrator level — orchestrator routes the pivot |
 | `cancel` | **Orchestrator** | Pipeline halt is orchestrator's responsibility |
+| `fingerprint_skipped` (v4.0) | **Subagent** that did the pre-intake check | The check happens inside the agent — agent owns the event |
+| `fingerprint_stale_detected` (v4.0) | **Subagent** that did the pre-intake check | Same |
+| `fingerprint_stale_proceeded` (v4.0) | **Subagent** that did the pre-intake check | Same |
+| `fingerprint_refreshed` (v4.0) | **`product-fingerprint-curator`** | Only the curator runs refresh mode |
 
 Single writer per event type → **no race condition, no duplicate entries, no detection logic needed**. Direct-invocation works naturally — the subagent self-logs its `stop_gate` whether orchestrator is in the loop or not.
 

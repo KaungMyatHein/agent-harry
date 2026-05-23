@@ -100,7 +100,7 @@ decisionData:
 | `product-positioner` | callout | The positioning statement; meta has the value-prop options |
 | `feature-prioritizer` | table | Scoring table (top 8) with deltas and MVP pills |
 | `ideation-facilitator` | insights | 3–5 concept candidates with one-line tradeoff |
-| `low-fi-designer` | insights | 3 layout alternatives (primary/alternative/risky) — text + DS-vs-new component count + confidence (max 3 items) |
+| `lo-fi-designer` | insights | 3 layout alternatives (primary/alternative/risky) — text + DS-vs-new component count + confidence (max 3 items) |
 | `design-engineer` | table | Screens built: screen · states covered · DS components · new components · polish level (max 6 rows) |
 | `usability-tester` | insights | Findings (max 5) with severity in the conf chip |
 | `handoff-engineer` | table | Spec scope: screens · component states · tokens · open dev questions |
@@ -112,9 +112,9 @@ decisionData:
 
 ## Field-to-Shape Mapping for v3.7 Agents
 
-The v3.7 split agents (`low-fi-designer`, `design-engineer`) carry richer semantic data than the 4 existing shape types natively model. Rather than introducing a 5th shape type (which would require dashboard.html render changes), we map the richer fields into the existing `insights` / `table` shapes' free-form slots.
+The v3.7 split agents (`lo-fi-designer`, `design-engineer`) carry richer semantic data than the 4 existing shape types natively model. Rather than introducing a 5th shape type (which would require dashboard.html render changes), we map the richer fields into the existing `insights` / `table` shapes' free-form slots.
 
-### `low-fi-designer` → `insights` shape (max 3 items)
+### `lo-fi-designer` → `insights` shape (max 3 items)
 
 Each insight item represents one of the 3 ASCII layouts (primary / alternative / risky).
 

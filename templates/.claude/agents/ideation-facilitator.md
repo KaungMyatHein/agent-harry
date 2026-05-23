@@ -93,4 +93,4 @@ Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, an
 
 ## Approval Gate
 
-`autonomous`. But after producing concepts, recommend handing to `low-fi-designer` first (for userflow + ASCII layouts of the 2–3 most promising concepts), then to `design-engineer` once a layout is chosen. Don't assume which concept the user will pick.
+`autonomous`. But after producing concepts, recommend handing to `lo-fi-designer` first (for userflow + ASCII layouts of the 2–3 most promising concepts), then to `design-engineer` once a layout is chosen. Don't assume which concept the user will pick.

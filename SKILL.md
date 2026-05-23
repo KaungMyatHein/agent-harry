@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 16-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents including low-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 17-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents + 1 cross-cutting curator (product-fingerprint-curator) — including lo-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps a 16-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps a 17-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -54,7 +54,7 @@ Steps:
 Expected output:
 
 ```
-Installed 16 Agent Harry subagents + 4 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
+Installed 17 Agent Harry subagents + 5 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
 
 Try this — chat-only mode (simplest):
 1. Open dashboard.html in the Claude Preview MCP panel.
@@ -69,7 +69,7 @@ Or — click-driven mode (v3.2):
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
-- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, low-fi-designer (v3.7)
+- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, lo-fi-designer (v3.7)
 - Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect, prd-author (all gated by Research-First + Success-Metrics checks)
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
@@ -87,16 +87,16 @@ Use when the user wants the system tuned to their specific project, design syste
 Scoping questions (ask only what isn't already known, keep under 6):
 
 1. **Project context** — What kind of product? (Mobile app / web SaaS / internal tool / hardware / other)
-2. **Stack (v3.7)** — Which frontend stack? (Next.js / React Router / Vue Nuxt / SwiftUI / Flutter / Vanilla HTML / other) — answers fill `SHARED_CONTEXT.md` Project Context `Stack:` line; consumed by `low-fi-designer` + `design-engineer`
+2. **Stack (v3.7)** — Which frontend stack? (Next.js / React Router / Vue Nuxt / SwiftUI / Flutter / Vanilla HTML / other) — answers fill `SHARED_CONTEXT.md` Project Context `Stack:` line; consumed by `lo-fi-designer` + `design-engineer`
 3. **Design system** — What's the source? (Figma library URL / code repo / external system like Material/Carbon/shadcn / none yet)
 4. **MCPs connected** — Which of these are available? (Figma, Notion, Mobbin, Supabase, Web Search, other)
 5. **PM capability needed?** — Yes (full set including positioner/prioritizer) / No (drop PM agents, keep design-only)
-6. **Prototype medium default (v3.7)** — Lo-fi only (ASCII wireframes from `low-fi-designer`) / Code prototype (`design-engineer` builds in the chosen stack) / Both (default — lo-fi-designer first, then design-engineer when ready)
+6. **Prototype medium default (v3.7)** — Lo-fi only (ASCII wireframes from `lo-fi-designer`) / Code prototype (`design-engineer` builds in the chosen stack) / Both (default — lo-fi-designer first, then design-engineer when ready)
 
 Customization patches:
 
-- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst`, `ideation-facilitator`, `low-fi-designer`, and `design-engineer`, replace with a note that pattern research will use Web Search instead. If Figma MCP isn't connected, also remove `figma-designer.md` (it hard-refuses without Figma MCP) or drop it entirely from the install — surface the choice to the user.
-- **Design system context** — Inject the user's design system source into `low-fi-designer.md` (Intake Question Q2), `design-engineer.md` (token files reference), `handoff-engineer.md` (Token usage audit), and `SHARED_CONTEXT.md` (top-of-file Project Context section, including the `Stack:` line).
+- **Per-agent tool list** — Update `tools:` frontmatter to match the user's MCP availability. Example: if Mobbin MCP isn't connected, remove from `competitive-analyst`, `ideation-facilitator`, `lo-fi-designer`, and `design-engineer`, replace with a note that pattern research will use Web Search instead. If Figma MCP isn't connected, also remove `figma-designer.md` (it hard-refuses without Figma MCP) or drop it entirely from the install — surface the choice to the user.
+- **Design system context** — Inject the user's design system source into `lo-fi-designer.md` (Intake Question Q2), `design-engineer.md` (token files reference), `handoff-engineer.md` (Token usage audit), and `SHARED_CONTEXT.md` (top-of-file Project Context section, including the `Stack:` line).
 - **PM capability scope** — If user says "no PM agents", delete `product-positioner.md`, `feature-prioritizer.md`, `competitive-analyst.md`, and update `orchestrator.md` agent list + README.md.
 - **Project-specific routing rules** — Optionally add a Project Conventions section to `SHARED_CONTEXT.md` (file naming, Notion workspace, Figma file structure).
 
@@ -105,7 +105,7 @@ Patch method: use `view` + `str_replace` for targeted edits. Don't regenerate te
 Expected output:
 
 ```
-Installed 16 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 17 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
 
 Customizations applied:
 - Removed Mobbin MCP from <agents> — using Web Search fallback
@@ -132,7 +132,7 @@ Steps:
 1. Confirm the project root with the user (or use cwd).
 2. Check that `<project>/.claude/agents/` exists. If not, this isn't an installed Agent Harry project — suggest running Install instead.
 3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
-3.5. **Orphan-check (v3.7)**: list files in `<project>/.claude/agents/` that don't exist in `templates/.claude/agents/`. These are agents the user installed previously that have since been retired from the templates (e.g. pre-v3.7 installs have `interaction-designer.md`, retired in v3.7 in favor of `low-fi-designer.md` + `design-engineer.md`). If orphans found, list them and ask: *"These agent files exist locally but are no longer shipped with Agent Harry — delete them? (y / n / show me what each one was for)"*. If `y`, `git rm` them (or `rm` if not git-tracked); if `n`, leave them in place (warn that orchestrator routing won't reference them but they remain invokable directly). Apply the same check to `<project>/.claude/commands/`.
+3.5. **Orphan-check (v3.7)**: list files in `<project>/.claude/agents/` that don't exist in `templates/.claude/agents/`. These are agents the user installed previously that have since been retired from the templates (e.g. pre-v3.7 installs have `interaction-designer.md`, retired in v3.7 in favor of `lo-fi-designer.md` + `design-engineer.md`). If orphans found, list them and ask: *"These agent files exist locally but are no longer shipped with Agent Harry — delete them? (y / n / show me what each one was for)"*. If `y`, `git rm` them (or `rm` if not git-tracked); if `n`, leave them in place (warn that orchestrator routing won't reference them but they remain invokable directly). Apply the same check to `<project>/.claude/commands/`.
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
 5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
 6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; seeds the sample state — orchestrator overwrites at the first Stop Gate).
@@ -236,19 +236,21 @@ templates/
     │   ├── product-positioner.md    (sonnet)
     │   ├── feature-prioritizer.md   (sonnet)
     │   ├── ideation-facilitator.md  (sonnet)
-    │   ├── low-fi-designer.md       (sonnet) ← v3.7: split out of interaction-designer (define-phase)
+    │   ├── lo-fi-designer.md       (sonnet) ← v3.7: split out of interaction-designer (define-phase)
     │   ├── design-engineer.md       (sonnet) ← v3.7: split out of interaction-designer (deliver-phase code prototype)
     │   ├── usability-tester.md      (sonnet)
     │   ├── handoff-engineer.md      (sonnet)
     │   ├── pm-strategist.md         (sonnet) ← v3: strategy / business model / vision / pricing
     │   ├── pm-launch-architect.md   (sonnet) ← v3: GTM / beachhead / ICP / growth loops
     │   ├── pm-metrics-architect.md  (sonnet) ← v3.4: gate-clearer for Define→Deliver
-    │   └── prd-author.md            (sonnet) ← v3.5: one PRD per "in"-tagged sub-feature
+    │   ├── prd-author.md            (sonnet) ← v3.5: one PRD per "in"-tagged sub-feature
+    │   └── product-fingerprint-curator.md (sonnet) ← v4.0: project-level visual + composition fingerprint from 3–7 exciting Figma frames
     └── commands/
         ├── audit-pipeline.md              ← /audit-pipeline — Research-First + Success-Metrics gates
         ├── agent-harry-loop.md            ← /agent-harry-loop — v3.2 click-driven polling loop
         ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
-        └── agent-harry-audit.md           ← /agent-harry-audit — v3.8 render audit ledger as timeline
+        ├── agent-harry-audit.md           ← /agent-harry-audit — v3.8 render audit ledger as timeline
+        └── agent-harry-fingerprint.md     ← /agent-harry-fingerprint — v4.0 create or refresh product-fingerprint.md
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.

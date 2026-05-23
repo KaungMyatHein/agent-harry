@@ -6,7 +6,7 @@ Lazy-loaded — agents read this file only when they're about to perform one of 
 
 ## When subagents follow this protocol
 
-Every Agent Harry subagent (`discovery-researcher`, `competitive-analyst`, `product-positioner`, `feature-prioritizer`, `ideation-facilitator`, `low-fi-designer`, `design-engineer`, `usability-tester`, `handoff-engineer`, `pm-strategist`, `pm-launch-architect`, `pm-metrics-architect`, `prd-author`, `critique-partner`) follows these steps as part of its Output Format. The orchestrator handles its own routing-event ledger writes separately.
+Every Agent Harry subagent (`discovery-researcher`, `competitive-analyst`, `product-positioner`, `feature-prioritizer`, `ideation-facilitator`, `lo-fi-designer`, `design-engineer`, `usability-tester`, `handoff-engineer`, `pm-strategist`, `pm-launch-architect`, `pm-metrics-architect`, `prd-author`, `critique-partner`) follows these steps as part of its Output Format. The orchestrator handles its own routing-event ledger writes separately.
 
 ## Step 1 — Establish session identity at intake
 

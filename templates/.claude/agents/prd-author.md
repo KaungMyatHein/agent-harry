@@ -83,7 +83,7 @@ If the skill isn't available in this session, fall back to producing the PRD inl
 <What we explicitly give up by making this choice. Names the alternatives we considered and why we didn't pick them.>
 
 ## Open questions
-<Max 3. Things that block dev handoff and need answering before low-fi-designer / design-engineer / handoff-engineer can build.>
+<Max 3. Things that block dev handoff and need answering before lo-fi-designer / design-engineer / handoff-engineer can build.>
 
 ## Links
 - Prioritization source: <relative path>
@@ -158,7 +158,7 @@ Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, an
 1. **Intake summary** (per intake protocol above)
 2. **Per-PRD generation log** — for each item, name the file written + word count + any open questions surfaced
 3. **Manifest table** (your `decisionData`)
-4. **What's unblocked next** — typically `low-fi-designer` Mode A (to map userflow + ASCII layouts for the top-priority PRD), or `design-engineer` Mode A if a lo-fi handoff already exists, or `handoff-engineer` if specs come before design in this workflow
+4. **What's unblocked next** — typically `lo-fi-designer` Mode A (to map userflow + ASCII layouts for the top-priority PRD), or `design-engineer` Mode A if a lo-fi handoff already exists, or `handoff-engineer` if specs come before design in this workflow
 
 ## Approval Gate
 

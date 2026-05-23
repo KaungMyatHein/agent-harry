@@ -25,7 +25,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
                              └────────────┘             └───────────┘
 ```
 
-## Agents (16 total)
+## Agents (17 total)
 
 | Agent | Phase | Voice | Model | Primary MCPs |
 |---|---|---|---|---|
@@ -37,7 +37,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 | `feature-prioritizer` | Define | Tradeoff-honest PM | sonnet | Notion |
 | `ideation-facilitator` | Define | Generative, divergent | sonnet | Mobbin, Notion |
 | `pm-strategist` | Define | Opinionated strategist | sonnet | Notion, Web |
-| `low-fi-designer` | Define | Pragmatic systems-designer | sonnet | Figma, Mobbin, Web |
+| `lo-fi-designer` | Define | Pragmatic systems-designer | sonnet | Figma, Mobbin, Web |
 | `figma-designer` | Deliver | Figma-native implementer | sonnet | Figma |
 | `design-engineer` | Deliver | Shipping-craft engineer | sonnet | Figma, Mobbin |
 | `usability-tester` | Deliver | Skeptical scientist | sonnet | Notion |
@@ -45,8 +45,9 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 | `pm-launch-architect` | Deliver | Pragmatic GTM lead | sonnet | Notion, Web |
 | `pm-metrics-architect` | Cross-cutting | Skeptical instrumentation lead | sonnet | Notion |
 | `prd-author` | Deliver | Precise PRD writer | sonnet | — |
+| `product-fingerprint-curator` (v4.0) | Cross-cutting | Pattern-extractor | sonnet | Figma |
 
-`figma-designer` is the Figma-side counterpart to `design-engineer`: same pipeline slot (after `low-fi-designer`), same hi-fi expectation, different surface. The user picks the Deliver path off the lo-fi handoff — Figma-first (designer-led) or code-first (developer-led). Both can run on the same flow; the second one consumes the first's handoff as reference.
+`figma-designer` is the Figma-side counterpart to `design-engineer`: same pipeline slot (after `lo-fi-designer`), same hi-fi expectation, different surface. The user picks the Deliver path off the lo-fi handoff — Figma-first (designer-led) or code-first (developer-led). Both can run on the same flow; the second one consumes the first's handoff as reference.
 
 Model routing is deliberate: Opus is expensive, and it earns its keep only on orchestration and adversarial critique. The 13 phase + cross-cutting agents run on Sonnet to keep a full pipeline run in the $1–3 range, not $8+.
 
@@ -213,7 +214,7 @@ Mode B coverage:
 | `product-positioner` | Existing positioning docs, value props, pitch decks |
 | `feature-prioritizer` | Existing roadmaps, backlogs, scoring tables |
 | `ideation-facilitator` | Existing concept docs, brainstorm outputs |
-| `low-fi-designer` | Existing userflow Figjam, wireframes, low-fi sketches, design system files (DS inventory mode) |
+| `lo-fi-designer` | Existing userflow Figjam, wireframes, lo-fi sketches, design system files (DS inventory mode) |
 | `figma-designer` | Existing Figma file with hi-fi frames (audits flow coverage, state coverage, DS adherence, content realism) |
 | `design-engineer` | Existing prototype code (`prototypes/` folder, Storybook, Figma-to-code output) |
 | `usability-tester` | Existing test results, session recordings |
@@ -299,7 +300,7 @@ product-designer-agents/
     │   ├── product-positioner.md    (sonnet)
     │   ├── feature-prioritizer.md   (sonnet)
     │   ├── ideation-facilitator.md  (sonnet)
-    │   ├── low-fi-designer.md       (sonnet) ← v3.7
+    │   ├── lo-fi-designer.md       (sonnet) ← v3.7
     │   ├── figma-designer.md        (sonnet) ← v3.9
     │   ├── design-engineer.md       (sonnet) ← v3.7
     │   ├── usability-tester.md      (sonnet)
