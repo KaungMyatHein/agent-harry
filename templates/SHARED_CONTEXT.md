@@ -15,6 +15,8 @@ Generator-mode install fills this section. Bundled-mode install leaves it as pla
 | Design system | <Figma library URL / Storybook URL / token files path / external system like Material> |
 | Notion workspace | <URL or "none"> |
 | Figma file | <main project file URL or "none"> |
+| DS Figma file (v4.2) | <URL — auto-populated by `figma-component-bootstrapper`; or "none — run bootstrapper to create"> |
+| Component library manifest (v4.2) | <`project-component-library.md` if bootstrapper has run; else "none"> |
 
 The **Stack** line is read by `lo-fi-designer` and `design-engineer` as the tier-1 source for stack detection (before repo scan, before intake question). Keep it accurate — wrong stack here means wireframes recommend components that don't exist in the codebase.
 
@@ -490,6 +492,12 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `scope_refused` / `iteration_cap_hit` | `cap_hit` (string — which cap fired, e.g. `"design-engineer:1-flow-per-invocation"`) |
 | `fingerprint_stale_detected` | `stale_count` (int), `stale_refs` (string[] — names of stale references), `stale_reasons` (`["lastModified-newer"]` / `["archive-prefix-name"]` / mixed) |
 | `fingerprint_refreshed` | `entries_kept` (string[]), `entries_replaced` (string[]), `entries_removed` (string[]) |
+| `token_usage` (v4.1) | `tokens_in` (int), `tokens_cache_read` (int), `tokens_cache_write` (int), `tokens_out` (int), `model` (string), `cost_usd` (number — computed), `linked_to_ts` (string — the `ts` of the `stop_gate` event this measures, or `null` for orchestrator-only runs), `source` (string — `"transcript"` or `"estimate"`) |
+| `bootstrap_created` (v4.2) | `figma_file_url` (string), `component_count` (int), `feature_specific_added` (string[] — names of feature-specific components beyond the baseline), `tokens_source` (string — path or `null`), `fingerprint_status` (`"fresh"` / `"stale_proceeded"` / `"defaulted"`) |
+| `bootstrap_extended` (v4.2) | `components_added` (string[]), `component_count_after` (int), `source_scanned` (string — lo-fi handoff path or `"explicit-list"`) |
+| `bootstrap_recreated` (v4.2) | `previous_file_url` (string), `archived_manifest_path` (string), `component_count` (int) |
+| `bootstrap_skipped` (v4.2) | `reason` (string — usually `"user-opted-out"`); written by `figma-designer` when user types `proceed without library` |
+| `bootstrap_with_defaults` (v4.2) | `reason` (string — usually `"fingerprint-missing"`) |
 
 ### Events to log
 
@@ -506,6 +514,12 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `fingerprint_stale_detected` (v4.0) | Pre-intake check found ≥1 stale reference (regardless of user decision) |
 | `fingerprint_stale_proceeded` (v4.0) | User typed `proceed with stale fingerprint` at a Deliver-agent pre-intake check |
 | `fingerprint_refreshed` (v4.0) | `product-fingerprint-curator` ran in refresh mode and the user confirmed |
+| `token_usage` (v4.1) | Real token measurement for an agent run — appended post-hoc by `scripts/log-tokens.sh` from Claude Code transcripts |
+| `bootstrap_created` (v4.2) | `figma-component-bootstrapper` ran in Create Mode — project component library written for the first time |
+| `bootstrap_extended` (v4.2) | `figma-component-bootstrapper` ran in Extend Mode — components added to existing library |
+| `bootstrap_recreated` (v4.2) | `figma-component-bootstrapper` ran in Recreate Mode — old library archived, new one created (user typed `recreate from scratch`) |
+| `bootstrap_skipped` (v4.2) | User typed `proceed without library` at the figma-designer Pre-Intake Check #2; hi-fi output falls back to frames+groups |
+| `bootstrap_with_defaults` (v4.2) | `figma-component-bootstrapper` ran with `bootstrap with generic Material defaults` because no fingerprint existed |
 
 ### Who writes the ledger — ownership by event type (v3.8 final)
 
@@ -524,8 +538,17 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `fingerprint_stale_detected` (v4.0) | **Subagent** that did the pre-intake check | Same |
 | `fingerprint_stale_proceeded` (v4.0) | **Subagent** that did the pre-intake check | Same |
 | `fingerprint_refreshed` (v4.0) | **`product-fingerprint-curator`** | Only the curator runs refresh mode |
+| `token_usage` (v4.1) | **`scripts/log-tokens.sh`** (post-hoc) | An agent can't introspect its own token usage mid-run — only the harness knows. The script reads Claude Code transcripts after the fact and appends authoritative measurements. |
+| `bootstrap_created` / `bootstrap_extended` / `bootstrap_recreated` / `bootstrap_with_defaults` (v4.2) | **`figma-component-bootstrapper`** | The agent owns mode-specific events for its own work. One mode event fires per run, in addition to the standard `stop_gate`. |
+| `bootstrap_skipped` (v4.2) | **`figma-designer`** | Fires when the user opts out of the bootstrapper at figma-designer's Pre-Intake Check #2. Logged before figma-designer proceeds with the frames+groups fallback. |
 
 Single writer per event type → **no race condition, no duplicate entries, no detection logic needed**. Direct-invocation works naturally — the subagent self-logs its `stop_gate` whether orchestrator is in the loop or not.
+
+### Cost field semantics (v4.1)
+
+- **`cost_delta`** on a `stop_gate` event = agent's *self-estimated* cost. Approximate, no input/output split, no model.
+- **`cost_usd`** on a `token_usage` event = *measured* cost from real transcript tokens × current pricing table. Authoritative when present.
+- **Aggregators (`/agent-harry-audit`, `/agent-harry-cost`) prefer `token_usage.cost_usd` over `stop_gate.cost_delta` when both exist for the same agent run**, linked via `linked_to_ts`. Falls back to `cost_delta` when no `token_usage` event has been logged yet (e.g., script hasn't run).
 
 Subagent-side protocol (when + how + what fields) lives in `SUBAGENT_AUDIT_PROTOCOL.md`. Orchestrator-side rules live in `orchestrator.md` § Audit Ledger Write.
 

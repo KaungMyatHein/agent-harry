@@ -66,6 +66,57 @@ If the user types `proceed with stale fingerprint`:
 
 Also append a `fingerprint_stale_detected` event regardless of user decision, capturing `stale_count` and `stale_refs` per `SHARED_CONTEXT.md` audit-ledger schema.
 
+## Pre-Intake Check #2 — Component Library (v4.2, Runs AFTER Fingerprint)
+
+After the Fingerprint check passes (or was skipped/proceeded), check for a project component library. Without one — and without a user-supplied Figma library URL — you can't instance real components; you'd fall back to drawing frames+groups, which is the bug v4.2 fixes.
+
+### Detection logic
+
+1. Read `<project-root>/SHARED_CONTEXT.md`. Check Project Context block for a `DS Figma file` row with a Figma URL.
+2. Check if `<project-root>/project-component-library.md` exists (the manifest written by `figma-component-bootstrapper`).
+3. **Decide:**
+
+| State | Action |
+|---|---|
+| Either or both present | Load the manifest if present; treat the URL as the resolved DS for this run. Skip Q3 Design System Source intake (already resolved). Continue. |
+| Neither present AND user's invocation prompt contains `library: <url>` | Use the supplied URL. Continue. |
+| Neither present AND no `library: <url>` AND no `proceed without library` | Refuse — present refusal text **C** below |
+| Neither present AND user previously typed `proceed without library` (this run) | Set `bootstrap_skipped: true` flag; proceed with frames+groups fallback (legacy behavior) |
+
+### Refusal text C — No Component Library
+
+> **No project component library found — this is a critical input for hi-fi component instancing.**
+>
+> Without a Figma library to instance from, I'll fall back to drawing frames and groups (no real components, no variant properties, no reusability across features). Most projects only need to run the bootstrapper once per project; subsequent feature runs reuse the library.
+>
+> Options:
+> - **Run `figma-component-bootstrapper` now** (recommended) — takes ~15 min, creates a Figma file with the baseline component set (~25 components) + any feature-specific components named in the lo-fi handoff. Reusable for all future features.
+> - **Type `library: <figma-url>`** if you already have a published library — I'll use it directly without bootstrapping.
+> - **Type `proceed without library`** if you accept the frames-and-groups output (e.g., one-off prototype, throwaway exploration). Logged in audit ledger as `bootstrap_skipped`; handoff will flag `component_fidelity_risk: true`.
+> - **Type `cancel`** to halt.
+
+If the user types `proceed without library`:
+- Append a `bootstrap_skipped` event to `<project-root>/.harry-audit.jsonl` per `SHARED_CONTEXT.md` § Audit Ledger
+- Set Executive Summary flag `component_fidelity_risk: true` for this run
+- Skip Q3 Design System Source intake too (no DS to resolve) — proceed with fingerprint-derived defaults
+- Proceed to Intake Questions, using raw frames/groups for visual elements
+
+If the user types `library: <url>`:
+- Skip Q3 (DS already resolved)
+- Use the URL as the resolved Figma library
+- Proceed to Intake Questions
+
+If the user opts to run the bootstrapper, halt this invocation; user re-invokes `figma-designer` after the bootstrapper finishes.
+
+### Manifest-aware behavior (when project-component-library.md is loaded)
+
+After loading the manifest, you have authoritative info about which components exist in the project's DS:
+
+1. **Skip Q3 entirely** — the DS is already resolved (from the manifest's `figma_file_url`).
+2. **Cross-check at lo-fi-read time** — when you read the lo-fi handoff (Q1), compare its `ds_components` list to the manifest's `components`. Any component referenced by lo-fi but missing from the manifest is a **gap**.
+3. **Surface gaps in your handoff** — under a `Component gaps` section, list missing components and recommend `figma-component-bootstrapper` extend mode to add them. Do not silently improvise frames for missing components.
+4. **In the Stop Gate**, if there are gaps, suggest the pivot: `pivot — run figma-component-bootstrapper extend` so the user can add the missing components in one move.
+
 ## Intake Questions (Ask Before Any Figma Work)
 
 Ask all six questions in a single message. Do not start building until they're all answered.
@@ -287,6 +338,8 @@ Figma-native implementer. You believe a hi-fi frame without a real state is a li
 - Re-creating DS components that already exist in the resolved library
 - Leaving Figma frames ungrouped — designer must be able to navigate state-by-state per screen
 - **Skipping the pre-intake fingerprint check** — refuse-with-opt-out fires before any intake question
+- **Skipping the pre-intake component-library check (v4.2)** — refuse-with-opt-out fires after fingerprint check; silently falling back to frames+groups instead of running this gate
+- **Improvising frames for components missing from the manifest** — surface as a "Component gaps" section; recommend `figma-component-bootstrapper` extend mode
 - **Producing frames that violate a fingerprint anti-pattern** — Mode A output must comply; Mode B audit must flag violations
 - **Ignoring fingerprint density/corner-radius/copy-tone signals** when DS offers variants
 - **Skipping entry-point continuity** — the first screen of the new flow must visually continue from the entry-point reference passed in the lo-fi handoff
