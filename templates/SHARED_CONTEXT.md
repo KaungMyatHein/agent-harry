@@ -498,6 +498,8 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `bootstrap_recreated` (v4.2) | `previous_file_url` (string), `archived_manifest_path` (string), `component_count` (int) |
 | `bootstrap_skipped` (v4.2) | `reason` (string — usually `"user-opted-out"`); written by `figma-designer` when user types `proceed without library` |
 | `bootstrap_with_defaults` (v4.2) | `reason` (string — usually `"fingerprint-missing"`) |
+| `journey_structure_inferred` (v4.3) | `prd_path` (string), `prd_schema_version` (string — usually `null` or pre-v4.3) |
+| `journey_structure_skipped` (v4.3) | `prd_present` (bool), `reason` (string — usually `"user-opted-out"`) |
 
 ### Events to log
 
@@ -520,6 +522,9 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `bootstrap_recreated` (v4.2) | `figma-component-bootstrapper` ran in Recreate Mode — old library archived, new one created (user typed `recreate from scratch`) |
 | `bootstrap_skipped` (v4.2) | User typed `proceed without library` at the figma-designer Pre-Intake Check #2; hi-fi output falls back to frames+groups |
 | `bootstrap_with_defaults` (v4.2) | `figma-component-bootstrapper` ran with `bootstrap with generic Material defaults` because no fingerprint existed |
+| `journey_structure_inferred` (v4.3) | A consumer agent (`lo-fi-designer` / `figma-designer` / `design-engineer`) read an old-format PRD (no `schema_version: v4.3`); journey structure was inferred from loose user-stories section rather than derived |
+| `journey_structure_skipped` (v4.3) | User typed `proceed without journey spec` at `lo-fi-designer`'s Pre-Intake Check #2; deliverable falls back to legacy single-layout, no persona, no nested-journey awareness |
+| `journey_spec_inline` (v4.3) | Reserved for v4.4 — currently unused. Originally for inline yaml journey-spec, dropped per Theme A Q4 |
 
 ### Who writes the ledger — ownership by event type (v3.8 final)
 
@@ -541,6 +546,8 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `token_usage` (v4.1) | **`scripts/log-tokens.sh`** (post-hoc) | An agent can't introspect its own token usage mid-run — only the harness knows. The script reads Claude Code transcripts after the fact and appends authoritative measurements. |
 | `bootstrap_created` / `bootstrap_extended` / `bootstrap_recreated` / `bootstrap_with_defaults` (v4.2) | **`figma-component-bootstrapper`** | The agent owns mode-specific events for its own work. One mode event fires per run, in addition to the standard `stop_gate`. |
 | `bootstrap_skipped` (v4.2) | **`figma-designer`** | Fires when the user opts out of the bootstrapper at figma-designer's Pre-Intake Check #2. Logged before figma-designer proceeds with the frames+groups fallback. |
+| `journey_structure_inferred` (v4.3) | **Consumer agent** that read the old PRD (`lo-fi-designer` / `figma-designer` / `design-engineer`) | Informational event; no opt-in required. Fires once per agent run when an old-format PRD is loaded. Multiple events may fire for one feature as it moves through Discovery → Define → Deliver. |
+| `journey_structure_skipped` (v4.3) | **`lo-fi-designer`** | Fires when the user types `proceed without journey spec` at lo-fi-designer's Pre-Intake Check #2. Logged before lo-fi-designer proceeds with the legacy single-layout fallback. Downstream agents (figma-designer, design-engineer) will propagate the `journey_source: skipped` flag from the lo-fi handoff and won't re-fire this event. |
 
 Single writer per event type → **no race condition, no duplicate entries, no detection logic needed**. Direct-invocation works naturally — the subagent self-logs its `stop_gate` whether orchestrator is in the loop or not.
 

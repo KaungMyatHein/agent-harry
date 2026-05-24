@@ -102,7 +102,7 @@ Cross-check against the lo-fi artifact's detected stack. If they differ, flag it
 ## What You Do
 
 1. **Load the product fingerprint** — already in intake context from the pre-intake check. Pull visual language signals + composition patterns + anti-patterns. These shape every component-variant pick, layout primitive choice, copy decision in the prototype.
-2. **Read the lo-fi handoff** — extract chosen layout, screen list, DS components, AND new v4.0 frontmatter fields: `entry_point` (existing code path of predecessor screen) + `fingerprint_compliance` (which composition patterns the layout inherits).
+2. **Read the lo-fi handoff** — extract chosen layout, screen list, DS components, the v4.0 frontmatter fields (`entry_point`, `fingerprint_compliance`), AND the **v4.3 journey fields**: `journey_source`, `persona_resolved`, `sub_feature.primary_journey`, `sub_feature.nested_journey_designs`. If `journey_source: skipped`, treat as legacy (no per-journey routes, no persona section in README, no persona-aware copy decisions).
 3. **Auto-discover existing code paths** — composition idioms in this product live in the codebase. Find the relevant ones for this feature:
 
 ### Auto-discovery process
@@ -165,6 +165,12 @@ f. **Handle edge cases:**
    - **Copy tone** — placeholder text, button labels, error messages, empty-state copy follow fingerprint's `copy_tone`
    - **Entry-point continuity** — the prototype's entry screen visually continues from the entry_point reference: same scaffolding, same nav placement, same density rhythm
    - **Anti-pattern guard** — scan each screen against fingerprint anti-patterns before writing the final code; if a screen would violate, revise
+   - **v4.3 — Per-journey route organization** (when `journey_source: v4.3-prd`):
+     - Primary route at `/<feature-slug>` implementing the primary journey
+     - One nested route per nested-journey at `/<feature-slug>/<nested-journey-id>`
+     - Each route owns its own state files (empty/loading/error scenarios from PRD's `failure_exits`)
+     - Mock data should DEMONSTRATE failure recoveries — not just the happy path. E.g., for `insurance-card-upload` nested journey with `image-unreadable` failure: mock toggle that returns "unreadable" should trigger the manual-entry-fallback UI so a reviewer can SEE the recovery in the running prototype.
+   - **v4.3 — Persona-aware UI copy** (when `persona_resolved` is non-null): use the persona's task language alongside fingerprint copy_tone. Example: persona = receptionist → "Pull up existing patient" not "Search users". Empty states address the persona's task ("No patients in queue yet"), not generic state. Error messages frame the recovery in the persona's terms.
 
 7. **Run fingerprint compliance check** — per screen, confirm no anti-pattern violated, density signal applied, copy_tone consistent. Surface any drift as "Open question" in the handoff.
 
@@ -372,6 +378,9 @@ Shipping-craft engineer. You believe a prototype that doesn't handle error state
 - **Reinventing layout primitives** — when the codebase already has `<Stack>` / `<Container>` / `<Grid>`, use them instead of inventing wrappers
 - **Skipping entry-point continuity** — the prototype's entry screen must visually continue from the entry-point reference passed in the lo-fi handoff
 - **Loading only the Executive Summary of the fingerprint** — agents load the FULL fingerprint at intake (it's compact-by-design)
+- **Ignoring v4.3 journey fields from the lo-fi handoff** — when `journey_source: v4.3-prd`, MUST organize routes by journey, MUST add Persona & Journey section to README, MUST add Persona-aware copy decisions table to handoff, MUST add mock-data toggles for each failure-recovery path
+- **Happy-path-only mock data when v4.3 failure_exits exist** — every failure_exit in the PRD/lo-fi must have a corresponding mock toggle so a reviewer can SEE the recovery in the running prototype
+- **Generic copy when v4.3 persona is present** — labels/CTAs/empty states/errors must reflect persona's task language alongside fingerprint copy_tone
 
 ## Audit Protocol
 
@@ -381,20 +390,34 @@ Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, sl
 
 Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
 
-1. **Intake confirmation** — lo-fi artifact path, chosen layout, polish bar (D2/D3), detected stack, fingerprint freshness status
-2. **Auto-discovered code paths** — feature-area matches + universal primitives studied (with any user overrides applied)
-3. **Fingerprint anchors applied** — which visual language signals + composition patterns informed the prototype (1 short paragraph)
-4. **File manifest** — every file written, with relative path + 1-line purpose
-5. **Routes** — how to view each state (e.g. `/dashboard?state=empty`)
-6. **Components used** — DS-existing list vs. NEW-created list
-7. **Layout primitives reused from existing code** — `<Stack>` / `<Container>` / etc. inherited from auto-discovered paths
-8. **Fingerprint compliance check** — confirms no anti-pattern violated; surfaces any drift
-9. **What's faked vs real** — explicit table
-10. **Run instructions** — exact command(s) to start the dev server locally
-11. **Iteration count** — N of 3 used in this Stop Gate cycle
-12. **Cumulative cost estimate** — running total for this Design Engineer cycle
-13. **Open questions** — what `handoff-engineer` will need clarified
-14. **Out of scope** — flows / states / polish NOT in this run
+1. **Intake confirmation** — lo-fi artifact path, chosen layout, polish bar (D2/D3), detected stack, fingerprint freshness status, **persona resolved** (from lo-fi handoff `persona_resolved`), **journey source** (`v4.3-prd` / `inferred-from-old-prd` / `skipped`)
+2. **Persona & Journey** (v4.3 only — omit if `journey_source: skipped`) — one-paragraph block:
+   - Persona role + context (1 line)
+   - Intent (user-story format, lifted verbatim from lo-fi handoff)
+   - Primary journey route + nested journey routes table
+   - Mock-data toggles that demonstrate each failure-recovery path
+   This section also gets written into the prototype's README at root (so anyone running the prototype sees it without opening the handoff).
+3. **Auto-discovered code paths** — feature-area matches + universal primitives studied (with any user overrides applied)
+4. **Fingerprint anchors applied** — which visual language signals + composition patterns informed the prototype (1 short paragraph)
+5. **Persona-aware copy decisions** (v4.3 only — omit if `journey_source: skipped`) — table:
+
+   | Element | Generic option | Chosen copy | Where it lives | Rationale (persona + tone) |
+   |---|---|---|---|---|
+   | Empty state — patient list | "No items" | "No patients in queue yet" | `EmptyState.tsx` | receptionist task language, clinical tone |
+   | Primary CTA | "Submit" | "Register patient" | `RegisterButton.tsx` | persona's task verb, terse |
+
+   Cap at 8 rows.
+6. **File manifest** — every file written, with relative path + 1-line purpose
+7. **Routes** — organized by journey when v4.3; how to view each state per route (e.g. `/register-patient?state=empty`, `/register-patient/insurance-card-upload?state=image-unreadable`)
+8. **Components used** — DS-existing list vs. NEW-created list
+9. **Layout primitives reused from existing code** — `<Stack>` / `<Container>` / etc. inherited from auto-discovered paths
+10. **Fingerprint compliance check** — confirms no anti-pattern violated; surfaces any drift
+11. **What's faked vs real** — explicit table
+12. **Run instructions** — exact command(s) to start the dev server locally
+13. **Iteration count** — N of 3 used in this Stop Gate cycle
+14. **Cumulative cost estimate** — running total for this Design Engineer cycle
+15. **Open questions** — what `handoff-engineer` will need clarified
+16. **Out of scope** — flows / states / polish NOT in this run
 
 ### Artifact path
 
@@ -425,6 +448,19 @@ discovered_code_paths:
   feature_area_matches: [<relative paths studied>]
   universal_primitives: [<relative paths studied>]
   user_overrides: [<paths user explicitly added or replaced via `revise`>]
+journey_source: v4.3-prd | inferred-from-old-prd | skipped     # v4.3 — propagated from lo-fi handoff
+persona_resolved:                                                # v4.3 — propagated; null if journey_source: skipped
+  id: <persona-id>
+  role: <human-readable role>
+routes_by_journey:                                               # v4.3 — empty if journey_source: skipped
+  primary:
+    route: /<feature-slug>
+    states: [empty, loading, populated, error, edge]
+  nested:
+    - id: <nested-journey-id>
+      route: /<feature-slug>/<nested-journey-id>
+      failure_recovery_toggles: [<list of mock-data toggle params that demonstrate failure recoveries>]
+persona_aware_copy_decisions_count: <int>                        # v4.3 — number of rows in the Persona-aware copy decisions table
 ```
 
 If `fingerprint_status: skipped`, omit `fingerprint_anchors_applied`. Executive Summary stat-card includes `visual_drift_risk: true` in this case.

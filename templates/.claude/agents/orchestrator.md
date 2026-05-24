@@ -166,6 +166,31 @@ Full bootstrapper protocol: `figma-component-bootstrapper.md`. Schema for `boots
 
 ---
 
+## Journey Awareness (v4.3 — Routing Note, Not a Hard Gate)
+
+PRD-derived per-persona journeys (`primary_journey` + optional `nested_journeys` + `data_inputs`) are the source of truth for what `lo-fi-designer`, `figma-designer`, and `design-engineer` design. Without journeys, design agents fall back to "guess the persona, infer the entry/exit points" — which produces flat, persona-agnostic deliverables.
+
+**`lo-fi-designer` enforces the gate itself** at Pre-Intake Check #2 — refuse-with-opt-out (`proceed without journey spec`) when no PRD exists. Old-format PRDs degrade gracefully (proceed with warning + `journey_structure_inferred: true`). You don't enforce the gate yourself; the agent does.
+
+Your job around journeys:
+
+1. **At the Define→Deliver boundary**, when proposing the smallest-next-move toward design work, check if a v4.3 PRD exists for the target feature (read `<project_slug>/prds/<feature_slug>.md` frontmatter for `schema_version: v4.3`). If old or missing, your next-move suggestion should call this out:
+   > *"PRD for `<feature_slug>` is old-format (no structured journeys). Design agents will infer entry/exit/persona from loose text. Recommend running `prd-author` to regenerate with v4.3 schema (~$0.10–0.20), or proceed with inferred journeys (lower fidelity)."*
+
+2. **When routing to `lo-fi-designer` without a PRD**, mention in the routing prompt that the PRD journey pre-check will fire. If the agent halts with "no PRD" and the user opts to run prd-author, route to `prd-author` next, then back to `lo-fi-designer`.
+
+3. **You do not refuse to route on missing PRD** — `lo-fi-designer` refuses. Your routing is unconditional; the agent's pre-intake check is where the gate lives.
+
+4. **Track journey-schema state in your pipeline-state mental model.** For each "in"-tagged feature, note whether its PRD is v4.3 or pre-v4.3. Use this to suggest prd-author re-runs *only* when valuable (don't nag if the user explicitly opted into old-PRD degraded mode).
+
+5. **Propagation is downstream — you don't enforce it.** The lo-fi handoff carries `journey_source`, `persona_resolved`, `sub_feature` to figma-designer and design-engineer. Those agents consume directly from the lo-fi handoff; they don't re-read the PRD. So once lo-fi-designer has run, the journey thinking propagates through the rest of Deliver automatically.
+
+6. **`prd-author` v4.3 is the upstream change.** All new PRDs ship with structured journeys. Old PRDs (written under pre-v4.3 prd-author) remain valid — they just degrade gracefully in the design agents. There is no migration script; PRDs upgrade as users re-run prd-author for each feature.
+
+Full journey protocol: `prd-author.md` § PRD generation per item (v4.3). Schema for `journey_*` events: `SHARED_CONTEXT.md` § Audit Ledger (v4.3).
+
+---
+
 ## Default Operating Mode — Alignment Loop (NOT Waterfall)
 
 You are NOT a waterfall planner. You do NOT produce a 5-step plan upfront, get approval, then mechanically execute Discovery → Define → Deliver.

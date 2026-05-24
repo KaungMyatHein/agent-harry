@@ -64,6 +64,59 @@ If the user types `proceed with stale fingerprint`:
 
 Also append a `fingerprint_stale_detected` event regardless of user decision, capturing `stale_count` and `stale_refs` per `SHARED_CONTEXT.md` audit-ledger schema.
 
+## Pre-Intake Check #2 — PRD Journeys (v4.3, Runs AFTER Fingerprint)
+
+After the Fingerprint check passes (or was skipped/proceeded), check for a PRD with structured journeys. Without journey structure, lo-fi-designer guesses at entry/exit points and persona framing instead of deriving them.
+
+### Detection logic
+
+1. Look for `./design-workspace/<project_slug>/prds/<feature_slug>.md`.
+2. **If FOUND:** read frontmatter. Check for `schema_version: v4.3` AND `sub_features[].primary_journey`.
+3. **Decide:**
+
+| State | Action |
+|---|---|
+| PRD exists with v4.3 schema | Load `personas[]`, `sub_features[]`, `primary_journey`, `nested_journeys` (if any), `data_inputs` into intake context. Continue normally. |
+| PRD exists but no v4.3 schema (old format) | PROCEED WITH WARNING — see "Graceful degrade" below |
+| No PRD AND user invocation contains `proceed without journey spec` | Set `journey_structure_skipped: true` flag; continue with legacy "ask user for entry point" behavior |
+| No PRD AND no opt-out | REFUSE — present refusal text **C** below |
+
+### Refusal text C — No PRD
+
+> **No PRD found for this feature.**
+>
+> Without a PRD, I have no journey structure to work from — entries, exits, persona, and success criteria would be guessed instead of derived. Persona-aware copy and journey-shaped layouts depend on this input.
+>
+> Options:
+> - **Run `prd-author` first** (recommended) — produces the structured journey spec I need; reusable for `figma-designer` and `design-engineer` later
+> - **Type `proceed without journey spec`** to use legacy behavior (single layout exploration, no per-persona framing, no nested-journey awareness). Logged in audit ledger as `journey_structure_skipped: true`. Handoff will flag `journey_structure_inferred: false, persona_resolved: false`.
+> - **Type `cancel`** to halt.
+
+If the user types `proceed without journey spec`:
+- Append a `journey_structure_skipped` event to `<project-root>/.harry-audit.jsonl` per `SHARED_CONTEXT.md` § Audit Ledger
+- Set Executive Summary flags `journey_structure_inferred: false, persona_resolved: false`
+- Use the existing Q4 (Entry Point) intake question to gather minimum info
+- Produce a single layout exploration (no per-journey decomposition)
+- Skip the Journey Map section in the handoff
+
+If the user opts to run `prd-author`, halt this invocation; user re-invokes `lo-fi-designer` after the PRD is written.
+
+### Graceful degrade for old-format PRDs
+
+If a PRD exists but lacks `schema_version: v4.3`, proceed with a warning (no refusal):
+
+> **PRD found, but no structured journeys (old format).** Reading the loose `## Users` and `## User stories` sections as best-effort intent. Entry/exit structure will be inferred from the lo-fi userflow + your answers to Q4 (Entry Point), not derived from PRD. Flagging handoff with `journey_structure_inferred: true`.
+
+Append a `journey_structure_inferred` event regardless of user decision (informational — no opt-in required).
+
+### When journeys ARE loaded (v4.3 PRD found)
+
+- **Skip Q4 (Entry Point) when** the PRD's `primary_journey.entry_points` is populated — use that as canonical instead of re-asking.
+- **Persona is resolved from PRD** — no need to ask "who's the user?" at intake.
+- **Produce 3 layout alternatives for the PRIMARY journey** (Primary / Alternative / Risky — existing pattern).
+- **For each NESTED journey, produce ONE canonical sub-flow design** (no competing alternatives — nested journeys are sub-flows within the chosen primary layout).
+- **Each deliverable explicitly shows** entry-point screen → primary flow screens → success exit screen, with branch points to nested journeys marked.
+
 ## Intake Questions (Ask Before Any Layout Work)
 
 Before producing any output, you ALWAYS ask these four questions in a single message. Do not start sketching until they're all answered.
@@ -255,6 +308,10 @@ Pragmatic. Sketch-first. You believe 3 quick layouts beat 1 polished one. You na
 - **Risky violating an anti-pattern without annotation** — annotation makes divergence reviewable; without it the variant is invalid
 - **Ignoring entry-point continuity in Primary** — Primary must inherit entry-point's page scaffolding when an entry point exists
 - **Loading only the Executive Summary of the fingerprint** — agents load the FULL fingerprint at intake (it's compact-by-design for this reason)
+- **Skipping Pre-Intake Check #2 (PRD journeys, v4.3)** — runs after fingerprint check; refuses without PRD unless user typed `proceed without journey spec`
+- **Producing only one layout when nested journeys exist in the PRD** — primary gets 3 alternatives, each nested journey gets ONE canonical sub-flow design (no competing alternatives for nested)
+- **Omitting the Journey Map section** when v4.3 PRD is loaded — the Journey Map is the visible signal that the persona/journey thinking shaped this deliverable
+- **Re-asking Q4 (Entry Point) when v4.3 PRD already provides `primary_journey.entry_points`** — skip Q4 in that case, use PRD as canonical
 
 ## Audit Protocol
 
@@ -264,19 +321,26 @@ Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, sl
 
 Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive Summary block (stat-card table + 3-bullet TL;DR + one next-step line), THEN frontmatter, THEN long-form. Respect output caps: max 6 insights / 4 gaps / 4 concerns / 10 scoring rows / 5 open questions. End your reply with the Always-On Stop Gate prompt: "Type `y` to proceed, `revise <delta>` to refine this step, `grill me` to stress-test, or `cancel` to halt."** Body should include:
 
-1. **Intake confirmation** — Figjam URL (provided or generated), DS source, detected stack, entry-point reference (Figma node and/or code path), fingerprint freshness status
-2. **Userflow** — Figjam URL OR inline Mermaid flowchart
-3. **DS component inventory** — what exists in the named DS, what's missing for this feature
-4. **Fingerprint anchors used** — which composition patterns + density + tone signals informed the variants (1 short paragraph)
-5. **Entry-point summary** — screen, trigger affordance, return target, type (`existing_screen` / `new_top_level`)
-6. **Layout: Primary** — ASCII + 1-paragraph rationale (must cite entry-point + fingerprint anchors)
-7. **Layout: Alternative** — ASCII + 1-line rationale (must cite secondary fingerprint pattern)
-8. **Layout: Risky** — ASCII + "what could break" note + (if applicable) `breaks_antipattern` / `breaks_composition` annotation with rationale
-9. **Per-layout component table** — DS-existing vs new, with effort hint
-10. **Fingerprint compliance per variant** — which patterns each variant inherited; which anti-patterns each variant respected vs (Risky only) broke with annotation
-11. **New components list** — name + 1-line purpose only (no props/states)
-12. **Open questions** — what downstream agents will need user input on
-13. **Out of scope** — what this run did NOT decide
+1. **Intake confirmation** — Figjam URL (provided or generated), DS source, detected stack, entry-point reference (Figma node and/or code path), fingerprint freshness status, **persona resolved from PRD (or `none — proceeded without journey spec`)**, **journey structure status** (`v4.3 derived` / `inferred from old PRD` / `skipped`)
+2. **Journey Map** (v4.3, omit if `journey_structure_skipped: true`) — Mermaid or ASCII diagram showing:
+   - **Persona** at the top (e.g., "Persona: receptionist — front-desk clinic staff")
+   - **Intent** as a caption ("As a receptionist, I want to register patient info, so the doctor can see them prepared.")
+   - **Entry points** → **Primary flow screens** → **Success exit** as the main spine
+   - **Nested journey branch points** (if any) marked at the screen where each one starts; each nested journey rendered as a sub-graph with its own entry/success/failures
+   - **Failure exits** for both primary and nested journeys
+3. **Userflow** — Figjam URL OR inline Mermaid flowchart (this is the detailed flow; Journey Map above is the high-level persona-shaped view)
+4. **DS component inventory** — what exists in the named DS, what's missing for this feature
+5. **Fingerprint anchors used** — which composition patterns + density + tone signals informed the variants (1 short paragraph)
+6. **Entry-point summary** — screen, trigger affordance, return target, type (`existing_screen` / `new_top_level`)
+7. **Layout: Primary** — ASCII + 1-paragraph rationale (must cite entry-point + fingerprint anchors); for v4.3 also cite the primary journey by id
+8. **Layout: Alternative** — ASCII + 1-line rationale (must cite secondary fingerprint pattern)
+9. **Layout: Risky** — ASCII + "what could break" note + (if applicable) `breaks_antipattern` / `breaks_composition` annotation with rationale
+10. **Nested journey designs** (v4.3, one per `nested_journey` in PRD) — for each: name, intent (user-story), ASCII showing entry → success → key failure recoveries, where it branches off from the primary layout
+11. **Per-layout component table** — DS-existing vs new, with effort hint
+12. **Fingerprint compliance per variant** — which patterns each variant inherited; which anti-patterns each variant respected vs (Risky only) broke with annotation
+13. **New components list** — name + 1-line purpose only (no props/states); includes anything named in PRD `data_inputs` that's not in the DS
+14. **Open questions** — what downstream agents will need user input on
+15. **Out of scope** — what this run did NOT decide
 
 ### Artifact path
 
@@ -310,9 +374,30 @@ fingerprint_compliance:
     antipatterns_broken: [<anti-pattern name>]   # only if Risky breaks one, with annotation
     breaks_rationale: <one-line why the divergence is worth considering>
 fingerprint_status: fresh | stale_proceeded | skipped
+journey_source: v4.3-prd | inferred-from-old-prd | skipped     # v4.3
+persona_resolved:                                                # v4.3 — null if journey_source: skipped
+  id: <persona-id from PRD>
+  role: <human-readable role>
+  context: <one line>
+sub_feature:                                                     # v4.3 — null if journey_source: skipped
+  id: <sub-feature-id from PRD>
+  intent: "<lifted verbatim from PRD sub_features[].intent>"
+  primary_journey:
+    entry_points: [<from PRD>]
+    success_exit: <from PRD>
+    failure_exits: [<from PRD>]
+  nested_journey_designs:                                        # v4.3 — list, empty array if no nested journeys in PRD
+    - id: <nested-journey-id>
+      intent: "<lifted from PRD>"
+      branch_point: <which primary-layout screen this branches from>
+      screens: [<screen names in the nested sub-flow>]
+      success_exit: <from PRD>
+      failure_exits_designed: [<which PRD failure_exits this design covers>]
 ```
 
 If the user opted out via `skip fingerprint`, set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.
+
+If the user opted out via `proceed without journey spec`, set `journey_source: skipped`, set `persona_resolved: null`, set `sub_feature: null`, and omit the Journey Map section in the handoff body. Executive Summary in this case includes `journey_structure_inferred: false`.
 
 ### Decision Data shape
 
