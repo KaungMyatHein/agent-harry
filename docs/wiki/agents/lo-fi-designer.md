@@ -5,6 +5,9 @@ nav_order: 10
 description: "Userflows + three ASCII layout variants for a feature."
 ---
 
+{% include agent-hero.html slug='lo-fi-designer' %}
+
+
 # Lo-Fi Designer
 
 > Turns a chosen concept into a userflow plus three quick ASCII layout variants (Primary, Alternative, Risky) so you can pick a layout before any pixel-level work.

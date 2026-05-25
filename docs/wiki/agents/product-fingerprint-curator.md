@@ -5,6 +5,9 @@ nav_order: 3
 description: "Curates 3-7 of your best Figma frames into a project-level visual + composition vocabulary (v4.0)."
 ---
 
+{% include agent-hero.html slug='product-fingerprint-curator' %}
+
+
 # Product Fingerprint Curator
 
 > The agent that sets up your project's product fingerprint — once per project. It asks you for 3-7 Figma frames that represent your product at its best, then extracts the visual language and composition vocabulary every future feature will inherit.

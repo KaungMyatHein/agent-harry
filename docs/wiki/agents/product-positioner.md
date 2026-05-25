@@ -5,6 +5,9 @@ nav_order: 6
 description: "Positioning statements, value props, narrative."
 ---
 
+{% include agent-hero.html slug='product-positioner' %}
+
+
 # Product Positioner
 
 > The agent that turns research into a clear positioning statement — who it's for, what it does, how it's different.

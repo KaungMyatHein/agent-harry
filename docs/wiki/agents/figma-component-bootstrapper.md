@@ -5,6 +5,9 @@ nav_order: 4
 description: "Creates a Figma component library when you don't have one — once per project (v4.2)."
 ---
 
+{% include agent-hero.html slug='figma-component-bootstrapper' %}
+
+
 # Figma Component Bootstrapper
 
 > The agent that fixes the "I see frames and groups, not components" problem in hi-fi Figma output. Runs once per project (or in extend mode when a feature needs new components). Reads the product fingerprint, optionally enriches with code tokens, and writes a real Figma file full of variant-aware components that `figma-designer` instances from on every future feature.

@@ -5,6 +5,9 @@ nav_order: 14
 description: "Dev specs, design tokens, component contracts for engineering handoff."
 ---
 
+{% include agent-hero.html slug='handoff-engineer' %}
+
+
 # Handoff Engineer
 
 > The agent that turns design output into engineering-ready specs — component contracts, design tokens, prop signatures, state diagrams. Bridges the design-to-build gap.

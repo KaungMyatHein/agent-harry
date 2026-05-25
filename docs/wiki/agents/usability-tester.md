@@ -5,6 +5,9 @@ nav_order: 13
 description: "Test plans, task analysis, finding synthesis."
 ---
 
+{% include agent-hero.html slug='usability-tester' %}
+
+
 # Usability Tester
 
 > The agent that plans usability studies (Mode A) or synthesizes findings from completed sessions (Mode B). Bridges design and validation.

@@ -5,6 +5,9 @@ nav_order: 8
 description: "Divergent concept generation. How Might We, brainstorming."
 ---
 
+{% include agent-hero.html slug='ideation-facilitator' %}
+
+
 # Ideation Facilitator
 
 > The agent that helps you generate solution ideas before committing to any. Goes wide, not deep.

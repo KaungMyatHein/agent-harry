@@ -1,0 +1,14 @@
+{%- comment -%}
+Compact agent card for the agents index grid.
+Usage:
+    {% include agent-card.html slug='orchestrator' %}
+{%- endcomment -%}
+{%- assign agent = site.data.agents[include.slug] -%}
+<a href="agents/{{ include.slug }}.html" class="agent-card" style="--c: {{ agent.color }};">
+  <div class="agent-mascot">{% include mascots/{{ include.slug }}.svg %}</div>
+  <div class="agent-meta">
+    <div class="agent-phase">{{ agent.phase }}</div>
+    <div class="agent-name">{{ agent.name }}</div>
+    <div class="agent-role">{{ agent.role }}</div>
+  </div>
+</a>

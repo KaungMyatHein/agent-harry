@@ -5,6 +5,9 @@ nav_order: 7
 description: "RICE / ICE / Kano scoring for what to build next."
 ---
 
+{% include agent-hero.html slug='feature-prioritizer' %}
+
+
 # Feature Prioritizer
 
 > The agent that takes a list of feature ideas and produces a scored prioritization table, with a clear "in / out / later" cut for the next slice of work.

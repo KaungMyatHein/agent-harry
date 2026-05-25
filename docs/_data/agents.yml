@@ -1,0 +1,136 @@
+# Visual identity + role data for every Agent Harry sub-agent.
+# Used by _includes/agent-hero.html (rendered at the top of each agent page
+# and on the agents index grid).
+#
+# Each agent key maps to:
+#   name   — display name (Title Case for cross-cutting, kebab-case for phase agents)
+#   phase  — short tag shown above the name (e.g. "Discovery", "Deliver · PM")
+#   color  — primary brand color (CSS hex)
+#   role   — single short sentence shown as the agent's "personality"
+#   short  — one-paragraph description rendered in the hero card
+
+orchestrator:
+  name: Orchestrator
+  phase: Meta · Conductor
+  color: "#0066cc"
+  role: Calm strategist.
+  short: Decomposes the goal, sequences sub-agents, inserts approval gates, and synthesizes the handoffs into a summary you can act on.
+
+critique-partner:
+  name: Critique Partner
+  phase: Cross-cutting · Always-on
+  color: "#dc2626"
+  role: The contrarian — devil's advocate.
+  short: Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Never asks "what do you want?" — always proposes a sharper alternative.
+
+product-fingerprint-curator:
+  name: Product Fingerprint Curator
+  phase: Cross-cutting · v4.0 setup
+  color: "#7c3aed"
+  role: Visual-vocabulary archivist.
+  short: One-time setup per project. Distills 3–7 designer-picked Figma frames into the project's visual language, composition patterns, and anti-patterns. Every Deliver agent reads from it.
+
+figma-component-bootstrapper:
+  name: Figma Component Bootstrapper
+  phase: Cross-cutting · v4.2 setup
+  color: "#6366f1"
+  role: Library builder.
+  short: Generates a baseline Figma component library so the team has shared vocabulary before any feature work begins.
+
+discovery-researcher:
+  name: discovery-researcher
+  phase: Discovery
+  color: "#5e81ac"
+  role: Curious, evidence-first.
+  short: Runs interviews, mines secondary research, names the real problem before anyone jumps to solutions.
+
+competitive-analyst:
+  name: competitive-analyst
+  phase: Discovery
+  color: "#2c7d6f"
+  role: Pattern detective.
+  short: Teardowns competing products. Surfaces patterns, names the unmet job, and avoids feature-by-feature copying.
+
+ideation-facilitator:
+  name: ideation-facilitator
+  phase: Define
+  color: "#8b5cf6"
+  role: Generative, divergent.
+  short: Generates three sharply different concepts before converging. Refuses to ship the first idea that sounds reasonable.
+
+product-positioner:
+  name: product-positioner
+  phase: Define
+  color: "#d97706"
+  role: Sharp, opinionated.
+  short: Picks the angle. Forces a single defensible bet instead of a vague feature list, and names what you're <em>not</em> doing.
+
+feature-prioritizer:
+  name: feature-prioritizer
+  phase: Define
+  color: "#b45309"
+  role: Tradeoff-honest PM.
+  short: Scores the backlog against the chosen angle. Names what we're giving up — RICE, ICE, and a tight scope cut.
+
+pm-strategist:
+  name: pm-strategist
+  phase: Define · PM
+  color: "#0891b2"
+  role: Opinionated strategist.
+  short: Translates vision into a quarter-sized bet. Connects positioning to the roadmap and names the strategic tradeoff.
+
+prd-author:
+  name: prd-author
+  phase: Define
+  color: "#1e3a8a"
+  role: The scribe.
+  short: Writes the PRD. Emits the structured journey shape — persona, entry condition, success exit, failure exit — that every downstream agent consumes.
+
+lo-fi-designer:
+  name: lo-fi-designer
+  phase: Define
+  color: "#06b6d4"
+  role: Pragmatic systems-designer.
+  short: Maps the userflow, sketches 3 ASCII layouts (primary / alternative / risky), lists DS components used + new ones needed. Sketches before falling in love.
+
+figma-designer:
+  name: figma-designer
+  phase: Deliver
+  color: "#a855f7"
+  role: Figma-native implementer.
+  short: Turns approved lo-fi layouts into hi-fi Figma designs — real DS component instances, real PRD content, tokens applied, key states per screen. 1 flow per invocation.
+
+design-engineer:
+  name: design-engineer
+  phase: Deliver
+  color: "#ec4899"
+  role: Shipping-craft engineer.
+  short: Builds production-ready frontend prototypes in the project's actual stack with dummy data. All 5 states wired (empty / loading / populated / error / edge).
+
+usability-tester:
+  name: usability-tester
+  phase: Deliver
+  color: "#16a34a"
+  role: Skeptical scientist.
+  short: Stress-tests prototypes. Writes test plans, runs the sessions in your head, and reports what breaks — not what works.
+
+handoff-engineer:
+  name: handoff-engineer
+  phase: Deliver
+  color: "#525252"
+  role: Systems-thinker.
+  short: Produces dev-ready specs — tokens, states, edge cases. The artifact engineers can actually ship from.
+
+pm-launch-architect:
+  name: pm-launch-architect
+  phase: Deliver · PM
+  color: "#c2410c"
+  role: Pragmatic GTM lead.
+  short: Designs the launch — beachhead, messaging, channels. Picks the wedge and the sequence that earns the next bet.
+
+pm-metrics-architect:
+  name: pm-metrics-architect
+  phase: Cross-cutting · PM
+  color: "#65a30d"
+  role: Skeptical instrumentation lead.
+  short: Defines north-star + input metrics, sets success thresholds, and flags vanity numbers vs. real signal.

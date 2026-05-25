@@ -5,6 +5,9 @@ nav_order: 2
 description: "Adversarial stress-testing. Triggered by typing `grill me` at any Stop Gate."
 ---
 
+{% include agent-hero.html slug='critique-partner' %}
+
+
 # Critique Partner
 
 > The agent you call when an output looks right but you're not sure it IS right. Pushes back on assumptions, surfaces overlooked risks, names what could break.

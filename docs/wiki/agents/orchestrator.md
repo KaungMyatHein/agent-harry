@@ -5,6 +5,9 @@ nav_order: 1
 description: "Routes work, enforces gates, never builds anything itself."
 ---
 
+{% include agent-hero.html slug='orchestrator' %}
+
+
 # Orchestrator
 
 > The agent that decides which other agent runs next. Never produces design or code itself. Drives the Alignment Loop.

@@ -5,6 +5,9 @@ nav_order: 12
 description: "Runnable code prototype in your stack with all 5 states wired up."
 ---
 
+{% include agent-hero.html slug='design-engineer' %}
+
+
 # Design Engineer
 
 > Takes the lo-fi handoff and builds a production-quality frontend prototype in your project's actual stack, with dummy data, all 5 states (empty/loading/populated/error/edge), and a mock API layer.

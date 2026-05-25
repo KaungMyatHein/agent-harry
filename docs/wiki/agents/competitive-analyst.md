@@ -5,6 +5,9 @@ nav_order: 5
 description: "Competitor teardowns and pattern audits using Mobbin + web."
 ---
 
+{% include agent-hero.html slug='competitive-analyst' %}
+
+
 # Competitive Analyst
 
 > The agent that studies how competitors solve similar problems. Mode A teardowns specific competitors; Mode B audits patterns across a category.

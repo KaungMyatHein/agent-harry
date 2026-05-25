@@ -1,0 +1,172 @@
+<!-- Loaded into <head> of every Just-the-Docs wiki page.
+     Carries the shared CSS for agent hero cards, mascots, and the agent index grid. -->
+
+<style>
+  /* ── Agent hero card (rendered at the top of each agent page) ───────────── */
+  .agent-hero {
+    --c: #0066cc;
+    --c-soft: color-mix(in srgb, var(--c) 12%, transparent);
+    --c-edge: color-mix(in srgb, var(--c) 38%, transparent);
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    gap: 22px;
+    align-items: center;
+    padding: 22px 26px;
+    margin: 4px 0 32px;
+    background:
+      linear-gradient(135deg, var(--c-soft) 0%, rgba(255,255,255,0) 65%),
+      #fafafa;
+    border: 1px solid #eaeaec;
+    border-left: 4px solid var(--c);
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+  }
+  .agent-hero .agent-mascot {
+    width: 132px;
+    height: 132px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 35% 30%, var(--c-edge) 0%, rgba(0,0,0,0) 65%), #1a1a1c;
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    overflow: hidden;
+  }
+  .agent-hero .agent-mascot svg {
+    width: 78%;
+    height: 78%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    shape-rendering: crispEdges;
+  }
+  .agent-hero .agent-phase {
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .agent-hero .agent-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0a0a0a;
+    letter-spacing: -0.012em;
+    margin: 0 0 6px;
+    line-height: 1.15;
+  }
+  .agent-hero .agent-role {
+    font-size: 15px;
+    font-style: italic;
+    color: #4a4a4f;
+    margin-bottom: 10px;
+  }
+  .agent-hero .agent-short {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #2a2a2e;
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  /* ── Compact card variant used on the agents index grid ────────────────── */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 18px 0 32px;
+  }
+  .agent-card {
+    --c: #0066cc;
+    --c-soft: color-mix(in srgb, var(--c) 10%, transparent);
+    --c-edge: color-mix(in srgb, var(--c) 38%, transparent);
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    background:
+      linear-gradient(135deg, var(--c-soft) 0%, rgba(255,255,255,0) 70%),
+      #ffffff;
+    border: 1px solid #eaeaec;
+    border-left: 3px solid var(--c);
+    border-radius: 12px;
+    text-decoration: none !important;
+    color: inherit;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+  .agent-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    border-color: var(--c);
+  }
+  .agent-card .agent-mascot {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 35% 30%, var(--c-edge) 0%, rgba(0,0,0,0) 65%), #1a1a1c;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .agent-card .agent-mascot svg {
+    width: 78%;
+    height: 78%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    shape-rendering: crispEdges;
+  }
+  .agent-card .agent-meta { min-width: 0; }
+  .agent-card .agent-phase {
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c);
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .agent-card .agent-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0a0a0a;
+    margin: 0 0 4px;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  .agent-card .agent-role {
+    font-size: 12px;
+    color: #5a5a5f;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* ── Group heading on the agents index ─────────────────────────────────── */
+  .agent-group-h {
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6a6a6f;
+    margin: 26px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eaeaec;
+  }
+
+  /* ── Mobile ───────────────────────────────────────────────────────────── */
+  @media (max-width: 560px) {
+    .agent-hero {
+      grid-template-columns: 96px 1fr;
+      gap: 16px;
+      padding: 16px 18px;
+    }
+    .agent-hero .agent-mascot {
+      width: 96px;
+      height: 96px;
+    }
+    .agent-hero .agent-name { font-size: 20px; }
+  }
+</style>

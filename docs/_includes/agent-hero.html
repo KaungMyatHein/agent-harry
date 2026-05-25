@@ -1,0 +1,18 @@
+{%- comment -%}
+Renders an agent's visual-identity hero card.
+Usage:
+    {% include agent-hero.html slug='orchestrator' %}
+
+Reads metadata from _data/agents.yml and pulls the matching mascot SVG
+from _includes/mascots/<slug>.svg.
+{%- endcomment -%}
+{%- assign agent = site.data.agents[include.slug] -%}
+<div class="agent-hero" style="--c: {{ agent.color }};">
+  <div class="agent-mascot">{% include mascots/{{ include.slug }}.svg %}</div>
+  <div class="agent-meta">
+    <div class="agent-phase">{{ agent.phase }}</div>
+    <h2 class="agent-name">{{ agent.name }}</h2>
+    <div class="agent-role">{{ agent.role }}</div>
+    <p class="agent-short">{{ agent.short }}</p>
+  </div>
+</div>

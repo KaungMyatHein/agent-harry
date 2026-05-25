@@ -5,6 +5,9 @@ nav_order: 11
 description: "Hi-fi Figma frames generated from the lo-fi handoff using your Design System."
 ---
 
+{% include agent-hero.html slug='figma-designer' %}
+
+
 # Figma Designer
 
 > The Figma-side counterpart to design-engineer. Takes an approved lo-fi layout and produces hi-fi Figma frames with real DS component instances, real PRD content, and the declared state set per screen.

@@ -5,6 +5,9 @@ nav_order: 17
 description: "PRDs per prioritized sub-feature, post Success-Metrics Gate."
 ---
 
+{% include agent-hero.html slug='prd-author' %}
+
+
 # PRD Author
 
 > The agent that writes Product Requirements Documents — one PRD per "in"-tagged sub-feature from prioritization. In v4.3+, each PRD includes the **structured journey schema** (personas + per-sub-feature primary journey with entry/success/failure exits + optional nested journeys) that design agents consume directly.

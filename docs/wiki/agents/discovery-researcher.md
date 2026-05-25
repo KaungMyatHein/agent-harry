@@ -5,6 +5,9 @@ nav_order: 4
 description: "User interviews, problem framing, secondary research."
 ---
 
+{% include agent-hero.html slug='discovery-researcher' %}
+
+
 # Discovery Researcher
 
 > The agent that designs research studies (Mode A) or audits existing PRDs and research docs (Mode B). Usually the first agent in a new feature session because it clears the Research-First Gate.

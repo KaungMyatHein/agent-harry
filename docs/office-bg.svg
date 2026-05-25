@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid slice" shape-rendering="geometricPrecision">
+  <defs>
+    <linearGradient id="floorShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Wall + floor -->
+  <rect x="0" y="0" width="500" height="320" fill="#f0eee4"/>
+  <rect x="0" y="320" width="500" height="180" fill="#d9c9a8"/>
+  <!-- Plank stripes -->
+  <line x1="0" y1="370" x2="500" y2="370" stroke="#c8b48a" stroke-width="1.5"/>
+  <line x1="0" y1="418" x2="500" y2="418" stroke="#c8b48a" stroke-width="1.5"/>
+  <line x1="0" y1="470" x2="500" y2="470" stroke="#c8b48a" stroke-width="1.5"/>
+  <!-- Baseboard -->
+  <rect x="0" y="316" width="500" height="6" fill="#cbb78f"/>
+  <rect x="0" y="316" width="500" height="14" fill="url(#floorShadow)"/>
+
+  <!-- Whiteboard frame + surface -->
+  <rect x="110" y="70" width="280" height="170" rx="2" fill="#9ca3af"/>
+  <rect x="118" y="78" width="264" height="154" fill="#ffffff"/>
+  <!-- Sticky notes -->
+  <g>
+    <rect x="138" y="98" width="32" height="32" fill="#facc15" transform="rotate(-3 154 114)"/>
+    <rect x="182" y="96" width="32" height="32" fill="#67e8f9" transform="rotate(2 198 112)"/>
+    <rect x="226" y="100" width="32" height="32" fill="#ec4899" transform="rotate(-2 242 116)"/>
+    <rect x="270" y="94" width="32" height="32" fill="#facc15" transform="rotate(3 286 110)"/>
+    <rect x="314" y="98" width="32" height="32" fill="#67e8f9" transform="rotate(-1 330 114)"/>
+    <rect x="142" y="148" width="32" height="32" fill="#67e8f9" transform="rotate(2 158 164)"/>
+    <rect x="188" y="151" width="32" height="32" fill="#facc15" transform="rotate(-1 204 167)"/>
+    <rect x="234" y="148" width="32" height="32" fill="#ec4899" transform="rotate(3 250 164)"/>
+    <rect x="282" y="152" width="32" height="32" fill="#facc15" transform="rotate(-2 298 168)"/>
+    <rect x="328" y="148" width="32" height="32" fill="#67e8f9" transform="rotate(2 344 164)"/>
+  </g>
+  <!-- Marker tray under whiteboard -->
+  <rect x="118" y="232" width="264" height="6" fill="#7c8390"/>
+
+  <!-- Plant — back right -->
+  <ellipse cx="450" cy="392" rx="28" ry="6" fill="#000" opacity="0.08"/>
+  <rect x="425" y="358" width="50" height="40" rx="4" fill="#8b5e3c"/>
+  <rect x="425" y="358" width="50" height="6" fill="#6b4423"/>
+  <circle cx="450" cy="332" r="24" fill="#16a34a"/>
+  <circle cx="432" cy="320" r="18" fill="#22c55e"/>
+  <circle cx="468" cy="322" r="17" fill="#22c55e"/>
+  <circle cx="450" cy="304" r="14" fill="#16a34a"/>
+  <circle cx="438" cy="295" r="10" fill="#22c55e"/>
+
+  <!-- Window — back left -->
+  <rect x="10" y="58" width="78" height="180" fill="#e8e6d8"/>
+  <rect x="14" y="62" width="70" height="172" fill="#fffdf2"/>
+  <line x1="49" y1="62" x2="49" y2="234" stroke="#e8e6d8" stroke-width="1.5"/>
+  <line x1="14" y1="148" x2="84" y2="148" stroke="#e8e6d8" stroke-width="1.5"/>
+</svg>

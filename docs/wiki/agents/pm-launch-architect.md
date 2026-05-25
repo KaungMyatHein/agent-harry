@@ -5,6 +5,9 @@ nav_order: 15
 description: "GTM, beachhead, ICP, battlecard, growth loops."
 ---
 
+{% include agent-hero.html slug='pm-launch-architect' %}
+
+
 # PM Launch Architect
 
 > The agent that turns a positioned product into a launch plan — beachhead segment, ideal customer profile, channels, messaging, battlecard, growth loops.

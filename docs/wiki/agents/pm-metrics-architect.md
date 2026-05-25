@@ -5,6 +5,9 @@ nav_order: 16
 description: "Metrics dashboards, tracking plans, OKRs. Clears the Success-Metrics Gate."
 ---
 
+{% include agent-hero.html slug='pm-metrics-architect' %}
+
+
 # PM Metrics Architect
 
 > The agent that defines and confirms success metrics for a feature. Clears the [Success-Metrics Gate](../concepts/success-metrics-gate.html) — Deliver work can't start until this agent runs and you confirm its output.

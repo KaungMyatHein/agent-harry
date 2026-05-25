@@ -5,6 +5,9 @@ nav_order: 9
 description: "Vision, business model, market scan, pricing, north-star."
 ---
 
+{% include agent-hero.html slug='pm-strategist' %}
+
+
 # PM Strategist
 
 > The agent that zooms out — vision, business model, pricing strategy, north-star metric framing. Useful before any feature work when the bigger strategy is unclear.
