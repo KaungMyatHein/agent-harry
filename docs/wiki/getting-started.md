@@ -63,7 +63,6 @@ What happens:
 - 17 agent files land in `<project>/.claude/agents/`
 - 5 slash commands land in `<project>/.claude/commands/`
 - A `SHARED_CONTEXT.md` template lands at the project root
-- A `dashboard.html` + `dashboard-server.py` land at the project root (optional UI surface)
 - A `.gitignore` entry is added for the audit ledger file
 
 The whole thing takes about 30 seconds. You'll see a list of what got created.

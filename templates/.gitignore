@@ -1,9 +1,6 @@
-# Agent Harry — local runtime files (v3.8)
+# Agent Harry — local runtime files
 # These are project-local artifacts the orchestrator writes during a session.
 # They may contain raw file paths, Figma URLs, Notion IDs, and decision data — treat as private.
 
 # Audit ledger — append-only JSONL of agent runs, decisions, costs, files touched
 .harry-audit.jsonl
-
-# Queue state file (Queue Mode, v3.2) — click→orchestrator handoff state
-.harry-queue.json

@@ -112,7 +112,7 @@ The user has explicitly called out $8/feature as unacceptable. $3 is a deliberat
 - Cap each agent's output per the Token Budget Rules
 - Surface the cost upfront and ask the user to approve
 
-The cost meter on the dashboard turns yellow at $1.50 and red at $2.50 — a visual warning the user can react to before the ceiling.
+The cost meter is surfaced on demand via `/agent-harry-cost` — turns yellow at $1.50 and red at $2.50 thresholds in the rendered output. (Pre-v5.0, this was an always-on banner on `dashboard.html`'s top bar — removed in v5.0 alongside the dashboard.)
 
 ---
 
@@ -134,7 +134,7 @@ The Q3 + Q5 grilling decisions (subagent writes its own `stop_gate` ledger entry
 The fix is the same pattern Agent Harry already uses for two other appendix-style specs:
 
 - `PM_SKILLS_MAP.md` (v3.6) — per-agent PM skill ownership extracted from inline duplication in each agent file
-- `DECISION_DATA_SHAPES.md` (v3.6 / v3.3) — dashboard decision-data shapes extracted from inline schemas
+- `DECISION_DATA_SHAPES.md` (v3.6 / v3.3 / v5.0) — decision-data shapes extracted from inline schemas; v5.0 retargeted rendering from dashboard HTML to chat markdown
 
 `SUBAGENT_AUDIT_PROTOCOL.md` is the third extracted appendix: single source of truth for the audit protocol; lazy-loaded by subagents only when they need to perform a protocol step; never loaded by the orchestrator (which has its own audit rules in `orchestrator.md` directly).
 
@@ -150,11 +150,13 @@ The intuitive answer to *"we need a cross-session audit trail"* is *"add a `logg
 
 The bundled philosophy in `RATIONALE.md` § "Why Opus only on orchestrator + critique-partner" applies broadly: **agents exist where judgment is needed.** Mechanical work — token counting, file appending, schema validation — belongs in deterministic code paths (here, the orchestrator's existing Stop Gate write moment), not in new agents.
 
-What the orchestrator already does at every Stop Gate:
+What the orchestrator already does at every Stop Gate (v5.0):
 1. Reads sub-agent handoff Executive Summary
 2. Estimates cost, updates running total
-3. Writes `dashboard.html` with current state
+3. Renders the Decision Data block as chat markdown
 4. Presents Stop Gate prompt to user
+
+(Pre-v5.0 also wrote `dashboard.html` here — removed; chat is the only surface.)
 
 Adding *"append one JSONL line to `.harry-audit.jsonl`"* as step 3.5 is structurally trivial — all the data is already in the orchestrator's hand. A logging agent would have to be re-invoked, re-loaded, re-paid for the same data the orchestrator has in context.
 
@@ -190,6 +192,27 @@ What got dropped: explicit hi-fi-Figma-only workflow. That craft is now either u
 Cost: agent count grew 14 → 15 (one new file net). But routing logic in the orchestrator got simpler (no more "which mode of interaction-designer?"), and each new agent's intake questions / output format / anti-patterns are sharper because each agent has one job. The Stop Gate UX also gets cleaner — `lo-fi-designer`'s gate asks *"pick a layout"*, `design-engineer`'s gate asks *"run the prototype locally and decide"*. Different decisions, different prompts.
 
 The orphan-check step in Refresh mode exists because pre-v3.7 installs have `interaction-designer.md` in `.claude/agents/` that's no longer in templates. Without the check, that file sits as a confusing orphan — orchestrator routing won't reference it but the user can still invoke it directly with stale guidance.
+
+---
+
+## Why dashboard was removed (v5.0)
+
+v3.1 introduced `dashboard.html` as a visual companion to chat — a static HTML file the orchestrator overwrote after every Stop Gate, designed to be viewed in the Claude Preview MCP panel. v3.2 layered Queue Mode on top: clickable chips, Python HTTP server (`dashboard-server.py`), queue state file (`.harry-queue.json`), polling slash command (`/agent-harry-loop`). v3.3 added the Decision Data panel inside the NOW card so the user could decide without opening the MD handoff.
+
+Across the entire lifetime of those features (~7 versions, ~6 months), the user (Harry) never actually looked at the dashboard in practice. The decision was always made in chat. The Preview MCP refresh wasn't seamless enough to be worth glancing at; Queue Mode's 60s polling latency felt clunky vs typing in chat; the per-Stop-Gate HTML write was 1–2k tokens of overhead for a surface that was being ignored.
+
+v5.0 ripped the whole stack:
+
+- Deleted: `templates/dashboard.html`, `templates/dashboard-server.py`, `templates/.harry-queue.json`, `templates/.claude/commands/agent-harry-loop.md`, `docs/wiki/concepts/dashboard.md`, `docs/wiki/commands/agent-harry-loop.md`, `docs/dashboard-demo.html`.
+- Rewrote: `orchestrator.md` — stripped the Dashboard Rendering protocol section and the Queue Mode section; added a new Decision Data Rendering section that maps each shape (insights / table / callout / metrics) to chat markdown.
+- Retargeted: `DECISION_DATA_SHAPES.md` — same 4 shapes, rendering target shifted from inline HTML strings (designed for `innerHTML` injection) to chat markdown (with a minimal HTML→markdown back-compat shim).
+- Cleaned: SHARED_CONTEXT.md, SKILL.md, README.md, CHANGELOG.md, all wiki pages, all sub-agent files that referenced dashboard chip-hints or "rendered in the dashboard's panel" framing.
+
+What survived the rip: the *forcing-function value* of structured `decisionData`. Agents still produce top insights with evidence + per-item confidence, scored tables with explicit columns, etc. That discipline existed before dashboard and survives after — the rendering target changed, the data shape didn't.
+
+What didn't get rebuilt: any visual companion at all. Chat is the only decision surface in v5.0. The cost meter (formerly a top-bar banner with color thresholds) moved to on-demand via `/agent-harry-cost`. No replacement preview panel, no terminal TUI, no browser extension — chat is the canonical mental model for one user (Harry) working in Claude Code.
+
+Anti-pattern this retracts: building secondary surfaces "in case" the user wants them. Build the surface the user actually uses, see whether they actually use it, then retire it cleanly if they don't. The v5.0 rip is the clean-retirement step — sunk cost of 7 versions of work is irrelevant once the data is in: never used, can't earn its keep, gone.
 
 ---
 

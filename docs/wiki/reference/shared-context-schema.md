@@ -66,9 +66,11 @@ tokens_estimated: <rough number>
 
 | Agent | Extra keys |
 |---|---|
-| `lo-fi-designer` (v4.0) | `entry_point` (object), `fingerprint_compliance` (per-variant), `fingerprint_status` (`fresh`/`stale_proceeded`/`skipped`) |
-| `design-engineer` (v4.0) | `polish_bar`, `routes`, `mock_api_path`, `fingerprint_status`, `fingerprint_anchors_applied`, `discovered_code_paths` |
-| `figma-designer` (v4.0) | `figma_file_url`, `figma_screens`, `ds_source`, `ds_status`, `fingerprint_status`, `fingerprint_anchors_applied` |
+| `lo-fi-designer` (v4.0/v4.3) | `entry_point` (object), `fingerprint_compliance` (per-variant), `fingerprint_status` (`fresh`/`stale_proceeded`/`skipped`), **v4.3:** `journey_source`, `persona_resolved`, `sub_feature` (with `primary_journey` + `nested_journey_designs`) |
+| `design-engineer` (v4.0/v4.3) | `polish_bar`, `routes`, `mock_api_path`, `fingerprint_status`, `fingerprint_anchors_applied`, `discovered_code_paths`, **v4.3:** `journey_source`, `persona_resolved`, `routes_by_journey` (with `failure_recovery_toggles[]`), `persona_aware_copy_decisions_count` |
+| `figma-designer` (v4.0/v4.3) | `figma_file_url`, `figma_screens`, `ds_source`, `ds_status`, `fingerprint_status`, `fingerprint_anchors_applied`, **v4.3:** `journey_source`, `persona_resolved`, `journey_pages` (Figma page node IDs per journey), `persona_aware_copy_decisions_count` |
+| `figma-component-bootstrapper` (v4.2) | `figma_file_url`, `figma_file_name`, `figma_root_node_id`, `fingerprint_signals_applied`, `tokens_source`, `token_resolution_log`, `component_count`, `mode_history`, `last_extended` |
+| `prd-author` (v4.3) | `schema_version` (`v4.3` for structured journeys), `personas[]` (with `id`/`role`/`context`), `sub_features[]` (with `primary_journey` + `nested_journeys[]` + `data_inputs[]`) |
 | `handoff-engineer` | `design_tokens_path`, `component_specs` |
 | `product-fingerprint-curator` (v4.0) | `last_validated` (ISO 8601 UTC), `curator_session` |
 
@@ -95,4 +97,4 @@ Authoritative schema lives in `templates/SHARED_CONTEXT.md` in the main repo.
 
 ---
 
-_Current as of v4.0._
+_Current as of v4.3._

@@ -18,9 +18,8 @@ Mechanisms Agent Harry uses across every interaction. Read these in order if you
 5. [Success-Metrics Gate](concepts/success-metrics-gate.html) — second refusal point
 6. [Product Fingerprint](concepts/product-fingerprint.html) — v4.0 visual + composition vocabulary
 7. [Audit Ledger](concepts/audit-ledger.html) — every decision logged
-8. [Dashboard](concepts/dashboard.html) — visual surface alongside chat
 
-These eight pages cover the entire mental model. After you've read them, every refusal message, every Stop Gate, and every artifact will make sense.
+These seven pages cover the entire mental model. After you've read them, every refusal message, every Stop Gate, and every artifact will make sense.
 
 ---
 

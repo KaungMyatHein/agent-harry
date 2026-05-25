@@ -4,6 +4,56 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-25 — v5.0: Rip dashboard + Queue Mode — chat is the only decision surface
+
+**Breaking change.** Removes the entire dashboard surface (visual HTML companion + click-driven Queue Mode). Across 7 versions (v3.1–v4.3), the dashboard was never used in practice. Chat is the canonical decision surface. Structured `decisionData` now renders as markdown in chat at every Stop Gate. Full rationale: `RATIONALE.md` § "Why dashboard was removed (v5.0)".
+
+- **Deleted from templates:**
+  - `templates/dashboard.html` — static HTML mirror written at every Stop Gate
+  - `templates/dashboard-server.py` — Python stdlib HTTP server for Queue Mode
+  - `templates/.harry-queue.json` — queue state file
+  - `templates/.claude/commands/agent-harry-loop.md` — polling slash command
+- **Deleted from docs:**
+  - `docs/wiki/concepts/dashboard.md`
+  - `docs/wiki/commands/agent-harry-loop.md`
+  - `docs/dashboard-demo.html` — historical demo artifact
+- **`orchestrator.md` rewritten:**
+  - Removed "Dashboard Rendering" protocol section (~50 lines)
+  - Removed "Queue Mode" section (~10 lines)
+  - Removed `.harry-queue.json` check in Success-Metrics Gate confirmation logic — now uses chat history only
+  - **New "Decision Data Rendering" section** maps the 4 shapes (insights / table / callout / metrics) to markdown rendered in chat between the Executive Summary stat-card and the TL;DR
+  - New anti-pattern: "Write any HTML companion file — chat is the only decision surface"
+- **`DECISION_DATA_SHAPES.md` retargeted:**
+  - Same 4 shape variants; rendering target shifted from inline HTML strings (for `innerHTML` injection) to chat markdown
+  - Added minimal HTML→markdown back-compat shim: `<strong>` → `**`, `<em>` → `*`, `<code>` → backticks, `<br>` → newline, `<a href>` → markdown link. Anything else stripped.
+  - Pre-v5.0 CSS class indicators (`.delta-up`, `.pill-in`, etc.) replaced with unicode/markdown equivalents
+- **Sub-agent file cleanup:**
+  - `pm-metrics-architect.md` — Confirmation Mode framing strips "dashboard's command-chip hint" block; keeps TL;DR copy and Decision Data label
+  - `prd-author.md` — manifest framing updated from "dashboard's Decision Data panel" to "chat's Decision Data block"
+- **Slash command cleanup:**
+  - `agent-harry-notion-sync.md` — drops "if the dashboard is running" conditional; chat is always the surface
+- **SHARED_CONTEXT.md cleanup:**
+  - Removed "Dashboard companion (v3.1, enriched in v3.3)" section
+  - Removed "Queue Mode (v3.2 — autonomous click-driven loop)" section
+  - Replaced with single "Decision Data in chat (v5.0)" section pointing at `DECISION_DATA_SHAPES.md`
+  - Audit Ledger description drops "dashboard.html overwrites each turn" clause
+  - Notion Sync exclusion list drops `.harry-queue.json` and `dashboard.html` bullets
+- **SKILL.md cleanup:**
+  - Install flow stops copying dashboard files
+  - Refresh flow gains v5.0 dashboard-orphan notice listing the 4 files (`dashboard.html`, `dashboard-server.py`, `.harry-queue.json`, `.claude/commands/agent-harry-loop.md`) for projects refreshing from pre-v5.0 — lists them, does NOT auto-delete (user runs `rm` manually)
+  - File tree drops dashboard entries
+  - `.gitignore` template drops `.harry-queue.json` entry (queue file no longer exists)
+- **`templates/.gitignore`** drops the `.harry-queue.json` line.
+- **README.md (templates):** "Visual companion" and "Click-driven mode — Queue Mode" sections removed; new "Decision Data in chat" section explains the post-v5.0 surface; commands table drops `/agent-harry-loop` and adds `/agent-harry-cost`; file map updated.
+- **Wiki cleanup:** removed `concepts/dashboard.md` and `commands/agent-harry-loop.md`; swept references from `concepts.md`, `commands.md`, `index.md`, `getting-started.md`, `guides/troubleshooting.md` ("dashboard doesn't show latest state" entry removed), `guides/refresh-after-update.md` (new v5.0 cleanup section), `concepts/stop-gate.md` (4 dashboard refs stripped), `concepts/success-metrics-gate.md` (chip-hint framing dropped), `commands/agent-harry-notion-sync.md` (exclusion list), `concepts/audit-ledger.md` (one clause), `reference/glossary.md` (Dashboard entry replaced with "Decision Data block"; Queue Mode entry removed), `agents/pm-metrics-architect.md` (chip hint wording).
+- **RATIONALE.md:** added closing § "Why dashboard was removed (v5.0)" capturing the historical retraction. Cost-meter sentence updated to point at `/agent-harry-cost` instead of the dashboard banner. DECISION_DATA_SHAPES description updated.
+
+**Per-project migration:** projects refreshing from pre-v5.0 will see an orphan-file notice with the 4 files to remove. Refresh does NOT auto-delete them (they may have been edited). They're harmless if left in place — the orchestrator no longer touches them.
+
+**Token-cost impact:** orchestrator drops ~1–2k output per Stop Gate (no more HTML write). Decision Data chat-render costs ~200–600 tokens — the same content sub-agents already produced in their handoffs, surfaced once. Net: ~$0.005–0.015 less per Stop Gate.
+
+---
+
 ## 2026-05-24 — v4.0: Product Fingerprint (project-level visual + composition vocabulary)
 
 Adds the **product fingerprint** — a project-level artifact at `<project-root>/product-fingerprint.md` that captures the existing product's visual language and composition vocabulary from 3–7 designer-picked "exciting" Figma frames. Read by `lo-fi-designer`, `figma-designer`, and `design-engineer` at intake so new feature work matches the product's actual norms, not just DS tokens.

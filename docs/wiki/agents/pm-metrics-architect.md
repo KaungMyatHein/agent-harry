@@ -41,7 +41,7 @@ A handoff with:
 
 ## Confirmation framing
 
-The Stop Gate after `pm-metrics-architect` is special — chip hint changes from "proceed" to "confirm success metrics" and the TL;DR ends with *"Confirm these metrics so Deliver can proceed?"* Your `y` is the signal that clears the gate.
+The Stop Gate after `pm-metrics-architect` is special — the TL;DR ends with *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."* Your `y` is the signal that clears the gate.
 
 ## Best practices
 

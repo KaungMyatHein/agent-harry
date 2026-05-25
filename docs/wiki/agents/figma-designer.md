@@ -13,6 +13,10 @@ description: "Hi-fi Figma frames generated from the lo-fi handoff using your Des
 
 In **Mode A**, generates fresh Figma frames for the full flow from the lo-fi handoff. All DS-instanced (not detached). Real content from PRD. Token-applied colors and typography. State coverage per screen. In **Mode B**, audits an existing Figma file against the lo-fi handoff: flow coverage, DS adherence, content realism, fingerprint divergence.
 
+In v4.2+, the agent refuses to draw frames+groups when no Figma library exists. It either uses your published team library (`library: <url>`), or the project's auto-created library (managed by [`figma-component-bootstrapper`](figma-component-bootstrapper.html)), or — with explicit opt-out (`proceed without library`) — falls back to the legacy frames+groups behavior.
+
+In v4.3+, when the lo-fi handoff carries v4.3 journey fields, the file is organized as **one Figma page per journey** (`Primary — <feature>`, `Nested — <id>`, plus a top-level `Journey Map` page). Copy decisions reflect the **persona's task language** alongside fingerprint's `copy_tone`.
+
 ## When to use it
 
 - After lo-fi is approved, when you want hi-fi Figma frames (not code).
@@ -27,11 +31,15 @@ In **Mode A**, generates fresh Figma frames for the full flow from the lo-fi han
 
 ## What it asks you at intake
 
-Pre-intake fingerprint check fires first. After that, 6 questions:
+Two pre-intake checks fire first:
+- [Product Fingerprint](../concepts/product-fingerprint.html) — must exist + be fresh (opt-out: `skip fingerprint`).
+- **Component Library (v4.2)** — refuses if no library exists. Options: run `figma-component-bootstrapper`, type `library: <figma-url>` to use your own, or `proceed without library` to fall back to frames+groups (logged).
+
+After both checks pass, up to 6 questions (Q3 is skipped when a library/manifest is already resolved):
 
 1. Lo-fi artifact found?
 2. PRD source for real content?
-3. Design System — Figma library URL, code repo, tokens, or external system?
+3. ~~Design System — Figma library URL, code repo, tokens, or external system?~~ **(v4.2: skipped when manifest or `library: <url>` resolved the DS already.)**
 4. Figma destination — new file (in Drafts or a team) or existing file?
 5. State coverage — default only, default+empty+error, or full 4-state?
 6. MCP availability (hard refusal if missing).
@@ -44,6 +52,9 @@ Handoff at `./design-workspace/<project>/figma-hifi-<feature>.md` with:
 - DS source + status (resolved/defaulted/missing)
 - Fingerprint anchors applied (density, corner_radius, copy_tone, composition patterns, anti-patterns respected)
 - Mode B: fingerprint divergence section (max 4 findings, severity-ranked)
+- **(v4.3) Journey Map link** — points to the `Journey Map` page in the Figma file with persona + intent caption
+- **(v4.3) Persona-aware copy decisions table** — notable label / CTA / empty-state / error-message choices and why (persona + copy_tone rationale)
+- **(v4.3) `journey_pages` frontmatter** — per-page Figma node IDs (primary, nested, journey_map)
 
 ## Best practices
 
@@ -73,9 +84,10 @@ lo-fi-designer → figma-designer → handoff-engineer (or design-engineer for c
 
 - [`design-engineer`](design-engineer.html) — parallel agent for code
 - [`lo-fi-designer`](lo-fi-designer.html) — upstream
+- [`figma-component-bootstrapper`](figma-component-bootstrapper.html) — creates the library this agent instances from
 - [Product Fingerprint](../concepts/product-fingerprint.html) — pre-intake gate
 - [Mode A vs Mode B](../concepts/mode-a-vs-mode-b.html)
 
 ---
 
-_Current as of v4.0._
+_Current as of v4.3._

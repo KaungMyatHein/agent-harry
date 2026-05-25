@@ -12,10 +12,10 @@ Five slash commands ship with Agent Harry. Each one is a direct invocation — y
 | Command | What it does |
 |---|---|
 | [`/audit-pipeline`](commands/audit-pipeline.html) | Check whether the Research-First + Success-Metrics gates are clear before starting design work |
-| [`/agent-harry-loop`](commands/agent-harry-loop.html) | Run a click-driven polling loop with the dashboard server (optional, advanced) |
 | [`/agent-harry-notion-sync`](commands/agent-harry-notion-sync.html) | Push confirmed artifacts to your Notion workspace |
 | [`/agent-harry-audit`](commands/agent-harry-audit.html) | Render the audit ledger as a readable markdown timeline |
 | [`/agent-harry-fingerprint`](commands/agent-harry-fingerprint.html) (v4.0) | Create or refresh the project's `product-fingerprint.md` |
+| [`/agent-harry-cost`](commands/agent-harry-cost.html) (v4.1) | Report measured cost from the audit ledger by model / agent / session |
 
 ## When to use commands vs agent names
 

@@ -122,7 +122,7 @@ Yes — but only if you opt out of the gate first. Opt-outs are logged in the [a
 Use the opt-out phrase ("skip metrics" / "I have metrics already, skip the confirmation"). The gate clears.
 
 **Does the Stop Gate after `pm-metrics-architect` look different?**
-Yes — the chip hint changes from "proceed" to "confirm success metrics" and the TL;DR ends with "Confirm these metrics so Deliver can proceed?" The dashboard renders this with a different button style. This makes the confirmation feel intentional, not routine.
+Yes — the orchestrator's next-step line and the TL;DR's open-question bullet reframe as confirmation: *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."* This makes the confirmation feel intentional, not routine.
 
 ## Related
 

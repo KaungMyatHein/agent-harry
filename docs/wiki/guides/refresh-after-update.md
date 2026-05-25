@@ -52,8 +52,19 @@ If the new version added new `SHARED_CONTEXT.md` fields (rare), they'll be in th
 ## What does NOT need attention
 
 - Your `design-workspace/` artifacts — untouched.
-- Your `dashboard.html` and `dashboard-server.py` — overwritten with latest versions (you can re-customize if needed).
 - Existing PRDs, lo-fi handoffs, prototype code — all preserved.
+- Your `.harry-audit.jsonl` audit ledger — preserved (refresh never touches it).
+
+## v5.0 dashboard cleanup (one-time, only if refreshing from a pre-v5.0 install)
+
+v5.0 ripped the dashboard surface (never used in practice). If your project still has any of these files from a pre-v5.0 install, refresh will list them and ask you to clean up manually:
+
+- `dashboard.html`
+- `dashboard-server.py`
+- `.harry-queue.json`
+- `.claude/commands/agent-harry-loop.md`
+
+They're harmless if left in place (the orchestrator no longer touches them), but they clutter the project root. Run `rm dashboard.html dashboard-server.py .harry-queue.json .claude/commands/agent-harry-loop.md` once and they're gone. See `CHANGELOG.md` v5.0 for the rationale.
 
 ## When to skip refresh
 

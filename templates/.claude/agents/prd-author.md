@@ -187,7 +187,7 @@ decisionData:
     # ... one row per PRD
 ```
 
-The manifest is the visual the user sees in the dashboard's Decision Data panel — it's what they confirm with `y` (ship all) or `revise — <slug>` (regenerate one).
+The manifest is the table the user sees in the chat's Decision Data block (v5.0 — was dashboard's panel pre-v5.0) — it's what they confirm with `y` (ship all) or `revise — <slug>` (regenerate one).
 
 ---
 

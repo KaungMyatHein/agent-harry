@@ -13,7 +13,7 @@ description: "Every decision in every session gets logged to a structured file s
 
 After a few features, you forget what happened. Why did this feature ship without a usability test? Why does the checkout flow use cards when settings uses two-pane? Did anyone audit the metrics before launch?
 
-Chat history compacts. The dashboard overwrites every turn. The MD handoff files survive but only show outputs, not decisions. The audit ledger fills the gap — it's the structured record of what was decided, by whom, when.
+Chat history compacts. The MD handoff files survive but only show outputs, not decisions. The audit ledger fills the gap — it's the structured record of what was decided, by whom, when.
 
 ## How it works
 

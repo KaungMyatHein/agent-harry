@@ -148,7 +148,7 @@ Skipped: 0 (no failures)
 Open: <direct-url-to-project-root>
 ```
 
-If the dashboard is running, the next Stop Gate's next-move-suggestion can mention "PRDs are now visible in Notion at <url>" so the user sees the link without leaving the dashboard.
+The next Stop Gate's next-move-suggestion in chat can mention "PRDs are now visible in Notion at <url>" so the user sees the link inline.
 
 ## When to invoke this command
 

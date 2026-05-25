@@ -64,63 +64,18 @@ You can `pivot — <new direction>` at any Stop Gate to steer the loop somewhere
 
 When you explicitly want a fixed plan upfront ("plan the full discovery sprint"), the orchestrator falls back to **Waterfall mode** — same Stop Gates between every step.
 
-## Visual companion — `dashboard.html` (v3.1)
+## Decision Data in chat (v5.0)
 
-Reading text TL;DR cards step-by-step gets tiring. At every Stop Gate, the orchestrator also writes a self-contained `dashboard.html` to the project root, designed to be viewed in the Claude Preview MCP panel.
+Every Stop Gate renders the just-completed sub-agent's `decisionData` as markdown in the chat reply, between the Executive Summary stat-card and the TL;DR. Four shape variants:
 
-What's on it:
+- **`insights`** — numbered list with evidence + per-item confidence (discovery-researcher, ideation-facilitator, critique-partner, usability-tester, lo-fi-designer)
+- **`table`** — markdown table with right-aligned numeric columns (feature-prioritizer, competitive-analyst, design-engineer, handoff-engineer, prd-author manifest)
+- **`callout`** — blockquote with optional 🎯 flavor for beachhead/launch (product-positioner, pm-strategist, pm-launch-architect)
+- **`metrics`** — grouped bullet list of measurement-plan layers (pm-metrics-architect)
 
-- **Top bar** — project name + step count + elapsed time + cumulative cost (turns yellow at $1.50, red at $2.50 — keeps the $3 ceiling visible)
-- **History breadcrumb** — every completed sub-agent in this session, compressed
-- **NOW card** — the visual centerpiece. Status dot + agent name + Mode tag + phase pill + 4 stat cells + **Decision Data panel** (v3.3) + 3-bullet TL;DR + next-move suggestion + 5 command chips
-- **Decision Data panel** (v3.3) — surfaces the actual decision-critical content inline: scoring tables (feature-prioritizer), insight lists with evidence (discovery-researcher), "the bet" callouts (pm-strategist, pm-launch-architect), measurement-plan layers (pm-metrics-architect). 4 shape variants — see `SHARED_CONTEXT.md` Decision Data Shapes appendix
-- **Suggested-next strip** — if `y` leads to a clear next agent, shown here with cost estimate
+Full shape spec: `DECISION_DATA_SHAPES.md`. The TL;DR (3 bullets — 2 findings + 1 open question) references the Decision Data rather than duplicating it.
 
-The dashboard is **read-only**. Command chips display the literal text you type in chat (`y / revise <delta> / pivot — <direction> / grill me / cancel`). Clicks do nothing — chat is still the source of truth and where input happens. Silence is still not consent.
-
-If you don't have Claude Preview MCP connected, the dashboard file still renders fine in any browser. Open it manually if you want to glance at the visual TL;DR.
-
-## Click-driven mode — Queue Mode (v3.2)
-
-In v3.2 the dashboard goes from passive to **interactive**: the chips are real buttons that drive the orchestrator without needing you to type in chat. Click `y` and within ~60 seconds the orchestrator wakes up, processes it, and rewrites the dashboard with the next state.
-
-How it works:
-
-- **`dashboard-server.py`** — tiny Python stdlib HTTP server (no deps). Serves `dashboard.html` and accepts button POSTs at `/api/action`. Writes click intent to `.harry-queue.json`.
-- **`/agent-harry-loop`** — slash command that runs in the Claude Code session. Uses `ScheduleWakeup` (a dynamic-loop mechanism only available in the main session, not in subagents) to poll the queue file every ~60s.
-- **`.harry-queue.json`** — the queue state file. Owns the click → orchestrator handoff.
-
-Setup steps:
-
-```bash
-# Terminal 1: start the dashboard server (project root)
-cd <project>
-python3 dashboard-server.py
-# Output: server running on http://localhost:3737
-
-# Browser: open the dashboard
-open http://localhost:3737
-
-# Terminal 2: start Claude Code in the project
-cd <project>
-claude
-
-# In Claude Code, invoke the loop with your initial goal:
-/agent-harry-loop audit my existing PRD and propose the smallest next move
-```
-
-The loop will:
-
-1. Print a 3-line greeting + invoke the orchestrator with your goal
-2. Orchestrator diagnoses, proposes smallest-next-move, writes `dashboard.html`, fires Stop Gate
-3. Dashboard tab in browser auto-refreshes (or refresh manually) showing the proposed move
-4. You click `y` (or revise/pivot/etc.)
-5. Loop wakes within ~60s, sees the queue, dispatches to orchestrator
-6. Repeat until you click `cancel` or hit the idle timeout (20 polls ≈ 20 min)
-
-You can still type in chat anytime — chat input takes priority over the queue. Queue Mode is opt-in; if you don't run the server or the slash command, Agent Harry works exactly as in v3.1 (chat-only).
-
-**Token-cost note:** idle polling costs ~$0.015 per cycle. 20-poll idle cap = ~$0.30 worst-case waste if you walk away. Still well within the $3 ceiling.
+This is the post-v5.0 decision surface. Pre-v5.0 versions emitted an HTML `dashboard.html` mirror plus an optional Queue Mode click-driven loop — both ripped in v5.0 because they were never used in practice. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md` for the history.
 
 ## PRDs + Notion sync (v3.5)
 
@@ -131,7 +86,7 @@ After Define is done and Success Metrics are confirmed (v3.4 Gate), two new capa
 Iterates the confirmed `feature-prioritizer` "in"-tagged items. Generates one PRD per sub-feature using the `pm-execution:create-prd` skill. Writes each PRD to `./design-workspace/<project-slug>/prds/<feature-slug>.md`.
 
 - Token cost: ~$0.10–0.20 per PRD. Batch capped at 8 PRDs per run (scope down if you have more).
-- Visible in the dashboard's Decision Data panel as a manifest table — slug · words · source RICE · status (new/updated).
+- Rendered in the chat's Decision Data block as a manifest table — slug · words · source RICE · status (new/updated).
 - Idempotent: re-running on the same project updates existing PRD files; doesn't blindly overwrite.
 - Routes naturally after the Success-Metrics Gate clears (orchestrator proposes it as the next move).
 
@@ -165,9 +120,10 @@ Idempotent — re-run any time to push updates. MD files in `./design-workspace/
 | Command | Purpose |
 |---|---|
 | `/audit-pipeline` | Reports which phases have artifacts and whether the **Research-First Gate** + **Success-Metrics Gate** are PASS / BLOCK / OPTED-OUT. Run before any Deliver-phase work or whenever a session shifts toward "let's prototype / build / design". |
-| `/agent-harry-loop` | v3.2 click-driven polling loop. Reads `.harry-queue.json` every ~60s; processes browser-clicked actions via the dashboard server. |
 | `/agent-harry-notion-sync` | v3.5 push confirmed artifacts to Notion as a structured workspace. Idempotent; safe to re-run. `--dry-run` previews without writing. |
 | `/agent-harry-audit` | v3.8 render the cross-session audit ledger (`.harry-audit.jsonl`) as a human-readable markdown timeline. Default: last 7 days, current project, all events. Flags: `--all`, `--days N`, `--agent <name>`, `--event <type>`, `--session <s_id>`. Read-only. |
+| `/agent-harry-fingerprint` | v4.0 create or refresh the product fingerprint (project-level visual + composition vocabulary from 3–7 designer-picked Figma frames). |
+| `/agent-harry-cost` | v4.1 measured cost report. Reads `token_usage` events from `.harry-audit.jsonl`, aggregates by model / agent / Claude Code session. Flags: `--all`, `--days N`, `--by-agent`, `--by-model`, `--json`. |
 
 ## Always-On Stop Gate
 
@@ -182,7 +138,7 @@ Every sub-agent run ends with a mandatory user checkpoint. The orchestrator (and
 
 ## Executive Summary & Token Budget
 
-Every agent handoff starts with a **stat-card table + 3-bullet TL;DR + next-step line**. This is the human-readable summary. The long-form analysis below is for downstream AI handoff. You read the top; the next agent reads the bottom.
+Every agent handoff starts with a **stat-card table + Decision Data block + 3-bullet TL;DR + next-step line**. This is the human-readable summary. The long-form analysis below is for downstream AI handoff. You read the top; the next agent reads the bottom.
 
 Hard output caps (per `SHARED_CONTEXT.md`):
 
@@ -285,12 +241,12 @@ Agents are **framework-agnostic but context-aware**. They will draw from Double 
 ```
 product-designer-agents/
 ├── README.md                          ← you are here
-├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate + Dashboard + Queue Mode
-├── dashboard.html                     ← visual Stop Gate companion (overwritten by orchestrator each turn)
-├── dashboard-server.py                ← v3.2 HTTP server for click-driven mode (Python stdlib)
-├── .harry-queue.json                  ← v3.2 queue state file (click → orchestrator handoff)
+├── SHARED_CONTEXT.md                  ← handoff schema + Token Budget + Research-First Gate + Decision Data spec
+├── DECISION_DATA_SHAPES.md            ← v3.6 / v5.0 chat-render spec for the 4 decisionData shape variants
+├── PM_SKILLS_MAP.md                   ← v3.6 per-agent skill ownership
+├── SUBAGENT_AUDIT_PROTOCOL.md         ← v3.8 session identity + ledger append + slug derivation
 ├── .harry-audit.jsonl                 ← v3.8 append-only audit ledger (gitignored)
-├── .gitignore                         ← v3.8 ignores audit-ledger + queue state
+├── .gitignore                         ← v3.8 ignores audit ledger
 └── .claude/
     ├── agents/
     │   ├── orchestrator.md          (opus)
@@ -308,10 +264,12 @@ product-designer-agents/
     │   ├── pm-strategist.md         (sonnet)
     │   ├── pm-launch-architect.md   (sonnet)
     │   ├── pm-metrics-architect.md  (sonnet)
-    │   └── prd-author.md            (sonnet) ← v3.5
+    │   ├── prd-author.md            (sonnet) ← v3.5
+    │   └── product-fingerprint-curator.md (sonnet) ← v4.0
     └── commands/
         ├── audit-pipeline.md              ← /audit-pipeline
-        ├── agent-harry-loop.md            ← /agent-harry-loop (v3.2)
         ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync (v3.5)
-        └── agent-harry-audit.md           ← /agent-harry-audit (v3.8)
+        ├── agent-harry-audit.md           ← /agent-harry-audit (v3.8)
+        ├── agent-harry-fingerprint.md     ← /agent-harry-fingerprint (v4.0)
+        └── agent-harry-cost.md            ← /agent-harry-cost (v4.1)
 ```

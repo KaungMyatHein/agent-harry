@@ -15,6 +15,8 @@ Generates real code in your stack — Next.js, SwiftUI, Flutter, etc. Routes acc
 
 In v4.0+, it auto-discovers existing code paths in the feature area from the PRD and lo-fi handoff (e.g., `app/cart/page.tsx` for a checkout flow). Surfaces them at intake transparently; you can override.
 
+In v4.3+, when the lo-fi handoff carries v4.3 journey fields, routes are organized **per journey**: `/<feature-slug>` for the primary journey, `/<feature-slug>/<nested-journey-id>` per nested journey. Mock data demonstrates **every failure-recovery path** from the PRD (not just the happy path) so a reviewer can click through and see how the persona's failures get handled. UI copy reflects the persona's task language alongside fingerprint's `copy_tone`. The prototype README gains a **Persona & Journey** section with the user-story intent and routes-by-journey table.
+
 ## When to use it
 
 - After lo-fi is approved, when you want runnable code (not just Figma).
@@ -40,10 +42,13 @@ Pre-intake fingerprint check fires first. After that:
 Code in `<project>/prototypes/<feature>/` plus a handoff pointer at `./design-workspace/<project>/prototype-<feature>.md` with:
 
 - File manifest (every file written)
-- Routes (how to view each state)
+- Routes (how to view each state — **(v4.3) organized by journey**)
 - Mock API path
 - Components used (DS-existing vs new)
 - Fingerprint anchors applied + discovered code paths studied
+- **(v4.3) Persona & Journey** section (user-story intent + per-journey route table + failure-recovery toggle list)
+- **(v4.3) Persona-aware copy decisions table** — notable label/CTA/empty/error copy + rationale
+- **(v4.3) `routes_by_journey` frontmatter** with `failure_recovery_toggles[]` so a reviewer knows which `?state=` params demonstrate each PRD `failure_exit`
 
 ## Best practices
 
@@ -78,4 +83,4 @@ lo-fi-designer → design-engineer → handoff-engineer (or usability-tester)
 
 ---
 
-_Current as of v4.0._
+_Current as of v4.3._

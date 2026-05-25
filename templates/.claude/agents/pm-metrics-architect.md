@@ -131,15 +131,11 @@ Detection: your invocation prompt will say something like *"Run as the Success-M
 - The TL;DR's 3rd bullet (the open question) MUST be a confirmation ask:
   *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking; `pivot — <new direction>` if the whole measurement approach needs rethinking."*
 
-**For the dashboard's Decision Data panel** (your handoff's `decisionData`, type `metrics`):
+**For the chat Decision Data block** (your handoff's `decisionData`, type `metrics`):
 - The `label` becomes: `Success metrics · pending your confirmation`
-- The 4 layers (north-star / input / health / counter) render as usual — they ARE the data the user is confirming.
+- The 4 layers (north-star / input / health / counter) render as usual — they ARE the data the user is confirming. Orchestrator renders the block as markdown in chat per `DECISION_DATA_SHAPES.md` § Type 4.
 
-**For the dashboard's command-chip hint:**
-- `y` chip hint becomes: `confirm success metrics`
-- Other chips keep their normal hints.
-
-**Suggested-next strip:**
+**Suggested-next line in the orchestrator's chat Stop Gate:**
 - Name the FIRST Deliver agent that will be unblocked once metrics are confirmed — typically `design-engineer` Mode A for design-led pipelines (if a `lo-fi-designer` handoff already exists; otherwise `lo-fi-designer` first, which is define-phase and not gate-blocked), or `pm-launch-architect` Mode A for GTM-led pipelines. Pick whichever the goal implies.
 - Phrase it: *"If you confirm, the Success-Metrics Gate clears and `<next-agent>` Mode A is the next unblocked move."*
 

@@ -54,8 +54,6 @@ No arguments needed. It reads `.notion-config.json` for the parent page.
 ## What does NOT get synced
 
 - Full long-form MD bodies (archival only)
-- `.harry-queue.json` runtime state
-- `dashboard.html` (doesn't fit Notion's block model)
 - Critique-partner stress-tests inline (folded into the artifact they critiqued)
 
 ## Cost

@@ -67,12 +67,21 @@ You: "design the checkout flow"
           → ...
 ```
 
+## Gates the orchestrator is aware of (but doesn't enforce itself)
+
+The orchestrator enforces Research-First and Success-Metrics gates directly. The other three gates are enforced by the agents themselves (refuse-with-opt-out pattern) — the orchestrator just sequences correctly to minimize redundant refusals:
+
+- **Product Fingerprint** (v4.0) — `lo-fi-designer` / `figma-designer` / `design-engineer` / `figma-component-bootstrapper` each refuse without a fingerprint. Orchestrator proposes `product-fingerprint-curator` as a prerequisite at the Define→Deliver boundary.
+- **Component Library** (v4.2) — `figma-designer` refuses without a Figma library or `project-component-library.md`. Orchestrator proposes `figma-component-bootstrapper` as a prerequisite when planning Figma-led Deliver work. Code-led Deliver (`design-engineer` only) is unaffected.
+- **PRD Journeys** (v4.3) — `lo-fi-designer` refuses without a PRD; old-format PRDs degrade gracefully. Orchestrator proposes `prd-author` re-run when valuable (don't nag if user opted into degraded mode).
+
 ## Related
 
 - [Alignment Loop](../concepts/alignment-loop.html)
 - [Stop Gate](../concepts/stop-gate.html)
-- [Research-First Gate](../concepts/research-first-gate.html), [Success-Metrics Gate](../concepts/success-metrics-gate.html) — gates it enforces
+- [Research-First Gate](../concepts/research-first-gate.html), [Success-Metrics Gate](../concepts/success-metrics-gate.html) — gates it enforces directly
+- [Product Fingerprint](../concepts/product-fingerprint.html) — gate enforced by agents, orchestrator routes around
 
 ---
 
-_Current as of v4.0._
+_Current as of v4.3._

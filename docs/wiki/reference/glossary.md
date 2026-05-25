@@ -33,9 +33,9 @@ Every claim agents make carries an implicit or explicit confidence rating: high 
 
 Agents that don't belong to a single phase — they're called from multiple points or sit alongside the main pipeline. Examples: critique-partner, pm-metrics-architect, product-fingerprint-curator.
 
-## Dashboard
+## Decision Data block
 
-A static HTML file at `<project>/dashboard.html` that visually renders the current Stop Gate. Read-only by default; clickable buttons available via Queue Mode. See [Dashboard](../concepts/dashboard.html).
+The markdown rendering (insights / table / callout / metrics) the orchestrator embeds in the chat reply at every Stop Gate, between the Executive Summary stat-card and the TL;DR. Full shape spec: `DECISION_DATA_SHAPES.md`. (v5.0 — replaces the pre-v5.0 dashboard "Decision Data panel".)
 
 ## Define phase
 
@@ -96,10 +96,6 @@ A check that fires BEFORE an agent's normal intake questions. In v4.0+, the Prod
 ## PRD
 
 Product Requirements Document. Written by `prd-author` post Success-Metrics Gate, one per "in"-tagged sub-feature.
-
-## Queue Mode
-
-Optional opt-in mode where the dashboard's chip buttons become clickable. Requires the dashboard server (`python3 dashboard-server.py`) and the `/agent-harry-loop` command.
 
 ## Revise
 

@@ -62,7 +62,6 @@ Read these in order if you're new. Each one is a short page (~3 minutes).
 5. [Success-Metrics Gate](concepts/success-metrics-gate.html) — second refusal point
 6. [Product Fingerprint](concepts/product-fingerprint.html) — v4.0 visual vocabulary
 7. [Audit Ledger](concepts/audit-ledger.html) — what gets logged for every decision
-8. [Dashboard](concepts/dashboard.html) — the visual surface alongside chat
 
 (Concept pages ship in milestone M2. Until then these links may 404.)
 
@@ -112,10 +111,10 @@ Slash commands you can run directly from the Claude Code prompt.
 | Command | What it does |
 |---|---|
 | [`/audit-pipeline`](commands/audit-pipeline.html) | Check whether the Research-First + Success-Metrics gates are clear before starting design work |
-| [`/agent-harry-loop`](commands/agent-harry-loop.html) | Run a click-driven polling loop with the dashboard server (optional, advanced) |
 | [`/agent-harry-notion-sync`](commands/agent-harry-notion-sync.html) | Push confirmed artifacts to your Notion workspace |
 | [`/agent-harry-audit`](commands/agent-harry-audit.html) | Render the audit ledger as a readable markdown timeline |
 | [`/agent-harry-fingerprint`](commands/agent-harry-fingerprint.html) (v4.0) | Create or refresh the project's `product-fingerprint.md` |
+| [`/agent-harry-cost`](commands/agent-harry-cost.html) (v4.1) | Report measured cost from the audit ledger by model / agent / session |
 
 (Command pages ship in milestone M4.)
 

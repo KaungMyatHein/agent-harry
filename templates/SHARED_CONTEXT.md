@@ -182,46 +182,13 @@ There is no implicit cap on revision rounds. The user decides when an output is 
 - Asking only "approve?" without showing the TL;DR — the user shouldn't have to open the handoff file to decide
 - Treating `revise` as `cancel` — revise means iterate on this step, not skip it
 
-### Dashboard companion (v3.1, enriched in v3.3)
+### Decision Data in chat (v5.0 — replaces pre-v5.0 dashboard companion)
 
-In addition to the chat TL;DR, the orchestrator writes `<project-root>/dashboard.html` at every Stop Gate. This is a static, self-contained HTML file that renders the same Executive Summary visually — designed to be viewed in the Claude Preview MCP panel.
+In addition to the chat TL;DR, at every Stop Gate the orchestrator renders the just-completed sub-agent's `decisionData` as **markdown in the chat reply**, between the Executive Summary stat-card and the TL;DR. This is where the actual decision-critical content surfaces — scoring tables, research insights with evidence, the bet, beachhead + named accounts, measurement plan layers — so the user can make a `y / revise / pivot` decision without opening the MD handoff.
 
-**v3.3 adds a Decision Data panel** between the stat cells and the TL;DR. This is where the actual decision-critical content lives — scoring tables, research insights with evidence, the bet, beachhead + named accounts, measurement plan layers. Before v3.3 this content lived only in the MD handoff files in `./design-workspace/`. Now it surfaces inline so the user can make a `y / revise / pivot` decision without opening the MD.
+Full shape spec: `DECISION_DATA_SHAPES.md` (same project root). The orchestrator's `## Decision Data Rendering` section in `orchestrator.md` is the canonical implementation reference.
 
-Architecture:
-
-- **Read-only** — command chips show the literal text the user types in chat (`y / revise <delta> / pivot — <X> / grill me / cancel`). Clicks do nothing; chat is still where the user inputs decisions. Silence is still not consent.
-- **Regenerated at every Stop Gate** — no JavaScript, no polling, no server. Each Stop Gate, orchestrator overwrites the file with current state baked in as inline HTML. Auto-refreshes in the preview panel.
-- **Layout** — top bar with project + cost meter (load-bearing — turns yellow at $1.50, red at $2.50) · compressed history breadcrumb · BIG NOW card (status, agent, mode, phase pill, 4 stat cells, 3-bullet TL;DR, next-move suggestion, 5 command chips) · suggested-next strip · footer.
-- **Single-focus per turn** — matches the Alignment Loop philosophy. One thing is happening NOW; past is compressed context; future is a non-binding preview.
-- **Graceful degrade** — if the file doesn't exist (e.g. pre-v3.1 install that hasn't been refreshed), orchestrator skips the render silently and prints the TL;DR in chat as before.
-
-The dashboard does NOT replace chat. Chat is the source of truth, the audit trail, and the input surface. The dashboard is a visual surface to *read* the TL;DR more easily.
-
-### Queue Mode (v3.2 — autonomous click-driven loop)
-
-In v3.2 the dashboard goes from passive (read-only) to **interactive**. The chips are real buttons. Clicking one POSTs to a local HTTP server (`dashboard-server.py`, Python stdlib, no deps) which writes the click intent to `<project-root>/.harry-queue.json`. A new `/agent-harry-loop` slash command runs the polling loop via `ScheduleWakeup` — it reads the queue file every ~60s, and when a click arrives it dispatches to the orchestrator subagent. This delivers click-and-walk-away UX without breaking the chat-as-source-of-truth invariant (the user can still type in chat anytime; chat input takes priority).
-
-Architecture summary:
-
-| Piece | Role |
-|---|---|
-| `dashboard-server.py` | Tiny HTTP server on :3737. Serves dashboard.html. Accepts button POSTs at `/api/action`. Writes to `.harry-queue.json`. No deps; Python 3.8+ stdlib. |
-| `dashboard.html` | Now interactive: chips are `<button>` elements that POST to the server. Inline text inputs appear for `revise` and `pivot`. Connection-status indicator + toast notifications. Polls `/api/queue` every 3s to reflect queued state. |
-| `.harry-queue.json` | Queue state file. Schema: `{queued_action, last_action_processed, poll_count, max_polls, session_started}`. Source of truth for the click→orchestrator handoff. |
-| `/agent-harry-loop <goal>` | Slash command that drives the polling loop. Uses `ScheduleWakeup` (only available in main-session dynamic-loop mode). Idle cycles cost ~$0.015 each, capped at 20 polls. |
-
-Setup steps for queue mode:
-
-1. `cd <project>` and start the server: `python3 dashboard-server.py`
-2. Open browser to `http://localhost:3737`
-3. Start Claude Code in the project: `claude`
-4. Invoke the loop: `/agent-harry-loop <your goal>`
-5. Click chips in the browser; chat goes mostly silent while the dashboard owns input + visual.
-
-Queue Mode is opt-in. If you don't run the server or use the slash command, Agent Harry works in chat-only mode exactly as in v3.1 — Stop Gates fire in chat, the dashboard is read-only.
-
-Stop conditions for the loop: user clicks `cancel`, idle timeout (20 polls ≈ 20 min), orchestrator returns `complete`, user types `/end-loop` in chat, or queue corruption (after one retry).
+**v5.0 removed:** the pre-v5.0 visual companion (`dashboard.html` static HTML mirror) and Queue Mode (Python server + `.harry-queue.json` click queue + `/agent-harry-loop` polling slash command). Both were never used in practice — chat is the canonical surface. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md`.
 
 ---
 
@@ -437,7 +404,7 @@ Agents NEVER fabricate context. If something isn't available in the hierarchy ab
 
 ## Audit Ledger (v3.8)
 
-Agent Harry writes an append-only audit ledger at `<project-root>/.harry-audit.jsonl`. One JSON object per line, captured at every Stop Gate and significant pipeline event. The ledger is the cross-session audit trail — chat compacts, `dashboard.html` overwrites each turn, but the ledger survives.
+Agent Harry writes an append-only audit ledger at `<project-root>/.harry-audit.jsonl`. One JSON object per line, captured at every Stop Gate and significant pipeline event. The ledger is the cross-session audit trail — chat compacts, but the ledger survives.
 
 ### File path
 
@@ -578,7 +545,7 @@ Subagent derivation rules (read from ledger / inherit from invocation prompt) ar
 ### Anti-patterns
 
 - Logging duplicate entries when both orchestrator and subagent fire at the same Stop Gate
-- Writing the ledger from inside the dashboard render (separate concerns — dashboard is visual; ledger is structured audit)
+- Writing the ledger from inside the chat Decision Data render (separate concerns — chat is the decision surface; ledger is structured audit)
 - Reading the full ledger into context at run-time — only the slash command needs to scan it, not every agent
 - Logging full long-form handoff bodies in `files_impacted` — only file paths, max 10 per entry
 
@@ -586,9 +553,9 @@ Subagent derivation rules (read from ledger / inherit from invocation prompt) ar
 
 ## Decision Data Shapes (v3.3)
 
-Every agent's handoff includes a `decisionData` structured object that the orchestrator embeds in the dashboard's Decision Data panel. **Full spec, all 4 shape types, and the per-agent shape map live in `DECISION_DATA_SHAPES.md`** (same project root). Load that file only when you're producing or embedding decisionData.
+Every agent's handoff includes a `decisionData` structured object that the orchestrator renders as markdown in chat (v5.0 — was dashboard HTML pre-v5.0). **Full spec, all 4 shape types, and the per-agent shape map live in `DECISION_DATA_SHAPES.md`** (same project root). Load that file only when you're producing or rendering decisionData.
 
-Length discipline: each agent's decisionData stays within the output caps above (max 6 insights / 4 gaps / 10 scoring rows / etc.). The panel is for headline data only; full methodology stays in the MD handoff.
+Length discipline: each agent's decisionData stays within the output caps above (max 6 insights / 4 gaps / 10 scoring rows / etc.). The block is for headline data only; full methodology stays in the MD handoff.
 
 ---
 
@@ -607,8 +574,6 @@ After confirmed artifacts exist, you can publish them to Notion via the `/agent-
 ### What does NOT get synced
 
 - Full long-form bodies of MD handoffs (they're archival; the MD files own them)
-- `.harry-queue.json` runtime state (not relevant to teammates)
-- The `dashboard.html` file (rendered visual; doesn't fit Notion's block model cleanly)
 - Critique-partner stress-test responses inline — they're folded into the artifact they critiqued, not separate pages
 
 ### Config file

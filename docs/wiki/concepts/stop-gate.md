@@ -19,8 +19,8 @@ The Stop Gate forces a beat between every step. You always see what just happene
 
 After every sub-agent finishes, you see:
 
-1. A short **Executive Summary** — a small table of stats, three bullet points, one next-step suggestion
-2. Four options (or buttons, if you're using the dashboard)
+1. A short **Executive Summary** — a small table of stats, a Decision Data block (insights / table / callout / metrics), three bullet points, one next-step suggestion
+2. Four valid responses
 3. The system stops and waits for your input
 
 It doesn't auto-proceed. Even if you're in "skip permissions" or bypass-permissions mode. The Stop Gate is product discipline, not safety wiring. Bypassing it would be a regression, not a feature.
@@ -42,8 +42,6 @@ TL;DR:
 Next: Type `y` to proceed, `revise <delta>` to refine,
       `grill me` to stress-test, or `cancel`.
 ```
-
-In the [dashboard](dashboard.html), this same content appears as a card with five clickable buttons.
 
 ## How to interact
 
@@ -81,16 +79,12 @@ The system waits. It doesn't time out. Come back tomorrow; the gate is still ope
 **Can I revise more than once?**
 Yes — no hard cap. But after 3 consecutive `revise`s the agent suggests pivoting back to an earlier step instead of iterating in place. If the layout's the problem, no amount of figma-designer revisions will fix it; you need to go back to [`lo-fi-designer`](../agents/lo-fi-designer.html).
 
-**Does the dashboard skip the gate?**
-No. The dashboard's buttons just send the same text you'd type. The gate is in chat (the source of truth). The dashboard is a visual mirror.
-
 **What if the gate refuses to show up?**
 The agent had an error before finishing. Check the audit ledger via [`/agent-harry-audit`](../commands/agent-harry-audit.html) to see the last event logged.
 
 ## Related
 
 - [Alignment Loop](alignment-loop.html) — the orchestrator philosophy this gate enforces
-- [Dashboard](dashboard.html) — visual surface where Stop Gates render as buttons
 - Every agent's "What you'll see" section under [Agents](../index.html#all-agents) shows a sample Stop Gate
 
 ---

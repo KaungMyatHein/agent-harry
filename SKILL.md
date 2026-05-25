@@ -37,35 +37,25 @@ Use when the user wants the standard system without project-specific tuning.
 
 Steps:
 1. Confirm the project root directory with the user (or use cwd if obvious)
-2. Check if `.claude/agents/`, `.claude/commands/`, `SHARED_CONTEXT.md`, `dashboard.html`, `dashboard-server.py`, or `.harry-queue.json` already exist — if yes, ask before overwriting
+2. Check if `.claude/agents/`, `.claude/commands/`, or `SHARED_CONTEXT.md` already exist — if yes, ask before overwriting
 3. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/`
 4. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/`
 5. Copy `templates/SHARED_CONTEXT.md` → `<project>/SHARED_CONTEXT.md`
 6. Copy `templates/PM_SKILLS_MAP.md` → `<project>/PM_SKILLS_MAP.md` (v3.6: lazy-loaded skill ownership map)
-7. Copy `templates/DECISION_DATA_SHAPES.md` → `<project>/DECISION_DATA_SHAPES.md` (v3.6: lazy-loaded dashboard shape spec)
+7. Copy `templates/DECISION_DATA_SHAPES.md` → `<project>/DECISION_DATA_SHAPES.md` (v3.6 / v5.0: decisionData chat-render spec)
 7.5. Copy `templates/SUBAGENT_AUDIT_PROTOCOL.md` → `<project>/SUBAGENT_AUDIT_PROTOCOL.md` (v3.8: lazy-loaded session identity + ledger append + slug derivation protocol)
-8. Copy `templates/dashboard.html` → `<project>/dashboard.html` (seeded sample; orchestrator overwrites at first Stop Gate)
-9. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (v3.2: HTTP server for click-driven mode)
-10. Copy `templates/.harry-queue.json` → `<project>/.harry-queue.json` (v3.2: queue state file)
-11. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
-12. **`.gitignore` management (v3.8)** — if `<project>/.gitignore` doesn't exist, copy `templates/.gitignore` directly. If it DOES exist, read it and check for the lines `.harry-audit.jsonl` and `.harry-queue.json`. For each missing entry, append it under a `# Agent Harry` section header (only one header per project, idempotent). Report what was added in the install confirmation.
-13. Confirm completion with file list and a quick "try this next" prompt
+8. Copy `templates/README.md` → `<project>/README.md` (or skip if README already exists)
+9. **`.gitignore` management (v3.8 / v5.0)** — if `<project>/.gitignore` doesn't exist, copy `templates/.gitignore` directly. If it DOES exist, read it and check for the line `.harry-audit.jsonl`. If missing, append it under a `# Agent Harry` section header (only one header per project, idempotent). Report what was added in the install confirmation.
+10. Confirm completion with file list and a quick "try this next" prompt
 
 Expected output:
 
 ```
-Installed 17 Agent Harry subagents + 5 slash commands + dashboard server + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + dashboard.html + .gitignore (audit-ledger entries) into <project>/
+Installed 17 Agent Harry subagents + 5 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
 
-Try this — chat-only mode (simplest):
-1. Open dashboard.html in the Claude Preview MCP panel.
-2. "/audit-pipeline" — confirm the project is set up correctly.
-3. "Use the orchestrator agent — I want to <outcome>." Stop Gates fire in chat; type y/revise/pivot/grill me/cancel to drive.
-
-Or — click-driven mode (v3.2):
-1. Terminal 1: cd into the project and run `python3 dashboard-server.py`
-2. Open http://localhost:3737 in a browser tab.
-3. Terminal 2: cd into the project and start `claude`, then run `/agent-harry-loop <your goal>`
-4. Click chips in the browser — orchestrator wakes within ~60s and processes them. Chat goes mostly silent.
+Try this:
+1. "/audit-pipeline" — confirm the project is set up correctly.
+2. "Use the orchestrator agent — I want to <outcome>." Stop Gates fire in chat; type y/revise/pivot/grill me/cancel to drive.
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
@@ -73,9 +63,8 @@ Quick reference:
 - Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect, prd-author (all gated by Research-First + Success-Metrics checks)
 - Cross-cutting: pm-metrics-architect
 - Meta: orchestrator (opus), critique-partner (opus)
-- Commands: /audit-pipeline · /agent-harry-loop · /agent-harry-notion-sync · /agent-harry-audit (v3.8)
-- Visual: dashboard.html (auto-regenerated at every Stop Gate)
-- Click-driven: dashboard-server.py + .harry-queue.json (v3.2 opt-in)
+- Commands: /audit-pipeline · /agent-harry-notion-sync · /agent-harry-audit · /agent-harry-fingerprint · /agent-harry-cost
+- Decision surface: chat (v5.0 — was dashboard.html pre-v5.0; ripped because never used)
 ```
 
 Done. Don't over-explain.
@@ -123,7 +112,7 @@ Try this:
 
 Use when the user has already installed Agent Harry into a project, then later pulled an updated version of the skill from GitHub, and now wants the project's local agents updated to the new templates.
 
-**Refresh policy: overwrite only the 10 agent files and the `.claude/commands/` folder; never touch SHARED_CONTEXT.md or README.md.** SHARED_CONTEXT is project-customized by design — users edit it. README may have project-specific additions. Agent + command files are canonical and rarely edited locally.
+**Refresh policy: overwrite only the agent files and the `.claude/commands/` folder; never touch SHARED_CONTEXT.md or README.md.** SHARED_CONTEXT is project-customized by design — users edit it. README may have project-specific additions. Agent + command files are canonical and rarely edited locally.
 
 **Important — SHARED_CONTEXT.md note:** v2 introduced the Executive Summary requirement, Token Budget rules, and Research-First Gate into `SHARED_CONTEXT.md`. If the user has an old (pre-v2) SHARED_CONTEXT.md, refresh does NOT overwrite it — but warn them so they can manually merge the new sections, or opt in to a SHARED_CONTEXT.md refresh.
 
@@ -133,25 +122,34 @@ Steps:
 2. Check that `<project>/.claude/agents/` exists. If not, this isn't an installed Agent Harry project — suggest running Install instead.
 3. **Dirty-check**: if the project is a git repo, run `git -C <project> status --porcelain .claude/agents/ .claude/commands/` to see if any agent or command files have uncommitted local modifications. If yes, list them and ask: *"These files have local edits — overwrite anyway?"* Don't proceed without confirmation.
 3.5. **Orphan-check (v3.7)**: list files in `<project>/.claude/agents/` that don't exist in `templates/.claude/agents/`. These are agents the user installed previously that have since been retired from the templates (e.g. pre-v3.7 installs have `interaction-designer.md`, retired in v3.7 in favor of `lo-fi-designer.md` + `design-engineer.md`). If orphans found, list them and ask: *"These agent files exist locally but are no longer shipped with Agent Harry — delete them? (y / n / show me what each one was for)"*. If `y`, `git rm` them (or `rm` if not git-tracked); if `n`, leave them in place (warn that orchestrator routing won't reference them but they remain invokable directly). Apply the same check to `<project>/.claude/commands/`.
+3.6. **Dashboard orphan notice (v5.0)**: if any of `<project>/dashboard.html`, `<project>/dashboard-server.py`, `<project>/.harry-queue.json`, or `<project>/.claude/commands/agent-harry-loop.md` exist, list them and print this notice (do NOT auto-delete):
+   ```
+   ⚠ v5.0 ripped the dashboard surface (never used in practice). These files are now orphaned:
+     - dashboard.html
+     - dashboard-server.py
+     - .harry-queue.json
+     - .claude/commands/agent-harry-loop.md
+   To clean up, run:
+     rm dashboard.html dashboard-server.py .harry-queue.json .claude/commands/agent-harry-loop.md
+   They will not affect the pipeline if left in place, but the orchestrator no longer writes to dashboard.html or reads .harry-queue.json. See CHANGELOG v5.0 for the full rationale.
+   ```
 4. Copy `templates/.claude/agents/*.md` → `<project>/.claude/agents/` (overwriting).
 5. Copy `templates/.claude/commands/*.md` → `<project>/.claude/commands/` (overwriting; create folder if missing).
-6. Copy `templates/dashboard.html` → `<project>/dashboard.html` (overwriting; seeds the sample state — orchestrator overwrites at the first Stop Gate).
-7. Copy `templates/dashboard-server.py` → `<project>/dashboard-server.py` (overwriting; v3.2).
-8. If `<project>/.harry-queue.json` doesn't exist, copy `templates/.harry-queue.json` → `<project>/.harry-queue.json`. If it exists, **do not overwrite** — it may contain in-flight session state.
-9. If `<project>/PM_SKILLS_MAP.md`, `<project>/DECISION_DATA_SHAPES.md`, or `<project>/SUBAGENT_AUDIT_PROTOCOL.md` don't exist (pre-v3.6 / pre-v3.8 install), copy them from `templates/`. If they exist, leave them alone unless the user opts in — they're reference appendices that users may have lightly customized.
-9.5. **Audit ledger preservation (v3.8)** — if `<project>/.harry-audit.jsonl` exists, **do not overwrite or touch it** — it's the project's append-only audit history. Don't even read it during refresh. If it doesn't exist, do nothing (the orchestrator creates it on the first Stop Gate after refresh).
-9.6. **`.gitignore` append-warn (v3.8)** — read `<project>/.gitignore` (if it exists). For each of `.harry-audit.jsonl` and `.harry-queue.json` not already listed, append under an `# Agent Harry` header (idempotent — only one header per file). If `<project>/.gitignore` doesn't exist at all, copy `templates/.gitignore`. Report what was added/created in the refresh output.
-10. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate", "Dashboard companion", "Queue Mode"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there).
-11. Do **not** touch `README.md`.
-12. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
+6. If `<project>/PM_SKILLS_MAP.md`, `<project>/DECISION_DATA_SHAPES.md`, or `<project>/SUBAGENT_AUDIT_PROTOCOL.md` don't exist (pre-v3.6 / pre-v3.8 install), copy them from `templates/`. If they exist, overwrite `DECISION_DATA_SHAPES.md` (v5.0 changed shape rendering target from HTML to chat markdown — must propagate); leave `PM_SKILLS_MAP.md` and `SUBAGENT_AUDIT_PROTOCOL.md` alone unless the user opts in (they're reference appendices users may have lightly customized).
+6.5. **Audit ledger preservation (v3.8)** — if `<project>/.harry-audit.jsonl` exists, **do not overwrite or touch it** — it's the project's append-only audit history. Don't even read it during refresh. If it doesn't exist, do nothing (the orchestrator creates it on the first Stop Gate after refresh).
+6.6. **`.gitignore` append-warn (v3.8 / v5.0)** — read `<project>/.gitignore` (if it exists). If `.harry-audit.jsonl` is not already listed, append under an `# Agent Harry` header (idempotent — only one header per file). If `<project>/.gitignore` doesn't exist at all, copy `templates/.gitignore`. The pre-v5.0 `.harry-queue.json` entry is stale (queue file gone in v5.0) — leave existing entries alone (harmless), but do not append `.harry-queue.json` to new `.gitignore` files. Report what was added/created in the refresh output.
+7. Check `<project>/SHARED_CONTEXT.md`: if it lacks the v2/v3 markers ("Executive Summary", "Token Budget", "Research-First Gate"), tell the user the sections are missing and offer two options: (a) review the diff and merge manually, or (b) explicitly opt in to a full SHARED_CONTEXT.md replace (destroys any local customizations there). Note: pre-v5.0 SHARED_CONTEXT.md sections "Dashboard companion" and "Queue Mode" are stale in v5.0 — refresh does not require their presence.
+8. Do **not** touch `README.md`.
+9. Report which files were replaced + a one-line pointer to the CHANGELOG: *"See `~/.claude/skills/agent-harry/CHANGELOG.md` for what changed in the templates."*
 
 Expected output:
 
 ```
-Refreshed 15 agent files + 4 slash commands + dashboard.html + dashboard-server.py in <project>/
-Preserved: SHARED_CONTEXT.md, README.md, .harry-queue.json (if existed), .harry-audit.jsonl (if existed)
+Refreshed <N> agent files + <M> slash commands + DECISION_DATA_SHAPES.md (v5.0 chat-render spec) in <project>/
+Preserved: SHARED_CONTEXT.md, README.md, .harry-audit.jsonl (if existed), PM_SKILLS_MAP.md, SUBAGENT_AUDIT_PROTOCOL.md
 .gitignore: <created | appended N entries | already up to date>
 Orphan check: <none | deleted N orphan files | left N orphans in place>
+Dashboard orphan notice (v5.0): <not present | listed N files for manual cleanup>
 SHARED_CONTEXT.md v2/v3 sections check: <present | MISSING — see below>
 
 Templates source: ~/.claude/skills/agent-harry/
@@ -212,24 +210,18 @@ templates/
 ├── SHARED_CONTEXT.md           ← v2: Executive Summary, Token Budget, Research-First Gate
 │                                 v2.1: Always-On Stop Gate
 │                                 v3: PM Skills Map (extracted in v3.6)
-│                                 v3.1: Dashboard companion spec
-│                                 v3.2: Queue Mode spec
 │                                 v3.3: Decision Data Shapes appendix (extracted in v3.6)
 │                                 v3.4: Success-Metrics Gate
 │                                 v3.5: Notion Sync section
 │                                 v3.6: dedup'd against orchestrator; verbose rationale moved to RATIONALE.md
+│                                 v5.0: Dashboard companion + Queue Mode sections removed
 ├── PM_SKILLS_MAP.md            ← v3.6: per-agent skill ownership (lazy-loaded)
-├── DECISION_DATA_SHAPES.md     ← v3.6: dashboard decisionData spec (lazy-loaded)
+├── DECISION_DATA_SHAPES.md     ← v3.6 spec, v5.0: chat-markdown rendering target (was dashboard HTML pre-v5.0)
 ├── SUBAGENT_AUDIT_PROTOCOL.md  ← v3.8: session identity + ledger append + slug derivation (lazy-loaded)
-├── dashboard.html              ← v3.1: visual Stop Gate companion
-│                                 v3.2: clickable buttons + inline inputs + fetch handlers
-│                                 v3.3: Decision Data panel
-├── dashboard-server.py         ← v3.2: Python stdlib HTTP server on :3737
-├── .harry-queue.json           ← v3.2: queue state file for click→orchestrator handoff
-├── .gitignore                  ← v3.8: ignores .harry-audit.jsonl + .harry-queue.json
+├── .gitignore                  ← v3.8 / v5.0: ignores .harry-audit.jsonl (pre-v5.0 also ignored .harry-queue.json — removed)
 └── .claude/
     ├── agents/
-    │   ├── orchestrator.md          (opus)   ← v3.4: enforces Research-First + Success-Metrics Gates
+    │   ├── orchestrator.md          (opus)   ← v3.4: enforces Research-First + Success-Metrics Gates; v5.0: chat-only Decision Data rendering
     │   ├── critique-partner.md      (opus)
     │   ├── discovery-researcher.md  (sonnet)
     │   ├── competitive-analyst.md   (sonnet)
@@ -247,10 +239,10 @@ templates/
     │   └── product-fingerprint-curator.md (sonnet) ← v4.0: project-level visual + composition fingerprint from 3–7 exciting Figma frames
     └── commands/
         ├── audit-pipeline.md              ← /audit-pipeline — Research-First + Success-Metrics gates
-        ├── agent-harry-loop.md            ← /agent-harry-loop — v3.2 click-driven polling loop
         ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
         ├── agent-harry-audit.md           ← /agent-harry-audit — v3.8 render audit ledger as timeline
-        └── agent-harry-fingerprint.md     ← /agent-harry-fingerprint — v4.0 create or refresh product-fingerprint.md
+        ├── agent-harry-fingerprint.md     ← /agent-harry-fingerprint — v4.0 create or refresh product-fingerprint.md
+        └── agent-harry-cost.md            ← /agent-harry-cost — v4.1 measured cost report
 ```
 
 These are the source of truth. Don't regenerate — copy then patch.
@@ -262,6 +254,8 @@ These are the source of truth. Don't regenerate — copy then patch.
 **v3.4 dual hard gates:** Research-First Gate blocks Deliver until Discovery/Define exist. Success-Metrics Gate blocks Deliver until pm-metrics-architect has run AND been confirmed. Same Hybrid pattern — strict by default, explicit opt-out phrase.
 
 **v3.5 post-Deliver:** Once Success-Metrics confirmed, `prd-author` (new sonnet agent) generates one PRD per "in"-tagged sub-feature. `/agent-harry-notion-sync` (new slash command) publishes confirmed artifacts to Notion as a structured workspace.
+
+**v5.0 chat-only decision surface:** Removed `dashboard.html`, `dashboard-server.py`, `.harry-queue.json`, `/agent-harry-loop`. Decision Data renders as markdown in chat at every Stop Gate. The dashboard surface was never used in practice; chat is canonical. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md`.
 
 ---
 

@@ -31,10 +31,6 @@ See [Research-First Gate](../concepts/research-first-gate.html) for details.
 
 Same shape as Research-First. Either run [`pm-metrics-architect`](../agents/pm-metrics-architect.html) or use the explicit opt-out: "I have metrics already, skip the confirmation."
 
-## The dashboard doesn't show the latest state
-
-The dashboard is regenerated server-side after every Stop Gate. Refresh the browser tab to see the latest. If it still shows stale state, check that the agent that just ran actually completed (the orchestrator only regenerates the dashboard on completion). Look at the chat for errors.
-
 ## Figma agents fail with "MCP not connected"
 
 [`figma-designer`](../agents/figma-designer.html), [`product-fingerprint-curator`](../agents/product-fingerprint-curator.html), and parts of [`lo-fi-designer`](../agents/lo-fi-designer.html) need Figma MCP. Set it up via Figma's MCP guide, restart Claude Code, retry.

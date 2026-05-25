@@ -1,8 +1,32 @@
 # DECISION_DATA_SHAPES.md
 
-Every agent's handoff includes a `decisionData` structured object that the orchestrator embeds in the dashboard's Decision Data panel. The shape depends on the agent. Four shape variants are defined here.
+Every agent's handoff includes a `decisionData` structured object that the orchestrator renders as **markdown in the chat reply** at every Stop Gate (v5.0 — was dashboard HTML pre-v5.0). The shape depends on the agent. Four shape variants are defined here.
 
-This file is loaded by the orchestrator at dashboard-render time and by agents that need to confirm their own shape. Agents that don't render the dashboard don't need to load it.
+This file is loaded by the orchestrator at every Stop Gate render and by agents that need to confirm their own shape. The orchestrator's `## Decision Data Rendering` section in `orchestrator.md` specifies how each shape maps to chat markdown.
+
+## Markup convention in string fields (v5.0)
+
+The `text`, `evidence`, `quote`, `meta`, and table cell `html` fields support a **minimal HTML subset** that the orchestrator translates to chat markdown at render time:
+
+| HTML in the field | Renders in chat as |
+|---|---|
+| `<strong>X</strong>` | `**X**` |
+| `<em>X</em>` | `*X*` |
+| `<code>X</code>` | `` `X` `` |
+| `<br>` | newline (`\n`) |
+| `<a href="URL">X</a>` | `[X](URL)` |
+
+Anything else gets stripped (text content kept, tags dropped). Sub-agents may also emit native markdown directly — it passes through unchanged. The HTML subset is kept as a back-compat shim for pre-v5.0 agent outputs.
+
+Inline status indicators that pre-v5.0 used CSS span classes now render as text decorations:
+
+| Pre-v5.0 (CSS) | v5.0 (markdown/unicode) |
+|---|---|
+| `<span class="delta-up">↑</span>` | `↑` (kept as unicode) |
+| `<span class="delta-down">↓</span>` | `↓` (kept as unicode) |
+| `<span class="pill-in">in</span>` | `` `in` `` |
+| `<span class="pill-out">out</span>` | `` `out` `` |
+| `<span class="pill-open">open</span>` | `` `open` `` |
 
 ## Type 1 — `insights` (used by: discovery-researcher, ideation-facilitator, critique-partner)
 
@@ -11,7 +35,7 @@ Numbered list of decision-critical findings with evidence and per-item confidenc
 ```yaml
 decisionData:
   type: insights
-  label: "Top 5 insights · with evidence + confidence"  # one-line section heading
+  label: "Top 5 insights · with evidence + confidence"
   items:
     - text: "<strong>Cart abandonment peaks at the verify-phone step</strong>"
       evidence: "\"I gave up because the SMS never came\" — 6/12 interviews · GA4 funnel drop 41%"
@@ -22,9 +46,20 @@ decisionData:
     # Max 5 items per insights panel. Trim aggressively.
 ```
 
+Chat-rendered output:
+
+```markdown
+**Decision Data — Top 5 insights · with evidence + confidence**
+
+1. **Cart abandonment peaks at the verify-phone step**
+   _Evidence:_ "I gave up because the SMS never came" — 6/12 interviews · GA4 funnel drop 41% · _Confidence:_ `high`
+2. **...**
+   _Evidence:_ ... · _Confidence:_ `medium`
+```
+
 ## Type 2 — `table` (used by: feature-prioritizer, competitive-analyst)
 
-Structured comparison/scoring table. Use for any data where rows × columns is the natural shape.
+Structured comparison/scoring table.
 
 ```yaml
 decisionData:
@@ -32,7 +67,7 @@ decisionData:
   label: "Re-scored backlog · top 6 with deltas + MVP call"
   cols:
     - { label: "Feature" }
-    - { label: "Reach",  num: true }   # num: true → right-aligned, monospace
+    - { label: "Reach",  num: true }
     - { label: "Impact", num: true }
     - { label: "Effort", num: true }
     - { label: "RICE",   num: true }
@@ -43,31 +78,54 @@ decisionData:
         - { num: true, html: "9" }
         - { num: true, html: "8" }
         - { num: true, html: "3" }
-        - { num: true, html: "76 <span class=\"delta-up\">↑</span>" }
-        - { html: "<span class=\"pill-in\">in</span>" }
-    - dropped: true                    # dropped: true → muted text + strikethrough label
+        - { num: true, html: "76 ↑" }
+        - { html: "`in`" }
+    - dropped: true
       cells:
-        - { html: "Wishlist sync", cls: "label" }
-        - { num: true, html: "0.4 <span class=\"delta-down\">↓</span>" }
+        - { html: "~~Wishlist sync~~" }
+        - { num: true, html: "0.4 ↓" }
         # ...
 ```
 
-Inline span classes available: `.delta-up` (green ↑), `.delta-down` (red ↓), `.pill-in` (green "in"), `.pill-out` (gray "out"), `.pill-open` (orange "open"). Max 10 rows per scoring panel.
+Chat-rendered output:
+
+```markdown
+**Decision Data — Re-scored backlog · top 6 with deltas + MVP call**
+
+| Feature | Reach | Impact | Effort | RICE | MVP |
+|---|---:|---:|---:|---:|---|
+| **Guest checkout** | 9 | 8 | 3 | 76 ↑ | `in` |
+| ~~Wishlist sync~~ | … | … | … | 0.4 ↓ | `out` |
+```
+
+Numeric columns use `---:` separators (right-aligned). Max 10 rows per scoring panel.
 
 ## Type 3 — `callout` (used by: product-positioner, pm-strategist, pm-launch-architect)
 
-Single highlighted quote with supporting context. Use for strategic decisions where ONE sentence carries the whole bet, plus elaborate underneath.
+Single highlighted quote with supporting context.
 
 ```yaml
 decisionData:
   type: callout
-  flavor: launch   # optional — "launch" uses orange palette instead of strategist cyan
+  flavor: launch   # optional — "launch" prepends 🎯 to the headline in chat
   label: "The bet · one sentence + falsification + tradeoffs"
   quote: 'We win by being the <em>fastest</em> mobile checkout in Southeast Asia for cash-on-delivery merchants — not by feature breadth.'
   meta: '<strong>Falsifiable:</strong> if 3-tap doesn\'t lift conversion ≥18% by week 6, the bet fails.<br><br><strong>Tradeoffs we accept:</strong> ...'
 ```
 
-The `<em>` in the quote gets accent color. The `meta` field is freeform HTML — usually 2–4 short paragraphs.
+Chat-rendered output:
+
+```markdown
+**Decision Data — The bet · one sentence + falsification + tradeoffs**
+
+> 🎯 **We win by being the *fastest* mobile checkout in Southeast Asia for cash-on-delivery merchants — not by feature breadth.**
+>
+> **Falsifiable:** if 3-tap doesn't lift conversion ≥18% by week 6, the bet fails.
+>
+> **Tradeoffs we accept:** …
+```
+
+For `flavor: launch` (pm-launch-architect's beachhead callout), the headline gets a `🎯 ` prefix. No other flavor markers — keep chat clean.
 
 ## Type 4 — `metrics` (used by: pm-metrics-architect)
 
@@ -79,17 +137,27 @@ decisionData:
   label: "4-layer measurement plan · north-star · input · health · counter"
   layers:
     - layer: "North-star"
-      layerKey: "northstar"     # optional class for color emphasis
       title: "Completed checkouts per active merchant per day"
       small: "ONE number · falsifiable · tracks what users get, not what we ship"
     - layer: "Input × 3"
       title: "New activations / day · Sessions per merchant · Cart conversion %"
       small: "Variables the team can move weekly"
     - layer: "Counter × 1"
-      layerKey: "counter"
       title: "Support tickets per merchant per week"
       small: "Catches winning the wrong way"
 ```
+
+Chat-rendered output:
+
+```markdown
+**Decision Data — 4-layer measurement plan · north-star · input · health · counter**
+
+- **North-star:** Completed checkouts per active merchant per day _(ONE number · falsifiable · tracks what users get, not what we ship)_
+- **Input × 3:** New activations / day · Sessions per merchant · Cart conversion % _(Variables the team can move weekly)_
+- **Counter × 1:** Support tickets per merchant per week _(Catches winning the wrong way)_
+```
+
+Group by layer; the `small` description renders in italics in parentheses. The pre-v5.0 `layerKey` field (for CSS class coloring) is ignored in chat rendering.
 
 ## Per-Agent Shape Map
 
@@ -108,11 +176,11 @@ decisionData:
 | `pm-launch-architect` | callout (flavor: launch) | Beachhead + ICP · meta has named accounts + motion + kill-switch |
 | `pm-metrics-architect` | metrics | 4 layers — north-star / input / health / counter |
 | `critique-partner` | insights | Concerns (max 5); conf chip carries severity |
-| `orchestrator` | (skip) | Orchestrator itself never produces decisionData — it embeds what the just-completed sub-agent produced |
+| `orchestrator` | (skip) | Orchestrator itself never produces decisionData — it renders what the just-completed sub-agent produced |
 
 ## Field-to-Shape Mapping for v3.7 Agents
 
-The v3.7 split agents (`lo-fi-designer`, `design-engineer`) carry richer semantic data than the 4 existing shape types natively model. Rather than introducing a 5th shape type (which would require dashboard.html render changes), we map the richer fields into the existing `insights` / `table` shapes' free-form slots.
+The v3.7 split agents (`lo-fi-designer`, `design-engineer`) carry richer semantic data than the 4 existing shape types natively model. Rather than introducing a 5th shape type, we map the richer fields into the existing `insights` / `table` shapes' free-form slots.
 
 ### `lo-fi-designer` → `insights` shape (max 3 items)
 
@@ -132,8 +200,15 @@ Encoding for richer fields:
 Example item:
 ```yaml
 - text: "<strong>Primary</strong> — sidebar + tabbed main + persistent command bar · 5 screens"
-  evidence: "Uses 8 DS (TopBar, Sidebar, Tabs, Card, ...), 2 new (CommandPalette, FlowProgress) · Figjam"
+  evidence: "Uses 8 DS (TopBar, Sidebar, Tabs, Card, ...), 2 new (CommandPalette, FlowProgress) · <a href=\"https://figma.com/...\">Figjam</a>"
   conf: high
+```
+
+Renders in chat as:
+
+```markdown
+1. **Primary** — sidebar + tabbed main + persistent command bar · 5 screens
+   _Evidence:_ Uses 8 DS (TopBar, Sidebar, Tabs, Card, ...), 2 new (CommandPalette, FlowProgress) · [Figjam](https://figma.com/...) · _Confidence:_ `high`
 ```
 
 Long-form data (full ASCII layouts, full component tables, per-layout rationale) lives in the handoff body — the panel surfaces only the headline data.
@@ -173,8 +248,8 @@ decisionData:
         - { html: "<code>prototypes/checkout/page.tsx</code>" }
 ```
 
-Cumulative cost is NOT in the panel — it's surfaced separately via the dashboard's top-bar cost meter and via `/agent-harry-audit`'s session totals.
+Cumulative cost is NOT in the Decision Data block — it's surfaced separately via `/agent-harry-cost` and `/agent-harry-audit` session totals.
 
 ## Length Discipline
 
-Each agent's decisionData stays within the output caps in `SHARED_CONTEXT.md` Token Budget Rules (max 6 insights / 4 gaps / 10 scoring rows / etc.). The Decision Data panel is for the *headline* data the user needs to decide; full methodology, sample bias audit, dropped ideas, etc. still live in the MD handoff file. The dashboard's job is to make the `y / revise / pivot` choice possible without opening MD; the MD is the audit trail.
+Each agent's decisionData stays within the output caps in `SHARED_CONTEXT.md` Token Budget Rules (max 6 insights / 4 gaps / 10 scoring rows / etc.). The Decision Data block is for the *headline* data the user needs to decide; full methodology, sample bias audit, dropped ideas, etc. still live in the MD handoff file. The block's job is to make the `y / revise / pivot` choice possible without opening MD; the MD is the audit trail.
