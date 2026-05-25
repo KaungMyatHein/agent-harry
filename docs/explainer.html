@@ -1,0 +1,1589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Harry — How the team works</title>
+  <meta name="description" content="Interactive family tree of the 18 Agent Harry sub-agents. Pick a use case — the layout changes to match how the team actually runs.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><g fill='%230066cc'><rect x='8' y='1' width='1' height='2'/><rect x='7' y='3' width='3' height='2'/><rect x='6' y='5' width='5' height='1'/><rect x='5' y='6' width='3' height='1'/><rect x='9' y='6' width='3' height='1'/><rect x='2' y='7' width='5' height='1'/><rect x='10' y='7' width='5' height='1'/><rect x='5' y='8' width='3' height='1'/><rect x='9' y='8' width='3' height='1'/><rect x='6' y='9' width='5' height='1'/><rect x='7' y='10' width='3' height='2'/><rect x='8' y='12' width='1' height='2'/></g><g fill='%23ffd54f'><rect x='8' y='6' width='1' height='1'/><rect x='7' y='7' width='3' height='1'/><rect x='8' y='8' width='1' height='1'/></g></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --ink-70: #444446;
+      --ink-50: #7a7a7a;
+      --ink-30: #b8b8bc;
+      --bg: #ffffff;
+      --parchment: #f5f5f7;
+      --pearl: #fafafc;
+      --hairline: #e5e5e8;
+      --divider: #f0f0f0;
+      --primary: #0066cc;
+
+      --c-orchestrator: #0066cc;
+      --c-critique: #dc2626;
+      --c-fingerprint: #7c3aed;
+      --c-bootstrapper: #6366f1;
+      --c-discovery: #5e81ac;
+      --c-competitive: #2c7d6f;
+      --c-ideation: #8b5cf6;
+      --c-positioner: #d97706;
+      --c-prioritizer: #b45309;
+      --c-strategist: #0891b2;
+      --c-prd: #1e3a8a;
+      --c-lofi: #06b6d4;
+      --c-figma: #a855f7;
+      --c-engineer: #ec4899;
+      --c-usability: #16a34a;
+      --c-handoff: #525252;
+      --c-launch: #c2410c;
+      --c-metrics: #65a30d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--bg);
+      letter-spacing: -0.011em;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .display {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.024em;
+    }
+    .mono { font-family: ui-monospace, "SF Mono", "Menlo", monospace; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Nav (matches index.html) ---------- */
+    .nav {
+      position: sticky;
+      top: 12px;
+      z-index: 50;
+      padding: 0 16px;
+      pointer-events: none;
+    }
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 7px 8px 7px 18px;
+      background: rgba(255, 255, 255, 0.78);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 9999px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 14px 36px -22px rgba(0, 0, 0, 0.16),
+        0 2px 8px -4px rgba(0, 0, 0, 0.05);
+      font-size: 13px;
+    }
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .nav-brand-mark {
+      width: 26px; height: 26px;
+      shape-rendering: crispEdges;
+      image-rendering: pixelated;
+    }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 22px;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav ul a { color: var(--ink-70); opacity: 0.86; }
+    .nav ul a:hover { opacity: 1; }
+    .nav ul a.active { color: var(--primary); opacity: 1; font-weight: 500; }
+    .gh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--ink);
+      color: #fff !important;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    @media (max-width: 720px) {
+      .nav ul { display: none; }
+    }
+
+    /* ---------- Header ---------- */
+    header.page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 64px 28px 24px;
+    }
+    header.page .eyebrow {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      margin-bottom: 14px;
+    }
+    header.page h1 {
+      font-size: clamp(36px, 5vw, 60px);
+      line-height: 1.05;
+      letter-spacing: -0.032em;
+      max-width: 900px;
+    }
+    header.page h1 em {
+      font-style: italic;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    header.page p.lede {
+      font-size: 18px;
+      color: var(--ink-70);
+      margin-top: 18px;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    /* ---------- Mode picker ---------- */
+    .modes {
+      max-width: 1080px;
+      margin: 32px auto 0;
+      padding: 0 28px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mode {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-70);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .mode:hover {
+      border-color: var(--ink-30);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+    .mode.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+      box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
+    }
+    .mode-num {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      opacity: 0.6;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- Stage ---------- */
+    .stage-wrap {
+      max-width: 1080px;
+      margin: 24px auto 0;
+      padding: 0 28px;
+    }
+    .stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1280 / 1120;
+      background: #fafafc;
+      border: 1px solid var(--hairline);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 30px 60px -40px rgba(0, 0, 0, 0.15);
+    }
+    /* Phase swim-lane bands (rendered behind everything) */
+    .lane {
+      position: absolute;
+      left: 0; right: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 0.5s ease;
+    }
+    .lane-fill {
+      position: absolute;
+      inset: 0;
+      background: var(--lane-c, transparent);
+      opacity: 0.06;
+    }
+    .lane-header {
+      position: absolute;
+      top: 12px;
+      left: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--lane-c, var(--ink));
+    }
+    .lane-num {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+    .lane-name {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+    }
+    .lane-rule {
+      position: absolute;
+      left: 0; right: 0;
+      top: 0;
+      height: 1px;
+      background: color-mix(in srgb, var(--lane-c, var(--ink)) 28%, transparent);
+    }
+    /* Always-on sidebar rail */
+    .rail {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 280px;
+      bottom: 24px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px dashed var(--ink-30);
+      border-radius: 14px;
+      padding: 14px 14px 18px;
+      z-index: 1;
+      transition: opacity 0.5s ease;
+    }
+    .rail-label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .rail-label::before {
+      content: "";
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ink-50);
+      animation: pulse 1.8s infinite;
+      flex-shrink: 0;
+    }
+    /* Sidebar nodes — slightly smaller so long labels fit the rail box */
+    .node.in-rail .node-body {
+      font-size: 11.5px;
+      padding: 6px 11px 6px 6px;
+      max-width: 240px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+    .node.in-rail .node-dot { width: 11px; height: 11px; }
+    .node.in-rail .node-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+    .stage-meta {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .stage-meta strong { color: var(--ink); font-weight: 600; }
+    .stage-legend {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--ink-50);
+      font-family: ui-monospace, "SF Mono", monospace;
+      letter-spacing: 0.8px;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .stage-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend-line { display: inline-block; width: 18px; height: 1px; background: var(--ink-50); }
+    .legend-line.dashed { background-image: linear-gradient(to right, var(--ink-50) 50%, transparent 50%); background-size: 4px 1px; background-repeat: repeat-x; }
+
+    .svg-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* ---------- Nodes ---------- */
+    .node {
+      position: absolute;
+      transition:
+        left 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+        top 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 0.5s ease,
+        transform 0.4s ease;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: 2;
+    }
+    .node-body {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px 7px 7px;
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 6px 14px -8px rgba(0, 0, 0, 0.18);
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .node:hover .node-body {
+      transform: translateY(-2px);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.8) inset,
+        0 10px 20px -8px rgba(0, 0, 0, 0.22);
+      border-color: var(--node-c, var(--ink-30));
+    }
+    .node.selected .node-body {
+      background: var(--node-c);
+      color: #fff;
+      border-color: var(--node-c);
+      box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--node-c) 18%, transparent),
+        0 12px 22px -8px rgba(0, 0, 0, 0.28);
+    }
+    .node.selected .node-dot {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+    }
+    .node.dim { opacity: 0.22; transform: translate(-50%, -50%) scale(0.92); }
+    .node.dim:hover { opacity: 0.7; }
+    .node-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--node-c);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-c) 22%, transparent);
+    }
+    .node.featured .node-body {
+      padding: 10px 16px 10px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      background: linear-gradient(180deg, #fff, #f7f7fa);
+      border-color: color-mix(in srgb, var(--node-c) 25%, var(--hairline));
+    }
+    .node.featured .node-dot { width: 18px; height: 18px; }
+
+    /* Selected wins over featured — keep the colored fill + white text */
+    .node.selected.featured .node-body {
+      background: var(--node-c);
+      color: #fff;
+      border-color: var(--node-c);
+    }
+
+    /* Gate */
+    .gate {
+      position: absolute;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border: 1.5px solid var(--ink);
+      transition: left 0.7s cubic-bezier(0.65, 0, 0.35, 1), top 0.7s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+      z-index: 3;
+      cursor: pointer;
+    }
+    .gate::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      background: var(--ink);
+    }
+    .gate-label {
+      position: absolute;
+      transform: translate(-50%, 0);
+      margin-top: 22px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--ink-70);
+      white-space: nowrap;
+      transition: left 0.7s cubic-bezier(0.65, 0, 0.35, 1), top 0.7s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 3;
+      background: rgba(250, 250, 252, 0.94);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .phase-label {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      transition: all 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Edges */
+    .edge {
+      fill: none;
+      stroke: var(--ink-30);
+      stroke-width: 1.25;
+      transition: opacity 0.5s ease, stroke 0.4s ease, stroke-width 0.3s ease;
+    }
+    .edge.dashed { stroke-dasharray: 4 4; }
+    .edge.faint { opacity: 0.3; }
+    .edge.highlight { stroke: var(--primary); stroke-width: 2; opacity: 1; }
+    /* Incoming edges to the selected agent are hidden to keep "what does this send out?" obvious */
+    .edge.hidden { opacity: 0; pointer-events: none; }
+
+    /* ---------- Detail panel ---------- */
+    .detail {
+      max-width: 1080px;
+      margin: 28px auto 96px;
+      padding: 0 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 28px;
+    }
+    @media (max-width: 880px) {
+      .detail { grid-template-columns: 1fr; }
+    }
+    .detail-main {
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 20px;
+      padding: 32px 36px;
+    }
+    .detail-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .detail-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      margin-bottom: 10px;
+    }
+    .detail-eyebrow .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--c-orchestrator);
+    }
+    .detail h2 {
+      font-size: 32px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .detail .role {
+      font-size: 15px;
+      color: var(--ink-70);
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+    .detail .short {
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--ink-70);
+    }
+    .detail-section {
+      margin-top: 24px;
+      padding-top: 22px;
+      border-top: 1px solid var(--divider);
+    }
+    .detail-section h3 {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .conn-list { display: flex; flex-direction: column; gap: 0; }
+    .conn-card {
+      display: block;
+      padding: 12px 2px 14px 2px;
+      background: transparent;
+      border: none;
+      border-top: 1px solid var(--divider);
+      border-radius: 0;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .conn-card:first-child { border-top: none; padding-top: 4px; }
+    .conn-card:hover { transform: translateX(3px); }
+    .conn-card:hover .conn-card-name { color: var(--primary); }
+    .conn-card-head {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      margin-bottom: 4px;
+    }
+    .conn-card-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--chip-c, var(--ink-30));
+      flex-shrink: 0;
+      transform: translateY(2px);
+    }
+    .conn-card-arrow {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      color: var(--ink-50);
+      flex-shrink: 0;
+      letter-spacing: 0.4px;
+    }
+    .conn-card-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.011em;
+      transition: color 0.15s ease;
+    }
+    .conn-card-flag {
+      margin-left: auto;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+    .conn-card-flag.on  { color: var(--primary); }
+    .conn-card-flag.off { color: var(--ink-30); }
+    .conn-card-artifact {
+      font-size: 12.5px;
+      color: var(--ink-50);
+      line-height: 1.5;
+      padding-left: 17px;
+    }
+    .conn-empty { font-size: 13px; color: var(--ink-50); font-style: italic; }
+
+    .gate-card {
+      background: var(--ink);
+      color: #fff;
+      border-radius: 20px;
+      padding: 24px 26px;
+    }
+    .gate-card .label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #2997ff;
+      margin-bottom: 10px;
+    }
+    .gate-card h3 {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 19px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      letter-spacing: -0.018em;
+    }
+    .gate-card p {
+      font-size: 13px;
+      color: #cccccc;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .gate-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      align-items: center;
+    }
+    .gate-actions code {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: #fff;
+    }
+    .gate-actions code.green { color: #a3e635; border-color: rgba(163,230,53,0.4); }
+    .gate-actions code.red { color: #ff8a8a; border-color: rgba(255,138,138,0.4); }
+    .gate-actions .note { color: #999; font-size: 11px; padding: 0 8px 0 2px; }
+
+    .hint-card {
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 20px;
+      padding: 22px 24px;
+    }
+    .hint-card .label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      margin-bottom: 8px;
+    }
+    .hint-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .hint-card p {
+      font-size: 13px;
+      color: var(--ink-70);
+      line-height: 1.55;
+    }
+
+    footer.page {
+      border-top: 1px solid var(--hairline);
+      padding: 32px 28px;
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--ink-50);
+    }
+    footer.page a { text-decoration: underline; text-decoration-color: var(--ink-30); }
+
+    @media (max-width: 720px) {
+      header.page { padding: 40px 20px 16px; }
+      .modes { padding: 0 20px; }
+      .stage-wrap { padding: 0 20px; }
+      .detail { padding: 0 20px; margin-bottom: 60px; }
+      .detail-main { padding: 24px 22px; }
+      .node-body { font-size: 11px; padding: 5px 9px 5px 5px; }
+      .node-dot { width: 11px; height: 11px; }
+      .stage-legend { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="./">
+        <svg class="nav-brand-mark" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g fill="#0066cc">
+            <rect x="8" y="1" width="1" height="2"/><rect x="7" y="3" width="3" height="2"/><rect x="6" y="5" width="5" height="1"/>
+            <rect x="5" y="6" width="3" height="1"/><rect x="9" y="6" width="3" height="1"/>
+            <rect x="2" y="7" width="5" height="1"/><rect x="10" y="7" width="5" height="1"/>
+            <rect x="5" y="8" width="3" height="1"/><rect x="9" y="8" width="3" height="1"/>
+            <rect x="6" y="9" width="5" height="1"/><rect x="7" y="10" width="3" height="2"/><rect x="8" y="12" width="1" height="2"/>
+          </g>
+          <g fill="#ffd54f"><rect x="8" y="6" width="1" height="1"/><rect x="7" y="7" width="3" height="1"/><rect x="8" y="8" width="1" height="1"/></g>
+        </svg>
+        Agent Harry
+      </a>
+      <ul>
+        <li><a href="./#agents">Agents</a></li>
+        <li><a href="./#flow">Flow</a></li>
+        <li><a href="./explainer.html" class="active">How it works</a></li>
+        <li><a href="./wiki/">Wiki</a></li>
+        <li><a href="./#install">Install</a></li>
+      </ul>
+      <a class="gh-btn" href="https://github.com/KaungMyatHein/agent-harry">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="page">
+    <div class="eyebrow">How the team works</div>
+    <h1>An <em>interactive family tree</em> of the agents — pick a use case and the team rearranges.</h1>
+    <p class="lede">
+      Each of the 18 sub-agents has one job and a fixed place in the lifecycle. But the shape of the team changes depending on what you're running: a fresh feature pulls in everyone, an audit only needs a tight cluster, a handoff is a straight assembly line. Click any node to see what it does, who it talks to, and the Stop Gate that follows.
+    </p>
+  </header>
+
+  <div class="modes" id="modes">
+    <button class="mode active" data-mode="bootstrap">
+      <span class="mode-num">01</span> New feature — full pipeline
+    </button>
+    <button class="mode" data-mode="audit">
+      <span class="mode-num">02</span> Audit an existing design
+    </button>
+    <button class="mode" data-mode="define">
+      <span class="mode-num">03</span> Sharpen the bet
+    </button>
+    <button class="mode" data-mode="handoff">
+      <span class="mode-num">04</span> Spec for engineering
+    </button>
+  </div>
+
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="stage-meta" id="stageMeta"><strong>Bootstrap</strong> · waterfall family tree</div>
+      <div class="stage-legend">
+        <span><i class="legend-line"></i> handoff</span>
+        <span><i class="legend-line dashed"></i> cross-cutting</span>
+        <span>◆ stop gate</span>
+      </div>
+      <svg class="svg-canvas" id="edges" viewBox="0 0 1280 1120" preserveAspectRatio="none">
+        <defs>
+          <!-- Explicit fill colors — context-stroke isn't supported everywhere -->
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+          </marker>
+          <marker id="arrow-hi" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0066cc"/>
+          </marker>
+          <marker id="arrow-dashed" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#aaa"/>
+          </marker>
+          <marker id="arrow-dashed-hi" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0066cc"/>
+          </marker>
+        </defs>
+        <g id="edge-group"></g>
+      </svg>
+    </div>
+  </div>
+
+  <section class="detail">
+    <div class="detail-main" id="detail"></div>
+    <aside class="detail-aside">
+      <div class="gate-card" id="gateCard"></div>
+      <div class="hint-card" id="hintCard"></div>
+    </aside>
+  </section>
+
+  <footer class="page">
+    <span>Agent Harry · v5.0 · 18 sub-agents</span>
+    <span><a href="./">Back to home</a> · <a href="./wiki/">Wiki</a></span>
+  </footer>
+
+  <script>
+    const AGENTS = {
+      orchestrator: {
+        name: "Orchestrator", phase: "Meta · Conductor", color: "var(--c-orchestrator)",
+        role: "Calm strategist.",
+        short: "Decomposes the goal, sequences sub-agents, inserts Stop Gates between phases, and synthesizes the handoffs into a summary you can act on.",
+        upstream: [],
+        downstream: ["discovery-researcher","competitive-analyst","ideation-facilitator","product-positioner","feature-prioritizer","pm-strategist","prd-author","lo-fi-designer","figma-designer","design-engineer","usability-tester","handoff-engineer","pm-launch-architect","pm-metrics-architect"],
+      },
+      "critique-partner": {
+        name: "Critique Partner", phase: "Cross-cutting · Always-on", color: "var(--c-critique)",
+        role: "The contrarian — devil's advocate.",
+        short: "Reviews any phase output. Surfaces weak reasoning, untested assumptions, and missing tradeoffs before they ship. Never asks 'what do you want?' — always proposes a sharper alternative.",
+        upstream: ["any agent"], downstream: ["orchestrator"],
+      },
+      "product-fingerprint-curator": {
+        name: "Product Fingerprint Curator", phase: "Cross-cutting · v4.0 setup", color: "var(--c-fingerprint)",
+        role: "Visual-vocabulary archivist.",
+        short: "One-time setup per project. Distills 3–7 designer-picked Figma frames into the project's visual language, composition patterns, and anti-patterns. Every Deliver agent reads from it.",
+        upstream: ["designer manual pick"],
+        downstream: ["lo-fi-designer","figma-designer","design-engineer","handoff-engineer"],
+      },
+      "figma-component-bootstrapper": {
+        name: "Figma Component Bootstrapper", phase: "Cross-cutting · v4.2 setup", color: "var(--c-bootstrapper)",
+        role: "Library builder.",
+        short: "Generates a baseline Figma component library so the team has shared vocabulary before any feature work begins.",
+        upstream: ["product-fingerprint-curator"],
+        downstream: ["figma-designer","design-engineer"],
+      },
+      "discovery-researcher": {
+        name: "discovery-researcher", phase: "Discovery", color: "var(--c-discovery)",
+        role: "Curious, evidence-first.",
+        short: "Runs interviews, mines secondary research, names the real problem before anyone jumps to solutions.",
+        upstream: ["orchestrator"],
+        downstream: ["ideation-facilitator","product-positioner","prd-author"],
+      },
+      "competitive-analyst": {
+        name: "competitive-analyst", phase: "Discovery", color: "var(--c-competitive)",
+        role: "Pattern detective.",
+        short: "Teardowns competing products. Surfaces patterns, names the unmet job, and avoids feature-by-feature copying.",
+        upstream: ["orchestrator"],
+        downstream: ["product-positioner","ideation-facilitator","pm-strategist"],
+      },
+      "ideation-facilitator": {
+        name: "ideation-facilitator", phase: "Define", color: "var(--c-ideation)",
+        role: "Generative, divergent.",
+        short: "Generates three sharply different concepts before converging. Refuses to ship the first idea that sounds reasonable.",
+        upstream: ["discovery-researcher","competitive-analyst"],
+        downstream: ["product-positioner","prd-author"],
+      },
+      "product-positioner": {
+        name: "product-positioner", phase: "Define", color: "var(--c-positioner)",
+        role: "Sharp, opinionated.",
+        short: "Picks the angle. Forces a single defensible bet instead of a vague feature list, and names what you're not doing.",
+        upstream: ["discovery-researcher","competitive-analyst","ideation-facilitator"],
+        downstream: ["feature-prioritizer","pm-strategist","prd-author"],
+      },
+      "feature-prioritizer": {
+        name: "feature-prioritizer", phase: "Define", color: "var(--c-prioritizer)",
+        role: "Tradeoff-honest PM.",
+        short: "Scores the backlog against the chosen angle. Names what we're giving up — RICE, ICE, and a tight scope cut.",
+        upstream: ["product-positioner"],
+        downstream: ["prd-author","pm-strategist"],
+      },
+      "pm-strategist": {
+        name: "pm-strategist", phase: "Define · PM", color: "var(--c-strategist)",
+        role: "Opinionated strategist.",
+        short: "Translates vision into a quarter-sized bet. Connects positioning to the roadmap and names the strategic tradeoff.",
+        upstream: ["product-positioner","feature-prioritizer","competitive-analyst"],
+        downstream: ["prd-author","pm-launch-architect"],
+      },
+      "prd-author": {
+        name: "prd-author", phase: "Define", color: "var(--c-prd)",
+        role: "The scribe.",
+        short: "Writes the PRD. Emits the structured journey shape — persona, entry condition, success exit, failure exit — that every downstream agent consumes.",
+        upstream: ["product-positioner","feature-prioritizer","ideation-facilitator","pm-strategist","discovery-researcher"],
+        downstream: ["lo-fi-designer","figma-designer","design-engineer","handoff-engineer"],
+      },
+      "lo-fi-designer": {
+        name: "lo-fi-designer", phase: "Define", color: "var(--c-lofi)",
+        role: "Pragmatic systems-designer.",
+        short: "Maps the userflow, sketches 3 ASCII layouts (primary / alternative / risky), lists DS components used + new ones needed. Sketches before falling in love.",
+        upstream: ["prd-author","product-fingerprint-curator"],
+        downstream: ["figma-designer","design-engineer"],
+      },
+      "figma-designer": {
+        name: "figma-designer", phase: "Deliver", color: "var(--c-figma)",
+        role: "Figma-native implementer.",
+        short: "Turns approved lo-fi layouts into hi-fi Figma designs — real DS component instances, real PRD content, tokens applied, key states per screen. 1 flow per invocation.",
+        upstream: ["lo-fi-designer","prd-author","product-fingerprint-curator","figma-component-bootstrapper"],
+        downstream: ["usability-tester","handoff-engineer"],
+      },
+      "design-engineer": {
+        name: "design-engineer", phase: "Deliver", color: "var(--c-engineer)",
+        role: "Shipping-craft engineer.",
+        short: "Builds production-ready frontend prototypes in the project's actual stack with dummy data. All 5 states wired (empty / loading / populated / error / edge).",
+        upstream: ["lo-fi-designer","prd-author","product-fingerprint-curator","figma-component-bootstrapper"],
+        downstream: ["usability-tester","handoff-engineer"],
+      },
+      "usability-tester": {
+        name: "usability-tester", phase: "Deliver", color: "var(--c-usability)",
+        role: "Skeptical scientist.",
+        short: "Stress-tests prototypes. Writes test plans, runs the sessions in your head, and reports what breaks — not what works.",
+        upstream: ["figma-designer","design-engineer"],
+        downstream: ["handoff-engineer","critique-partner"],
+      },
+      "handoff-engineer": {
+        name: "handoff-engineer", phase: "Deliver", color: "var(--c-handoff)",
+        role: "Systems-thinker.",
+        short: "Produces dev-ready specs — tokens, states, edge cases. The artifact engineers can actually ship from.",
+        upstream: ["figma-designer","design-engineer","usability-tester","prd-author"],
+        downstream: ["pm-launch-architect"],
+      },
+      "pm-launch-architect": {
+        name: "pm-launch-architect", phase: "Deliver · PM", color: "var(--c-launch)",
+        role: "Pragmatic GTM lead.",
+        short: "Designs the launch — beachhead, messaging, channels. Picks the wedge and the sequence that earns the next bet.",
+        upstream: ["pm-strategist","handoff-engineer"],
+        downstream: ["pm-metrics-architect"],
+      },
+      "pm-metrics-architect": {
+        name: "pm-metrics-architect", phase: "Cross-cutting · PM", color: "var(--c-metrics)",
+        role: "Skeptical instrumentation lead.",
+        short: "Defines north-star + input metrics, sets success thresholds, and flags vanity numbers vs. real signal.",
+        upstream: ["pm-launch-architect","prd-author"],
+        downstream: ["critique-partner"],
+      },
+    };
+
+    // ---------------- Output artifacts (what each agent emits) ----------------
+    // The thing that flows along every outgoing edge from this agent.
+    // Used in the detail panel to label upstream/downstream connections.
+    const OUTPUTS = {
+      orchestrator:                   "Decomposed plan, sub-agent sequence, Stop Gates inserted between phases",
+      "critique-partner":             "List of weak reasoning, untested assumptions, and missing tradeoffs",
+      "product-fingerprint-curator":  "The project's visual DNA — composition patterns + anti-patterns + design tokens",
+      "figma-component-bootstrapper": "A baseline Figma component library (the team's shared vocabulary)",
+      "discovery-researcher":         "Interview findings + a named, validated problem statement",
+      "competitive-analyst":          "Competitor teardowns, pattern map, and the unmet job",
+      "ideation-facilitator":         "Three sharply-different concept directions (no convergence yet)",
+      "product-positioner":           "The chosen positioning angle + what we're explicitly NOT doing",
+      "feature-prioritizer":          "RICE/ICE-scored backlog with named tradeoff cuts",
+      "pm-strategist":                "Quarter-sized roadmap bet + the strategic tradeoff statement",
+      "prd-author":                   "PRD with the journey schema (persona / entry / success exit / failure exit)",
+      "lo-fi-designer":               "Userflow + 3 ASCII layouts (primary / alt / risky) + DS-component list",
+      "figma-designer":               "Hi-fi Figma frames — DS instances, real PRD content, key states per screen",
+      "design-engineer":              "Coded prototype in the project's stack, all 5 states wired (empty/loading/populated/error/edge)",
+      "usability-tester":             "Stress-test plan + breakage report (what fails, not what works)",
+      "handoff-engineer":             "Dev-ready spec — tokens, states, edge cases, the artifact engineers ship from",
+      "pm-launch-architect":          "Launch plan — beachhead, wedge, messaging, channels, sequence",
+      "pm-metrics-architect":         "North-star metric + input metrics + success thresholds + alert rules",
+    };
+
+    // ---------------- Auto-derive edges from AGENTS data ----------------
+    // The bootstrap mode renders EVERY upstream/downstream relationship from the model.
+    // crossCutting = which agents sit on the sidebar rail (their connections render as dashed).
+    function deriveEdges(crossCutting) {
+      const cc = new Set(crossCutting || []);
+      const edges = [];
+      for (const [key, agent] of Object.entries(AGENTS)) {
+        (agent.downstream || []).forEach(down => {
+          if (!AGENTS[down]) return;          // skip placeholder strings like "any agent"
+          const isCC = cc.has(key) || cc.has(down);
+          edges.push(isCC ? [key, down, "dashed"] : [key, down]);
+        });
+      }
+      return edges;
+    }
+    const BOOTSTRAP_RAIL_AGENTS = [
+      "critique-partner",
+      "product-fingerprint-curator",
+      "figma-component-bootstrapper",
+      "pm-metrics-architect",
+    ];
+
+    const MODES = {
+      bootstrap: {
+        title: "Bootstrap",
+        subtitle: "the family tree",
+        hint: {
+          label: "Mode 01 · Bootstrap",
+          h: "One trunk. Three lanes. Four always-on advisors.",
+          p: "Orchestrator at the top is the conductor. The trunk goes Discovery → Define → Deliver, and `prd-author` is the funnel point everything passes through. The dashed sidebar on the right holds the four agents that hook in everywhere — Critique, Fingerprint, Bootstrapper, Metrics. A Stop Gate ends each lane."
+        },
+        lanes: [
+          { y1: 130, y2: 320, num: "01", name: "Discovery", color: "var(--c-discovery)" },
+          { y1: 320, y2: 700, num: "02", name: "Define",    color: "var(--c-positioner)" },
+          { y1: 700, y2: 990, num: "03", name: "Deliver",   color: "var(--c-engineer)" },
+          { y1: 990, y2: 1120, num: "04", name: "Launch",    color: "var(--c-launch)" },
+        ],
+        rail: { label: "Always on · cross-cutting" },
+        nodes: {
+          // Trunk: orchestrator (main canvas is x=20–1000, sidebar is x=1040+)
+          orchestrator:                   { x: 510, y: 70, featured: true },
+
+          // Discovery lane — 2 agents
+          "discovery-researcher":         { x: 340, y: 220 },
+          "competitive-analyst":          { x: 680, y: 220 },
+
+          // Define · diverge — 4 agents in a row
+          "ideation-facilitator":         { x: 160, y: 410 },
+          "product-positioner":           { x: 370, y: 410 },
+          "feature-prioritizer":          { x: 580, y: 410 },
+          "pm-strategist":                { x: 790, y: 410 },
+
+          // Define · converge — prd-author as funnel point
+          "prd-author":                   { x: 510, y: 590, featured: true },
+
+          // Deliver lane — 5-agent pipe
+          "lo-fi-designer":               { x: 130, y: 830 },
+          "figma-designer":               { x: 310, y: 830 },
+          "design-engineer":              { x: 510, y: 830 },
+          "usability-tester":             { x: 710, y: 830 },
+          "handoff-engineer":             { x: 900, y: 830 },
+
+          // Launch lane
+          "pm-launch-architect":          { x: 510, y: 1050 },
+
+          // Always-on sidebar (right rail, vertical stack)
+          "critique-partner":             { x: 1115, y: 90,  inRail: true },
+          "product-fingerprint-curator":  { x: 1115, y: 180, inRail: true },
+          "figma-component-bootstrapper": { x: 1115, y: 270, inRail: true },
+          "pm-metrics-architect":         { x: 1115, y: 360, inRail: true },
+        },
+        dim: [],
+        // Gates anchored to lane boundaries — they sit ON the visual phase divider
+        gates: [
+          { x: 510, y: 320, label: "stop gate · discovery" },
+          { x: 510, y: 500, label: "stop gate · define" },
+          { x: 510, y: 700, label: "stop gate · ready to build" },
+          { x: 510, y: 990, label: "stop gate · ship" },
+        ],
+        phaseLabels: [],
+        // Auto-derived from AGENTS data — every upstream/downstream relationship is rendered.
+        // Connections involving a sidebar agent (critique / fingerprint / bootstrapper / metrics)
+        // are dashed; everything else is solid.
+        edges: deriveEdges(BOOTSTRAP_RAIL_AGENTS),
+      },
+
+      audit: {
+        title: "Audit",
+        subtitle: "radial cluster · critique at the center",
+        hint: {
+          label: "Mode 02 · Audit",
+          h: "A tight orbit. No PRD needed.",
+          p: "When you're stress-testing an existing Figma file or prototype, only the contrarian + the two implementers + the skeptical scientist orbit the work. Everything else fades to the side rails. One Stop Gate at the end."
+        },
+        nodes: {
+          // Center + 6-orbit cluster
+          "critique-partner":             { x: 640, y: 490, featured: true },
+          "figma-designer":               { x: 480, y: 290 },
+          "usability-tester":             { x: 800, y: 290 },
+          "design-engineer":              { x: 380, y: 490 },
+          "handoff-engineer":             { x: 900, y: 490 },
+          "lo-fi-designer":               { x: 480, y: 690 },
+          "prd-author":                   { x: 800, y: 690 },
+
+          // Side rails — dim, not in the audit loop
+          orchestrator:                   { x: 140, y: 100 },
+          "product-fingerprint-curator":  { x: 140, y: 230 },
+          "figma-component-bootstrapper": { x: 140, y: 360 },
+          "discovery-researcher":         { x: 140, y: 490 },
+          "competitive-analyst":          { x: 140, y: 620 },
+          "ideation-facilitator":         { x: 140, y: 750 },
+          "product-positioner":           { x: 140, y: 880 },
+          "feature-prioritizer":          { x: 1140, y: 100 },
+          "pm-strategist":                { x: 1140, y: 230 },
+          "pm-launch-architect":          { x: 1140, y: 750 },
+          "pm-metrics-architect":         { x: 1140, y: 880 },
+        },
+        dim: ["orchestrator","product-fingerprint-curator","figma-component-bootstrapper","discovery-researcher","competitive-analyst","ideation-facilitator","product-positioner","feature-prioritizer","pm-strategist","pm-launch-architect","pm-metrics-architect"],
+        gates: [
+          { between: ["usability-tester","handoff-engineer"], label: "stop gate · audit complete" },
+        ],
+        phaseLabels: [
+          { x: 80, y: 60, text: "Inactive" },
+          { x: 1200, y: 60, text: "Inactive" },
+        ],
+        edges: [
+          // Critique radiates to every audit participant
+          ["critique-partner","figma-designer"],
+          ["critique-partner","usability-tester"],
+          ["critique-partner","design-engineer"],
+          ["critique-partner","handoff-engineer"],
+          ["critique-partner","lo-fi-designer"],
+          ["critique-partner","prd-author"],
+          // Findings flow into handoff
+          ["design-engineer","usability-tester","dashed"],
+          ["figma-designer","usability-tester","dashed"],
+          ["usability-tester","handoff-engineer"],
+        ],
+      },
+
+      define: {
+        title: "Define",
+        subtitle: "diamond cluster · sharpen the bet",
+        hint: {
+          label: "Mode 03 · Define",
+          h: "Five agents argue, one writes it down.",
+          p: "Discovery feeds Ideation; ideation splits into three angles; positioner picks one; prioritizer cuts the backlog; pm-strategist names the roadmap bet; prd-author writes the artifact every Deliver agent will consume. Two gates: angle-pick, then PRD-final."
+        },
+        nodes: {
+          // Conductor
+          orchestrator:                   { x: 640, y: 80, featured: true },
+
+          // Inputs (Discovery)
+          "discovery-researcher":         { x: 380, y: 260 },
+          "competitive-analyst":          { x: 900, y: 260 },
+
+          // Define · diverge — 4 across, generous spacing
+          "ideation-facilitator":         { x: 220, y: 480 },
+          "product-positioner":           { x: 500, y: 480, featured: true },
+          "pm-strategist":                { x: 780, y: 480 },
+          "feature-prioritizer":          { x: 1060, y: 480 },
+
+          // Define · converge
+          "prd-author":                   { x: 640, y: 720, featured: true },
+
+          // Side rails — dim
+          "critique-partner":             { x: 1140, y: 80 },
+          "product-fingerprint-curator":  { x: 140, y: 80 },
+          "figma-component-bootstrapper": { x: 140, y: 180 },
+          "pm-metrics-architect":         { x: 1140, y: 180 },
+
+          // Downstream Deliver agents — dim, off-stage at bottom
+          "lo-fi-designer":               { x: 200, y: 910 },
+          "figma-designer":               { x: 360, y: 910 },
+          "design-engineer":              { x: 520, y: 910 },
+          "usability-tester":             { x: 760, y: 910 },
+          "handoff-engineer":             { x: 920, y: 910 },
+          "pm-launch-architect":          { x: 1080, y: 910 },
+        },
+        dim: ["lo-fi-designer","figma-designer","design-engineer","usability-tester","handoff-engineer","pm-launch-architect","product-fingerprint-curator","figma-component-bootstrapper","pm-metrics-architect"],
+        gates: [
+          { between: ["product-positioner","prd-author"], label: "gate · angle picked" },
+          { between: ["prd-author","lo-fi-designer"], label: "gate · prd shipped" },
+        ],
+        phaseLabels: [
+          { x: 80, y: 260, text: "Discovery" },
+          { x: 80, y: 480, text: "Define · diverge" },
+          { x: 80, y: 720, text: "Define · converge" },
+        ],
+        edges: [
+          ["orchestrator","discovery-researcher"],
+          ["orchestrator","competitive-analyst"],
+          ["discovery-researcher","ideation-facilitator"],
+          ["discovery-researcher","product-positioner"],
+          ["competitive-analyst","product-positioner"],
+          ["competitive-analyst","pm-strategist"],
+          ["ideation-facilitator","product-positioner"],
+          ["product-positioner","feature-prioritizer"],
+          ["product-positioner","pm-strategist"],
+          ["feature-prioritizer","prd-author"],
+          ["pm-strategist","prd-author"],
+          ["product-positioner","prd-author"],
+          ["ideation-facilitator","prd-author"],
+          ["critique-partner","product-positioner","dashed"],
+          ["critique-partner","prd-author","dashed"],
+        ],
+      },
+
+      handoff: {
+        title: "Handoff",
+        subtitle: "assembly line · spec for engineering",
+        hint: {
+          label: "Mode 04 · Handoff",
+          h: "A linear pipe. Artifact travels left → right.",
+          p: "The PRD shape gets specialized: lo-fi maps states, figma renders them, design-engineer wires a real prototype, usability-tester reports breakage, handoff-engineer crystallizes the dev spec. A gate after every checkpoint."
+        },
+        nodes: {
+          // Top setup row
+          orchestrator:                   { x: 140, y: 90, featured: true },
+          "product-fingerprint-curator":  { x: 140, y: 220 },
+          "figma-component-bootstrapper": { x: 140, y: 320 },
+          "critique-partner":             { x: 640, y: 90 },
+
+          // Main assembly line (y=500, generous horizontal spacing)
+          "prd-author":                   { x: 130, y: 500, featured: true },
+          "lo-fi-designer":               { x: 320, y: 500 },
+          "figma-designer":               { x: 510, y: 500 },
+          "design-engineer":              { x: 700, y: 500 },
+          "usability-tester":             { x: 890, y: 500 },
+          "handoff-engineer":             { x: 1080, y: 500, featured: true },
+
+          // Post-handoff (right side)
+          "pm-launch-architect":          { x: 1140, y: 700 },
+          "pm-metrics-architect":         { x: 1140, y: 820 },
+
+          // Dim — non-Deliver agents, off-stage at bottom
+          "discovery-researcher":         { x: 200, y: 880 },
+          "competitive-analyst":          { x: 340, y: 880 },
+          "ideation-facilitator":         { x: 480, y: 880 },
+          "product-positioner":           { x: 620, y: 880 },
+          "feature-prioritizer":          { x: 760, y: 880 },
+          "pm-strategist":                { x: 900, y: 880 },
+        },
+        dim: ["discovery-researcher","competitive-analyst","ideation-facilitator","product-positioner","feature-prioritizer","pm-strategist"],
+        gates: [
+          { between: ["lo-fi-designer","figma-designer"], label: "lo-fi gate" },
+          { between: ["figma-designer","design-engineer"], label: "hi-fi gate" },
+          { between: ["design-engineer","usability-tester"], label: "proto gate" },
+          { between: ["usability-tester","handoff-engineer"], label: "spec ready" },
+        ],
+        phaseLabels: [
+          { x: 80, y: 500, text: "Assembly line" },
+        ],
+        edges: [
+          ["orchestrator","prd-author"],
+          ["prd-author","lo-fi-designer"],
+          ["lo-fi-designer","figma-designer"],
+          ["figma-designer","design-engineer"],
+          ["design-engineer","usability-tester"],
+          ["usability-tester","handoff-engineer"],
+          ["handoff-engineer","pm-launch-architect","dashed"],
+          ["pm-launch-architect","pm-metrics-architect","dashed"],
+          ["product-fingerprint-curator","lo-fi-designer","dashed"],
+          ["product-fingerprint-curator","figma-designer","dashed"],
+          ["figma-component-bootstrapper","figma-designer","dashed"],
+          ["figma-component-bootstrapper","design-engineer","dashed"],
+          ["critique-partner","handoff-engineer","dashed"],
+        ],
+      },
+    };
+
+    const GATE_COPY = {
+      bootstrap: {
+        label: "◆ Stop Gate · plain English",
+        title: "Three phases. Three checkpoints.",
+        body: "Discovery, Define, Deliver each end with a hard stop. Nothing flows to the next phase until you say so. No surprise commits, no waterfall of wasted runs.",
+        actions: [
+          { code: "y", note: "proceed", cls: "green" },
+          { code: "revise <delta>", note: "iterate" },
+          { code: "pivot — <direction>", note: "change course" },
+          { code: "grill me", note: "stress-test" },
+          { code: "cancel", note: "halt", cls: "red" },
+        ],
+      },
+      audit: {
+        label: "◆ Stop Gate · audit",
+        title: "One gate. Findings final, or loop again.",
+        body: "An audit doesn't progress through phases — it loops. The gate at the end either accepts the findings or kicks you back to the contrarian for another pass.",
+        actions: [
+          { code: "y", note: "finalize", cls: "green" },
+          { code: "revise <delta>", note: "another pass" },
+          { code: "cancel", note: "halt", cls: "red" },
+        ],
+      },
+      define: {
+        label: "◆ Stop Gate · define",
+        title: "Pick the angle. Then ship the PRD.",
+        body: "Two gates back-to-back. First you pick one positioning angle from the three on offer (or pivot to a fourth). Then the PRD draft is yours to keep, revise, or reject.",
+        actions: [
+          { code: "y", note: "proceed to Deliver", cls: "green" },
+          { code: "pivot — <angle>", note: "new direction" },
+          { code: "revise <delta>", note: "iterate" },
+          { code: "cancel", note: "halt", cls: "red" },
+        ],
+      },
+      handoff: {
+        label: "◆ Stop Gate · per checkpoint",
+        title: "A gate after every artifact.",
+        body: "Lo-fi, hi-fi, prototype, spec — each one stops for approval. Engineering only sees the artifact you've said yes to. No half-baked Figma file makes it past the gate.",
+        actions: [
+          { code: "y", note: "finalize + handoff", cls: "green" },
+          { code: "revise <delta>", note: "iterate" },
+          { code: "cancel", note: "halt", cls: "red" },
+        ],
+      },
+    };
+
+    // ---------------- Render ----------------
+    const stage = document.getElementById("stage");
+    const svgCanvas = document.getElementById("edges");
+    const detailEl = document.getElementById("detail");
+    const gateCardEl = document.getElementById("gateCard");
+    const hintCardEl = document.getElementById("hintCard");
+    const stageMeta = document.getElementById("stageMeta");
+
+    let currentMode = "bootstrap";
+    let selectedAgent = "orchestrator";
+
+    function buildNodes() {
+      for (const [key, agent] of Object.entries(AGENTS)) {
+        const el = document.createElement("div");
+        el.className = "node";
+        el.dataset.agent = key;
+        el.style.setProperty("--node-c", agent.color);
+        el.innerHTML = `<div class="node-body"><span class="node-dot"></span><span class="node-label">${agent.name}</span></div>`;
+        el.addEventListener("click", () => selectAgent(key));
+        stage.appendChild(el);
+      }
+    }
+
+    function applyMode(modeKey) {
+      const mode = MODES[modeKey];
+      currentMode = modeKey;
+      stageMeta.innerHTML = `<strong>${mode.title}</strong> · ${mode.subtitle}`;
+
+      const VW = 1280, VH = 1120;
+
+      for (const [key, pos] of Object.entries(mode.nodes)) {
+        const el = stage.querySelector(`[data-agent="${key}"]`);
+        if (!el) continue;
+        el.style.left = `${(pos.x / VW) * 100}%`;
+        el.style.top  = `${(pos.y / VH) * 100}%`;
+        el.classList.toggle("featured", !!pos.featured);
+        el.classList.toggle("dim", mode.dim.includes(key));
+        el.classList.toggle("in-rail", !!pos.inRail);
+      }
+
+      // Measure each node's actual pill size so we can back off edges to its boundary
+      const stageRect = stage.getBoundingClientRect();
+      const ratioX = VW / Math.max(stageRect.width, 1);
+      const ratioY = VH / Math.max(stageRect.height, 1);
+      const nodeSize = {};
+      for (const key of Object.keys(mode.nodes)) {
+        const bodyEl = stage.querySelector(`[data-agent="${key}"] .node-body`);
+        if (bodyEl) {
+          const r = bodyEl.getBoundingClientRect();
+          nodeSize[key] = {
+            hw: (r.width / 2) * ratioX,
+            hh: (r.height / 2) * ratioY,
+          };
+        }
+      }
+
+      const edgeGroup = document.getElementById("edge-group");
+      edgeGroup.innerHTML = "";
+      mode.edges.forEach(([from, to, style]) => {
+        const a = mode.nodes[from], b = mode.nodes[to];
+        if (!a || !b) return;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const dx = b.x - a.x, dy = b.y - a.y;
+        // Curve control points — vertical or horizontal dominant
+        let cx1, cy1, cx2, cy2;
+        if (Math.abs(dy) > Math.abs(dx)) {
+          cx1 = a.x;             cy1 = a.y + dy * 0.5;
+          cx2 = b.x;             cy2 = a.y + dy * 0.5;
+        } else {
+          cx1 = a.x + dx * 0.5;  cy1 = a.y;
+          cx2 = a.x + dx * 0.5;  cy2 = b.y;
+        }
+        // Back off endpoint to the destination pill's bounding-rect boundary,
+        // so the arrowhead sits just OUTSIDE the pill, not buried inside.
+        const dist = Math.hypot(dx, dy) || 1;
+        const sizeB = nodeSize[to] || { hw: 50, hh: 18 };
+        const sx = (Math.abs(dx) > 0.5) ? (sizeB.hw * dist) / Math.abs(dx) : Infinity;
+        const sy = (Math.abs(dy) > 0.5) ? (sizeB.hh * dist) / Math.abs(dy) : Infinity;
+        const backoff = Math.min(sx, sy) + 10; // +10 viewBox units of breathing room
+        const tx = b.x - (dx / dist) * backoff;
+        const ty = b.y - (dy / dist) * backoff;
+        path.setAttribute("d", `M ${a.x} ${a.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${tx} ${ty}`);
+        path.setAttribute("class", `edge ${style === "dashed" ? "dashed" : ""}`);
+        path.setAttribute("marker-end", style === "dashed" ? "url(#arrow-dashed)" : "url(#arrow)");
+        path.dataset.from = from;
+        path.dataset.to = to;
+        edgeGroup.appendChild(path);
+      });
+
+      stage.querySelectorAll(".gate, .gate-label, .phase-label, .lane, .rail").forEach(el => el.remove());
+
+      // Lanes — horizontal swim-lane bands
+      (mode.lanes || []).forEach(lane => {
+        const el = document.createElement("div");
+        el.className = "lane";
+        el.style.setProperty("--lane-c", lane.color);
+        el.style.top = `${(lane.y1 / VH) * 100}%`;
+        el.style.height = `${((lane.y2 - lane.y1) / VH) * 100}%`;
+        el.innerHTML = `
+          <div class="lane-fill"></div>
+          <div class="lane-rule"></div>
+          <div class="lane-header">
+            <span class="lane-num">${lane.num}</span>
+            <span class="lane-name">${lane.name}</span>
+          </div>
+        `;
+        stage.appendChild(el);
+      });
+
+      // Sidebar rail (cross-cutting / always-on agents grouped visually)
+      if (mode.rail) {
+        const rail = document.createElement("div");
+        rail.className = "rail";
+        rail.innerHTML = `<div class="rail-label">${mode.rail.label}</div>`;
+        stage.appendChild(rail);
+      }
+
+      mode.gates.forEach(g => {
+        // Resolve position: explicit x/y, or midpoint of two agents named in `between`
+        let gx = g.x, gy = g.y;
+        if (g.between) {
+          const [a, b] = g.between;
+          const A = mode.nodes[a], B = mode.nodes[b];
+          if (A && B) {
+            gx = (A.x + B.x) / 2;
+            gy = (A.y + B.y) / 2;
+          }
+        }
+        if (gx == null || gy == null) return;
+
+        const gel = document.createElement("div");
+        gel.className = "gate";
+        gel.style.left = `${(gx / VW) * 100}%`;
+        gel.style.top  = `${(gy / VH) * 100}%`;
+        gel.title = g.label;
+        gel.addEventListener("click", focusGate);
+        stage.appendChild(gel);
+
+        const lab = document.createElement("div");
+        lab.className = "gate-label";
+        lab.style.left = `${(gx / VW) * 100}%`;
+        lab.style.top  = `${(gy / VH) * 100}%`;
+        lab.textContent = g.label;
+        stage.appendChild(lab);
+      });
+
+      mode.phaseLabels.forEach(p => {
+        const pl = document.createElement("div");
+        pl.className = "phase-label";
+        pl.style.left = `${(p.x / VW) * 100}%`;
+        pl.style.top  = `${(p.y / VH) * 100}%`;
+        pl.textContent = p.text;
+        stage.appendChild(pl);
+      });
+
+      renderGateCard(modeKey);
+      renderHint(modeKey);
+      highlightSelection();
+    }
+
+    function highlightSelection() {
+      stage.querySelectorAll(".node").forEach(n => {
+        n.classList.toggle("selected", n.dataset.agent === selectedAgent);
+      });
+      svgCanvas.querySelectorAll(".edge").forEach(e => {
+        const isOutgoing = e.dataset.from === selectedAgent;
+        const isIncoming = e.dataset.to   === selectedAgent;
+        // Outgoing → highlight (blue). Incoming → hide. Everything else → faint gray.
+        e.classList.toggle("highlight", isOutgoing);
+        e.classList.toggle("hidden",    isIncoming);
+        e.classList.toggle("faint",     !isOutgoing && !isIncoming);
+        const isDashed = e.classList.contains("dashed");
+        const markerId = isDashed
+          ? (isOutgoing ? "arrow-dashed-hi" : "arrow-dashed")
+          : (isOutgoing ? "arrow-hi"        : "arrow");
+        e.setAttribute("marker-end", `url(#${markerId})`);
+      });
+    }
+
+    function selectAgent(key) {
+      selectedAgent = key;
+      renderDetail(key);
+      highlightSelection();
+    }
+
+    function renderDetail(key) {
+      const a = AGENTS[key];
+      if (!a) return;
+
+      // Build a set of edges shown on the CURRENT tree, so we can flag each card
+      // as "on tree" (drawn as an arrow) or "hidden" (real per model, but omitted for clarity).
+      const treeEdges = new Set();
+      (MODES[currentMode]?.edges || []).forEach(([f, t]) => treeEdges.add(`${f}→${t}`));
+
+      // Build connection cards.
+      // For "upstream": the artifact is the upstream agent's own output (what flows INTO me).
+      // For "downstream": the artifact is THIS agent's output (what I send to that downstream agent).
+      const buildCards = (list, getArtifact, arrowSymbol, emptyMsg, getEdgeKey) => {
+        if (!list.length) return `<span class="conn-empty">${emptyMsg}</span>`;
+        return list.map(n => {
+          const known = AGENTS[n];
+          const color = known ? known.color : "var(--ink-30)";
+          const name = known ? known.name : n;
+          const dataAttr = known ? `data-agent="${n}"` : "";
+          const artifact = getArtifact(n);
+          // Only flag known agents — placeholder strings ("any agent", etc.) have no edge to check
+          const flagHtml = known
+            ? (treeEdges.has(getEdgeKey(n))
+                ? `<span class="conn-card-flag on" title="This connection is drawn on the tree">● on tree</span>`
+                : `<span class="conn-card-flag off" title="Real per the model but hidden from the tree to reduce clutter">○ hidden</span>`)
+            : "";
+          return `
+            <div class="conn-card" style="--chip-c:${color};" ${dataAttr}>
+              <div class="conn-card-head">
+                <span class="conn-card-dot"></span>
+                <span class="conn-card-arrow">${arrowSymbol}</span>
+                <span class="conn-card-name">${name}</span>
+                ${flagHtml}
+              </div>
+              <div class="conn-card-artifact">${artifact}</div>
+            </div>
+          `;
+        }).join("");
+      };
+
+      const upstreamCards = buildCards(
+        a.upstream,
+        (upAgent) => OUTPUTS[upAgent] || "— external input",
+        "↑ from",
+        "— this is where the run starts.",
+        (upAgent) => `${upAgent}→${key}`,
+      );
+      const downstreamCards = buildCards(
+        a.downstream,
+        () => OUTPUTS[key] || "— no defined output",
+        "→ to",
+        "— terminal in the pipeline.",
+        (downAgent) => `${key}→${downAgent}`,
+      );
+
+      detailEl.innerHTML = `
+        <div class="detail-eyebrow"><span class="dot" style="background:${a.color};"></span>${a.phase}</div>
+        <h2>${a.name}</h2>
+        <div class="role">${a.role}</div>
+        <p class="short">${a.short}</p>
+        <div class="detail-section">
+          <h3>Reads from (upstream)</h3>
+          <div class="conn-list">${upstreamCards}</div>
+        </div>
+        <div class="detail-section">
+          <h3>Writes to (downstream)</h3>
+          <div class="conn-list">${downstreamCards}</div>
+        </div>
+      `;
+
+      detailEl.querySelectorAll(".conn-card[data-agent]").forEach(card => {
+        card.addEventListener("click", () => selectAgent(card.dataset.agent));
+      });
+    }
+
+    function renderGateCard(modeKey) {
+      const g = GATE_COPY[modeKey];
+      const actions = g.actions.map(a => {
+        const cls = a.cls ? ` class="${a.cls}"` : "";
+        return `<code${cls}>${a.code}</code><span class="note">${a.note}</span>`;
+      }).join("");
+      gateCardEl.innerHTML = `
+        <div class="label">${g.label}</div>
+        <h3>${g.title}</h3>
+        <p>${g.body}</p>
+        <div class="gate-actions">${actions}</div>
+      `;
+    }
+
+    function renderHint(modeKey) {
+      const h = MODES[modeKey].hint;
+      hintCardEl.innerHTML = `
+        <div class="label">${h.label}</div>
+        <h3>${h.h}</h3>
+        <p>${h.p}</p>
+      `;
+    }
+
+    function focusGate() {
+      gateCardEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      gateCardEl.animate(
+        [{ boxShadow: "0 0 0 0 rgba(41,151,255,0.5)" }, { boxShadow: "0 0 0 12px rgba(41,151,255,0)" }],
+        { duration: 700, easing: "ease-out" }
+      );
+    }
+
+    document.querySelectorAll("#modes .mode").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#modes .mode").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyMode(btn.dataset.mode);
+      });
+    });
+
+    buildNodes();
+    applyMode("bootstrap");
+    renderDetail("orchestrator");
+  </script>
+</body>
+</html>

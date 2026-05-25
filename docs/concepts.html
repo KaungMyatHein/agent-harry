@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Harry — Four concept directions</title>
+  <meta name="description" content="Four prototype directions for the agent explainer page. Same 18 agents, four visual languages. Pick the one that feels right.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><g fill='%230066cc'><rect x='8' y='1' width='1' height='2'/><rect x='7' y='3' width='3' height='2'/><rect x='6' y='5' width='5' height='1'/><rect x='5' y='6' width='3' height='1'/><rect x='9' y='6' width='3' height='1'/><rect x='2' y='7' width='5' height='1'/><rect x='10' y='7' width='5' height='1'/><rect x='5' y='8' width='3' height='1'/><rect x='9' y='8' width='3' height='1'/><rect x='6' y='9' width='5' height='1'/><rect x='7' y='10' width='3' height='2'/><rect x='8' y='12' width='1' height='2'/></g><g fill='%23ffd54f'><rect x='8' y='6' width='1' height='1'/><rect x='7' y='7' width='3' height='1'/><rect x='8' y='8' width='1' height='1'/></g></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --ink-70: #444446;
+      --ink-50: #7a7a7a;
+      --ink-30: #b8b8bc;
+      --bg: #ffffff;
+      --parchment: #f5f5f7;
+      --hairline: #e5e5e8;
+      --divider: #f0f0f0;
+      --primary: #0066cc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--bg);
+      letter-spacing: -0.011em;
+    }
+    h1, h2, h3 {
+      font-family: "SF Pro Display", system-ui, -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.024em;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Nav ---------- */
+    .nav { position: sticky; top: 12px; z-index: 60; padding: 0 16px; pointer-events: none; }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto; pointer-events: auto;
+      display: flex; align-items: center; gap: 28px;
+      padding: 7px 8px 7px 18px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 9999px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 36px -22px rgba(0, 0, 0, 0.16);
+      font-size: 13px;
+    }
+    .nav-brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: 14px; }
+    .nav-brand-mark { width: 26px; height: 26px; shape-rendering: crispEdges; image-rendering: pixelated; }
+    .nav ul { list-style: none; display: flex; gap: 22px; flex: 1; justify-content: center; }
+    .nav ul a { color: var(--ink-70); opacity: 0.86; }
+    .nav ul a:hover { opacity: 1; }
+    .nav ul a.active { color: var(--primary); opacity: 1; font-weight: 500; }
+    .gh-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--ink); color: #fff !important; border-radius: 9999px; font-size: 12px; font-weight: 500; }
+    @media (max-width: 720px) { .nav ul { display: none; } }
+
+    /* ---------- Page header ---------- */
+    header.page { max-width: 1080px; margin: 0 auto; padding: 64px 28px 28px; }
+    header.page .eyebrow {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--ink-50); margin-bottom: 14px;
+    }
+    header.page h1 { font-size: clamp(36px, 5vw, 60px); line-height: 1.05; letter-spacing: -0.032em; max-width: 900px; }
+    header.page h1 em { font-style: italic; color: var(--primary); font-weight: 600; }
+    header.page p.lede { font-size: 18px; color: var(--ink-70); margin-top: 18px; max-width: 700px; line-height: 1.5; }
+
+    /* ---------- Sticky mode bar ---------- */
+    .mode-bar {
+      position: sticky;
+      top: 70px;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      border-bottom: 1px solid var(--hairline);
+      padding: 14px 28px;
+      margin-top: 16px;
+    }
+    .mode-bar-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .mode-bar-label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--ink-50); margin-right: 8px;
+    }
+    .mode {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      font-size: 12.5px; font-weight: 500;
+      color: var(--ink-70);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .mode:hover { border-color: var(--ink-30); color: var(--ink); }
+    .mode.active {
+      background: var(--ink); border-color: var(--ink); color: #fff;
+      box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.4);
+    }
+    .mode-num { font-family: ui-monospace, "SF Mono", monospace; font-size: 10px; opacity: 0.6; letter-spacing: 0.8px; }
+
+    /* ---------- Concept section ---------- */
+    .concept {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 64px 28px 32px;
+      border-bottom: 1px solid var(--divider);
+    }
+    .concept:last-of-type { border-bottom: none; }
+    .concept-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; margin-bottom: 28px; }
+    .concept-meta { flex: 1; }
+    .concept-num {
+      display: inline-block;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase;
+      color: var(--ink-50); margin-bottom: 8px;
+    }
+    .concept h2 { font-size: 32px; line-height: 1.1; margin-bottom: 8px; }
+    .concept p.pitch { font-size: 16px; color: var(--ink-70); max-width: 640px; line-height: 1.5; }
+    .pick-btn {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 13px; font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 20px -10px rgba(0, 102, 204, 0.5);
+      font-family: inherit;
+    }
+    .pick-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px -10px rgba(0, 102, 204, 0.6); }
+    .pick-btn .arrow { font-size: 16px; transition: transform 0.2s; }
+    .pick-btn:hover .arrow { transform: translateX(3px); }
+    @media (max-width: 720px) {
+      .concept-head { flex-direction: column; gap: 12px; }
+      .pick-btn { width: 100%; justify-content: center; }
+    }
+    .stage {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px -40px rgba(0, 0, 0, 0.18);
+    }
+
+    /* ============ CONCEPT 1 — SUBWAY MAP ============ */
+    .stage--subway {
+      background: #fafafc;
+      border: 1px solid var(--hairline);
+      aspect-ratio: 16 / 8;
+      padding: 32px 40px;
+    }
+    .subway-svg { width: 100%; height: 100%; }
+    .subway-line { stroke-width: 8; stroke-linecap: round; fill: none; opacity: 0.85; transition: opacity 0.4s, stroke-opacity 0.4s; }
+    .subway-line--ghost { stroke-width: 18; opacity: 0; transition: opacity 0.5s ease; }
+    .subway-line--ghost.active { opacity: 0.16; }
+    .subway-station { cursor: pointer; transition: transform 0.3s ease; }
+    .subway-station circle.outer { fill: #fff; stroke: var(--ink); stroke-width: 2.5; transition: r 0.3s ease, stroke 0.3s ease; }
+    .subway-station circle.inner { transition: opacity 0.3s ease; }
+    .subway-station.inactive circle.outer { stroke: var(--ink-30); }
+    .subway-station.inactive circle.inner { opacity: 0.35; }
+    .subway-station.transfer circle.outer { stroke-width: 3.5; }
+    .subway-station text {
+      font-family: "SF Pro Text", system-ui, sans-serif;
+      font-size: 11px; font-weight: 500; fill: var(--ink-70);
+      transition: fill 0.3s ease, opacity 0.3s ease;
+    }
+    .subway-station.inactive text { opacity: 0.4; }
+    .subway-line-label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase;
+      transition: opacity 0.3s ease;
+    }
+
+    /* ============ CONCEPT 3 — TRADING CARDS ============ */
+    .stage--cards {
+      background: linear-gradient(180deg, #1a1a1f 0%, #0f0f14 100%);
+      border: 1px solid #2a2a32;
+      padding: 36px;
+      min-height: 540px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      perspective: 1200px;
+    }
+    @media (max-width: 880px) {
+      .card-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .card {
+      aspect-ratio: 5 / 7;
+      position: relative;
+      border-radius: 10px;
+      cursor: pointer;
+      transition:
+        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.5s ease,
+        filter 0.5s ease,
+        box-shadow 0.4s ease;
+      background: linear-gradient(165deg, var(--card-c) 0%, color-mix(in srgb, var(--card-c) 55%, #000) 100%);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+        0 1px 0 rgba(255, 255, 255, 0.18) inset,
+        0 12px 24px -12px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 12px 12px 10px;
+      color: #fff;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: radial-gradient(circle at 30% 0%, rgba(255,255,255,0.18), transparent 60%);
+      pointer-events: none;
+    }
+    .card:hover {
+      transform: translateY(-6px) rotateX(6deg) rotateY(-2deg);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 1px 0 rgba(255, 255, 255, 0.25) inset,
+        0 24px 48px -16px rgba(0, 0, 0, 0.7);
+    }
+    .card.dim {
+      transform: scale(0.88);
+      opacity: 0.32;
+      filter: grayscale(0.8);
+    }
+    .card.dim:hover { transform: scale(0.92); opacity: 0.6; }
+    .card.featured {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.3) inset,
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 24px 48px -16px rgba(0, 0, 0, 0.7),
+        0 0 24px -4px var(--card-c);
+    }
+    .card-type {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 8px; letter-spacing: 1.4px; text-transform: uppercase;
+      opacity: 0.7; margin-bottom: 4px;
+      position: relative; z-index: 1;
+    }
+    .card-name {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 13px; font-weight: 600; line-height: 1.15;
+      letter-spacing: -0.018em;
+      margin-bottom: 6px;
+      position: relative; z-index: 1;
+    }
+    .card-art {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      flex: 1;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      position: relative; z-index: 1;
+    }
+    .card-move {
+      font-size: 10px;
+      line-height: 1.3;
+      opacity: 0.92;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      position: relative; z-index: 1;
+    }
+    .card-move b { display: block; font-weight: 600; margin-bottom: 2px; }
+
+    /* ============ CONCEPT 4 — OFFICE FLOOR PLAN ============ */
+    .stage--office {
+      background: linear-gradient(180deg, #f0eee4 0%, #e6e3d8 100%);
+      border: 1px solid #d9d4c3;
+      aspect-ratio: 16 / 9;
+      padding: 0;
+    }
+    .office { width: 100%; height: 100%; position: relative; }
+    .floor {
+      position: absolute;
+      left: 24px; right: 24px;
+      height: calc((100% - 56px) / 3);
+      background: #fff;
+      border: 1.5px solid #b8a978;
+      border-radius: 8px;
+      display: flex;
+      box-shadow: 0 4px 0 0 #d4c5a0, 0 8px 16px -4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .floor--discovery { top: 12px; }
+    .floor--define    { top: calc(20px + (100% - 56px) / 3); }
+    .floor--deliver   { top: calc(28px + 2 * (100% - 56px) / 3); }
+    .floor-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      background: var(--floor-c, var(--ink));
+      color: #fff;
+      padding: 10px 4px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 9px; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .floor--discovery .floor-label { --floor-c: #5e81ac; }
+    .floor--define    .floor-label { --floor-c: #d97706; }
+    .floor--deliver   .floor-label { --floor-c: #ec4899; }
+    .rooms { flex: 1; display: flex; align-items: stretch; }
+    .room {
+      flex: 1;
+      border-right: 1px dashed #d4c5a0;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: background 0.5s ease, opacity 0.5s ease;
+      min-width: 0;
+    }
+    .room:last-child { border-right: none; }
+    .room.inactive { opacity: 0.35; background: #f7f5ec; }
+    .room.active { background: color-mix(in srgb, var(--room-c) 8%, #fff); }
+    .room-name {
+      font-size: 10.5px; font-weight: 600; color: var(--ink);
+      line-height: 1.15;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .room-role {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 8px; color: var(--ink-50);
+      letter-spacing: 0.4px; margin-top: 2px;
+    }
+    .room-desk {
+      align-self: center;
+      width: 70%; height: 12px;
+      background: linear-gradient(180deg, #c9a878, #b08850);
+      border-radius: 2px;
+      box-shadow: 0 2px 0 0 #8a6840;
+      position: relative;
+    }
+    .room-desk::after {
+      content: "";
+      position: absolute;
+      top: -5px; left: 50%;
+      width: 7px; height: 7px;
+      background: var(--room-c, var(--ink));
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 0 1.5px #fff;
+    }
+    .package {
+      position: absolute;
+      width: 18px; height: 18px;
+      background: #ffd54f;
+      border: 1.5px solid #1d1d1f;
+      border-radius: 3px;
+      box-shadow: 0 4px 8px -2px rgba(0,0,0,0.3), 0 0 12px rgba(255, 213, 79, 0.5);
+      z-index: 10;
+      transition: left 1.1s cubic-bezier(0.65, 0, 0.35, 1), top 1.1s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s;
+      transform: translate(-50%, -50%);
+    }
+    .package::before {
+      content: "✦";
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #1d1d1f;
+    }
+
+    /* ============ CONCEPT 8 — SPORTS FORMATION ============ */
+    .stage--pitch {
+      background:
+        radial-gradient(circle at 50% 50%, #1f8c44 0%, #157033 100%);
+      border: 1px solid #15622d;
+      aspect-ratio: 16 / 10;
+      padding: 0;
+      position: relative;
+    }
+    .pitch-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+    .pitch-line { stroke: rgba(255, 255, 255, 0.55); stroke-width: 2; fill: none; }
+    .pitch-overlay {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 36px, transparent 36px, transparent 72px);
+      pointer-events: none;
+    }
+    .player {
+      position: absolute;
+      width: 46px; height: 46px;
+      transform: translate(-50%, -50%);
+      transition:
+        left 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+        top 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 0.5s ease,
+        transform 0.4s ease;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .player-jersey {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: var(--player-c);
+      border: 2.5px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: -0.4px;
+      box-shadow: 0 6px 12px -4px rgba(0,0,0,0.5);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .player:hover .player-jersey {
+      transform: scale(1.12);
+      box-shadow: 0 10px 18px -4px rgba(0,0,0,0.6);
+    }
+    .player-name {
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      margin-top: 4px;
+      font-size: 9px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      color: #fff;
+      background: rgba(0,0,0,0.55);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .player:hover .player-name { opacity: 1; }
+    .player.bench {
+      transform: translate(-50%, -50%) scale(0.7);
+      opacity: 0.42;
+    }
+    .player.bench:hover { opacity: 0.8; }
+    .player.captain .player-jersey {
+      box-shadow: 0 0 0 3px rgba(255, 213, 79, 0.85), 0 6px 12px -4px rgba(0,0,0,0.5);
+    }
+
+    footer.page {
+      border-top: 1px solid var(--hairline);
+      padding: 32px 28px;
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--ink-50);
+    }
+    footer.page a { text-decoration: underline; text-decoration-color: var(--ink-30); }
+
+    @media (max-width: 720px) {
+      header.page { padding: 40px 20px 16px; }
+      .mode-bar { padding: 12px 20px; }
+      .concept { padding: 40px 20px 24px; }
+      .stage--office { aspect-ratio: 4 / 5; }
+      .stage--subway { aspect-ratio: 4 / 5; padding: 20px 16px; }
+      .player { width: 38px; height: 38px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="./">
+        <svg class="nav-brand-mark" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g fill="#0066cc">
+            <rect x="8" y="1" width="1" height="2"/><rect x="7" y="3" width="3" height="2"/><rect x="6" y="5" width="5" height="1"/>
+            <rect x="5" y="6" width="3" height="1"/><rect x="9" y="6" width="3" height="1"/>
+            <rect x="2" y="7" width="5" height="1"/><rect x="10" y="7" width="5" height="1"/>
+            <rect x="5" y="8" width="3" height="1"/><rect x="9" y="8" width="3" height="1"/>
+            <rect x="6" y="9" width="5" height="1"/><rect x="7" y="10" width="3" height="2"/><rect x="8" y="12" width="1" height="2"/>
+          </g>
+          <g fill="#ffd54f"><rect x="8" y="6" width="1" height="1"/><rect x="7" y="7" width="3" height="1"/><rect x="8" y="8" width="1" height="1"/></g>
+        </svg>
+        Agent Harry
+      </a>
+      <ul>
+        <li><a href="./#agents">Agents</a></li>
+        <li><a href="./concepts.html" class="active">Concepts</a></li>
+        <li><a href="./wiki/">Wiki</a></li>
+        <li><a href="./#install">Install</a></li>
+      </ul>
+      <a class="gh-btn" href="https://github.com/KaungMyatHein/agent-harry">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="page">
+    <div class="eyebrow">Concepts — pick a direction</div>
+    <h1>Four ways to show the same team. <em>Pick the one that feels right.</em></h1>
+    <p class="lede">Same 18 agents, four visual languages. Switch the use case at the top — every prototype reshapes to match. The "Pick this one" button at the bottom of each section locks in the direction for a full build.</p>
+  </header>
+
+  <div class="mode-bar">
+    <div class="mode-bar-inner" id="modes">
+      <span class="mode-bar-label">Use case</span>
+      <button class="mode active" data-mode="bootstrap"><span class="mode-num">01</span> New feature</button>
+      <button class="mode" data-mode="audit"><span class="mode-num">02</span> Audit</button>
+      <button class="mode" data-mode="define"><span class="mode-num">03</span> Sharpen the bet</button>
+      <button class="mode" data-mode="handoff"><span class="mode-num">04</span> Spec for engineering</button>
+    </div>
+  </div>
+
+  <!-- =================== CONCEPT 1: SUBWAY MAP =================== -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-meta">
+        <span class="concept-num">Concept 01 · Subway map</span>
+        <h2>The team as a transit system.</h2>
+        <p class="pitch">Three lines — Discovery, Define, Deliver — cross the city. Each agent is a station. Stop gates are transfer hubs. The selected use case lights up its route like a Tokyo Metro map.</p>
+      </div>
+      <button class="pick-btn" data-pick="subway">Pick this one <span class="arrow">→</span></button>
+    </div>
+    <div class="stage stage--subway">
+      <svg class="subway-svg" id="subwaySvg" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </section>
+
+  <!-- =================== CONCEPT 3: TRADING CARDS =================== -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-meta">
+        <span class="concept-num">Concept 03 · Trading card roster</span>
+        <h2>A deck of 18 agent cards.</h2>
+        <p class="pitch">Every agent is a collectible card with a role, a type tag, and a special move. Picking a use case reshuffles the deck — your starting lineup glows, the bench shrinks and fades. Hover for a 3D tilt.</p>
+      </div>
+      <button class="pick-btn" data-pick="cards">Pick this one <span class="arrow">→</span></button>
+    </div>
+    <div class="stage stage--cards">
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+  </section>
+
+  <!-- =================== CONCEPT 4: OFFICE FLOOR PLAN =================== -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-meta">
+        <span class="concept-num">Concept 04 · Office floor plan</span>
+        <h2>Three floors. One travelling brief.</h2>
+        <p class="pitch">A top-down building with three floors — Discovery, Define, Deliver. Each agent works in a room with a desk. A glowing brief moves from room to room based on the use case. Inactive rooms dim.</p>
+      </div>
+      <button class="pick-btn" data-pick="office">Pick this one <span class="arrow">→</span></button>
+    </div>
+    <div class="stage stage--office">
+      <div class="office" id="office">
+        <div class="floor floor--discovery"><div class="floor-label">Discovery</div><div class="rooms" data-floor="discovery"></div></div>
+        <div class="floor floor--define"><div class="floor-label">Define</div><div class="rooms" data-floor="define"></div></div>
+        <div class="floor floor--deliver"><div class="floor-label">Deliver</div><div class="rooms" data-floor="deliver"></div></div>
+        <div class="package" id="package"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== CONCEPT 8: SPORTS FORMATION =================== -->
+  <section class="concept">
+    <div class="concept-head">
+      <div class="concept-meta">
+        <span class="concept-num">Concept 08 · Sports team formation</span>
+        <h2>Your starting XI on the pitch.</h2>
+        <p class="pitch">Football formation diagram. Each agent is a player with a jersey number. The use case picks the formation — Bootstrap is full spread, Audit is a 3-back press, Handoff is a long-ball straight line. Bench players fade to the sideline.</p>
+      </div>
+      <button class="pick-btn" data-pick="formation">Pick this one <span class="arrow">→</span></button>
+    </div>
+    <div class="stage stage--pitch" id="pitch">
+      <svg class="pitch-svg" viewBox="0 0 1000 625" preserveAspectRatio="none">
+        <rect x="20" y="20" width="960" height="585" class="pitch-line"/>
+        <line x1="500" y1="20" x2="500" y2="605" class="pitch-line"/>
+        <circle cx="500" cy="312" r="60" class="pitch-line"/>
+        <circle cx="500" cy="312" r="3" fill="rgba(255,255,255,0.55)"/>
+        <rect x="20" y="180" width="120" height="265" class="pitch-line"/>
+        <rect x="860" y="180" width="120" height="265" class="pitch-line"/>
+        <rect x="20" y="240" width="40" height="145" class="pitch-line"/>
+        <rect x="940" y="240" width="40" height="145" class="pitch-line"/>
+      </svg>
+      <div class="pitch-overlay"></div>
+    </div>
+  </section>
+
+  <footer class="page">
+    <span>Agent Harry · 4 concept directions · 18 agents</span>
+    <span><a href="./">Back to home</a> · <a href="./explainer.html">Family tree (v1)</a></span>
+  </footer>
+
+  <script>
+    // ---------- Shared agent data ----------
+    const AGENTS = {
+      orchestrator:                   { name: "Orchestrator",    short: "ORCH",  initials: "OR", color: "#0066cc", phase: "meta",      role: "Calm strategist",     move: "Decompose + sequence the run", emoji: "★", type: "META" },
+      "critique-partner":             { name: "Critique",        short: "CRIT",  initials: "CP", color: "#dc2626", phase: "cross",     role: "Devil's advocate",    move: "Stress-test any output",       emoji: "✕", type: "CROSS" },
+      "product-fingerprint-curator":  { name: "Fingerprint",     short: "FNGP",  initials: "FP", color: "#7c3aed", phase: "cross",     role: "Visual archivist",    move: "Bottle the brand DNA",         emoji: "✦", type: "CROSS" },
+      "figma-component-bootstrapper": { name: "Bootstrapper",    short: "BOOT",  initials: "BS", color: "#6366f1", phase: "cross",     role: "Library builder",     move: "Seed the DS library",          emoji: "▣", type: "CROSS" },
+      "discovery-researcher":         { name: "Researcher",      short: "RSRCH", initials: "DR", color: "#5e81ac", phase: "discovery", role: "Evidence first",      move: "Run real interviews",          emoji: "?", type: "DISC" },
+      "competitive-analyst":          { name: "Competitive",     short: "COMP",  initials: "CA", color: "#2c7d6f", phase: "discovery", role: "Pattern detective",   move: "Teardown three rivals",        emoji: "◎", type: "DISC" },
+      "ideation-facilitator":         { name: "Ideation",        short: "IDEA",  initials: "IF", color: "#8b5cf6", phase: "define",    role: "Three sharp angles",  move: "Diverge before converge",      emoji: "⚡", type: "DEF" },
+      "product-positioner":           { name: "Positioner",      short: "POS",   initials: "PP", color: "#d97706", phase: "define",    role: "Pick the bet",        move: "Name what you're NOT",         emoji: "◆", type: "DEF" },
+      "feature-prioritizer":          { name: "Prioritizer",     short: "PRIO",  initials: "PR", color: "#b45309", phase: "define",    role: "Tradeoff-honest",     move: "Cut the backlog",              emoji: "⇅", type: "DEF" },
+      "pm-strategist":                { name: "Strategist",      short: "STRAT", initials: "ST", color: "#0891b2", phase: "define",    role: "Quarter-sized bet",   move: "Connect to roadmap",           emoji: "♟", type: "PM" },
+      "prd-author":                   { name: "PRD Author",      short: "PRD",   initials: "PA", color: "#1e3a8a", phase: "define",    role: "The scribe",          move: "Emit the journey schema",      emoji: "✎", type: "DEF" },
+      "lo-fi-designer":               { name: "Lo-Fi",           short: "LOFI",  initials: "LF", color: "#06b6d4", phase: "deliver",   role: "Sketch before love",  move: "Three ASCII layouts",          emoji: "□", type: "DLV" },
+      "figma-designer":               { name: "Figma",           short: "FIGMA", initials: "FG", color: "#a855f7", phase: "deliver",   role: "Hi-fi native",        move: "Real DS, real content",        emoji: "◳", type: "DLV" },
+      "design-engineer":              { name: "Design Eng",      short: "DENG",  initials: "DE", color: "#ec4899", phase: "deliver",   role: "Shipping craft",      move: "All five states wired",        emoji: "⌘", type: "DLV" },
+      "usability-tester":             { name: "Usability",       short: "TEST",  initials: "UT", color: "#16a34a", phase: "deliver",   role: "Skeptical scientist", move: "Report what breaks",           emoji: "▲", type: "DLV" },
+      "handoff-engineer":             { name: "Handoff",         short: "HAND",  initials: "HE", color: "#525252", phase: "deliver",   role: "Systems-thinker",     move: "Crystallize the spec",         emoji: "▶", type: "DLV" },
+      "pm-launch-architect":          { name: "Launch",          short: "LNCH",  initials: "LA", color: "#c2410c", phase: "deliver",   role: "GTM lead",            move: "Pick the wedge",               emoji: "↗", type: "PM" },
+      "pm-metrics-architect":         { name: "Metrics",         short: "MTRX",  initials: "ME", color: "#65a30d", phase: "cross",     role: "Vanity-skeptical",    move: "North-star + alerts",          emoji: "∿", type: "PM" },
+    };
+
+    const MODE_ACTIVE = {
+      bootstrap: Object.keys(AGENTS),
+      audit: ["critique-partner","design-engineer","figma-designer","usability-tester","handoff-engineer","lo-fi-designer","prd-author"],
+      define: ["orchestrator","discovery-researcher","competitive-analyst","ideation-facilitator","product-positioner","feature-prioritizer","pm-strategist","prd-author","critique-partner"],
+      handoff: ["orchestrator","prd-author","lo-fi-designer","figma-designer","design-engineer","usability-tester","handoff-engineer","pm-launch-architect","pm-metrics-architect","product-fingerprint-curator","figma-component-bootstrapper","critique-partner"],
+    };
+
+    const MODE_FEATURED = {
+      bootstrap: "orchestrator",
+      audit: "critique-partner",
+      define: "prd-author",
+      handoff: "handoff-engineer",
+    };
+
+    let currentMode = "bootstrap";
+
+    // ============================================================
+    // CONCEPT 1 — SUBWAY MAP
+    // ============================================================
+    function renderSubway() {
+      const svg = document.getElementById("subwaySvg");
+      svg.innerHTML = "";
+      const NS = "http://www.w3.org/2000/svg";
+      const active = new Set(MODE_ACTIVE[currentMode]);
+
+      const lines = [
+        { id: "discovery", label: "Discovery line", color: "#5e81ac", y: 90,
+          stations: [
+            { key: "discovery-researcher", x: 250 },
+            { key: "competitive-analyst",  x: 450 },
+          ],
+        },
+        { id: "define", label: "Define line", color: "#d97706", y: 180,
+          stations: [
+            { key: "ideation-facilitator", x: 150 },
+            { key: "product-positioner",   x: 300 },
+            { key: "feature-prioritizer",  x: 450 },
+            { key: "pm-strategist",        x: 600 },
+            { key: "prd-author",           x: 750, transfer: true },
+          ],
+        },
+        { id: "deliver", label: "Deliver line", color: "#ec4899", y: 270,
+          stations: [
+            { key: "lo-fi-designer",   x: 250 },
+            { key: "figma-designer",   x: 400 },
+            { key: "design-engineer",  x: 550 },
+            { key: "usability-tester", x: 700, transfer: true },
+            { key: "handoff-engineer", x: 850 },
+          ],
+        },
+      ];
+
+      const hub = { key: "orchestrator", x: 350, y: 30 };
+      const branch = {
+        color: "#7c3aed",
+        x: 920,
+        stations: [
+          { key: "product-fingerprint-curator",  y: 50 },
+          { key: "figma-component-bootstrapper", y: 110 },
+          { key: "critique-partner",             y: 170 },
+          { key: "pm-launch-architect",          y: 230 },
+          { key: "pm-metrics-architect",         y: 290 },
+        ],
+      };
+
+      lines.forEach(line => {
+        const hasActive = line.stations.some(s => active.has(s.key));
+        const xs = line.stations.map(s => s.x);
+        const x1 = Math.min(...xs) - 32;
+        const x2 = Math.max(...xs) + 32;
+
+        const ghost = document.createElementNS(NS, "line");
+        ghost.setAttribute("x1", x1); ghost.setAttribute("y1", line.y);
+        ghost.setAttribute("x2", x2); ghost.setAttribute("y2", line.y);
+        ghost.setAttribute("class", `subway-line subway-line--ghost ${hasActive ? "active" : ""}`);
+        ghost.setAttribute("stroke", line.color);
+        svg.appendChild(ghost);
+
+        const lineEl = document.createElementNS(NS, "line");
+        lineEl.setAttribute("x1", x1); lineEl.setAttribute("y1", line.y);
+        lineEl.setAttribute("x2", x2); lineEl.setAttribute("y2", line.y);
+        lineEl.setAttribute("class", "subway-line");
+        lineEl.setAttribute("stroke", line.color);
+        lineEl.setAttribute("stroke-opacity", hasActive ? "0.9" : "0.35");
+        svg.appendChild(lineEl);
+
+        const lab = document.createElementNS(NS, "text");
+        lab.setAttribute("x", 30);
+        lab.setAttribute("y", line.y + 4);
+        lab.setAttribute("class", "subway-line-label");
+        lab.setAttribute("fill", line.color);
+        lab.setAttribute("opacity", hasActive ? "1" : "0.4");
+        lab.textContent = line.label;
+        svg.appendChild(lab);
+
+        line.stations.forEach(s => {
+          drawStation(svg, s.x, line.y, s.key, active.has(s.key), s.transfer);
+        });
+      });
+
+      // Hub
+      const hubLine = document.createElementNS(NS, "line");
+      hubLine.setAttribute("x1", hub.x); hubLine.setAttribute("y1", hub.y);
+      hubLine.setAttribute("x2", hub.x); hubLine.setAttribute("y2", 90);
+      hubLine.setAttribute("class", "subway-line");
+      hubLine.setAttribute("stroke", "#0066cc");
+      hubLine.setAttribute("stroke-opacity", active.has("orchestrator") ? "0.9" : "0.35");
+      svg.appendChild(hubLine);
+      drawStation(svg, hub.x, hub.y, hub.key, active.has(hub.key), true);
+
+      // Branch (cross-cutting)
+      const branchActive = branch.stations.some(s => active.has(s.key));
+      const branchLine = document.createElementNS(NS, "line");
+      branchLine.setAttribute("x1", branch.x); branchLine.setAttribute("y1", 30);
+      branchLine.setAttribute("x2", branch.x); branchLine.setAttribute("y2", 310);
+      branchLine.setAttribute("class", "subway-line");
+      branchLine.setAttribute("stroke", branch.color);
+      branchLine.setAttribute("stroke-opacity", branchActive ? "0.9" : "0.4");
+      svg.appendChild(branchLine);
+      branch.stations.forEach(s => {
+        drawStation(svg, branch.x, s.y, s.key, active.has(s.key), false);
+      });
+    }
+
+    function drawStation(svg, x, y, key, isActive, isTransfer) {
+      const NS = "http://www.w3.org/2000/svg";
+      const agent = AGENTS[key];
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", `subway-station ${!isActive ? "inactive" : ""} ${isTransfer ? "transfer" : ""}`);
+      g.setAttribute("transform", `translate(${x}, ${y})`);
+
+      const outer = document.createElementNS(NS, "circle");
+      outer.setAttribute("class", "outer");
+      outer.setAttribute("r", isTransfer ? 9 : 6);
+      g.appendChild(outer);
+
+      const inner = document.createElementNS(NS, "circle");
+      inner.setAttribute("class", "inner");
+      inner.setAttribute("r", isTransfer ? 4.5 : 3);
+      inner.setAttribute("fill", agent.color);
+      g.appendChild(inner);
+
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", 0);
+      t.setAttribute("y", isTransfer ? -16 : 24);
+      t.setAttribute("text-anchor", "middle");
+      t.textContent = agent.name;
+      g.appendChild(t);
+
+      svg.appendChild(g);
+    }
+
+    // ============================================================
+    // CONCEPT 3 — TRADING CARDS
+    // ============================================================
+    function buildCards() {
+      const grid = document.getElementById("cardGrid");
+      grid.innerHTML = "";
+      Object.entries(AGENTS).forEach(([key, agent]) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.agent = key;
+        card.style.setProperty("--card-c", agent.color);
+        card.innerHTML = `
+          <div class="card-type">${agent.type} · ${agent.phase}</div>
+          <div class="card-name">${agent.name}</div>
+          <div class="card-art">${agent.emoji}</div>
+          <div class="card-move">
+            <b>${agent.role}</b>
+            ${agent.move}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+    function renderCards() {
+      const active = new Set(MODE_ACTIVE[currentMode]);
+      const featured = MODE_FEATURED[currentMode];
+      document.querySelectorAll("#cardGrid .card").forEach(card => {
+        const isActive = active.has(card.dataset.agent);
+        card.classList.toggle("dim", !isActive);
+        card.classList.toggle("featured", card.dataset.agent === featured);
+      });
+    }
+
+    // ============================================================
+    // CONCEPT 4 — OFFICE FLOOR PLAN
+    // ============================================================
+    const OFFICE_LAYOUT = {
+      discovery: ["orchestrator", "discovery-researcher", "competitive-analyst", "product-fingerprint-curator"],
+      define:    ["ideation-facilitator", "product-positioner", "feature-prioritizer", "pm-strategist", "prd-author", "critique-partner"],
+      deliver:   ["lo-fi-designer", "figma-designer", "design-engineer", "usability-tester", "handoff-engineer", "pm-launch-architect", "pm-metrics-architect", "figma-component-bootstrapper"],
+    };
+    const OFFICE_PATH = {
+      bootstrap: [
+        ["discovery", 0], ["discovery", 1], ["discovery", 2],
+        ["define", 1], ["define", 2], ["define", 4],
+        ["deliver", 0], ["deliver", 1], ["deliver", 2], ["deliver", 3], ["deliver", 4],
+      ],
+      audit: [["deliver", 1], ["deliver", 2], ["deliver", 3], ["deliver", 4], ["define", 5]],
+      define: [["discovery", 1], ["discovery", 2], ["define", 0], ["define", 1], ["define", 2], ["define", 3], ["define", 4]],
+      handoff: [["define", 4], ["deliver", 0], ["deliver", 1], ["deliver", 2], ["deliver", 3], ["deliver", 4]],
+    };
+    let pkgTimer = null;
+    function buildOffice() {
+      Object.entries(OFFICE_LAYOUT).forEach(([floor, agents]) => {
+        const container = document.querySelector(`.rooms[data-floor="${floor}"]`);
+        container.innerHTML = "";
+        agents.forEach((key, idx) => {
+          const agent = AGENTS[key];
+          const room = document.createElement("div");
+          room.className = "room";
+          room.dataset.agent = key;
+          room.dataset.floor = floor;
+          room.dataset.idx = idx;
+          room.style.setProperty("--room-c", agent.color);
+          room.innerHTML = `
+            <div>
+              <div class="room-name">${agent.name}</div>
+              <div class="room-role">${agent.short}</div>
+            </div>
+            <div class="room-desk"></div>
+          `;
+          container.appendChild(room);
+        });
+      });
+    }
+    function renderOffice() {
+      const active = new Set(MODE_ACTIVE[currentMode]);
+      document.querySelectorAll(".room").forEach(room => {
+        const isActive = active.has(room.dataset.agent);
+        room.classList.toggle("active", isActive);
+        room.classList.toggle("inactive", !isActive);
+      });
+
+      const path = OFFICE_PATH[currentMode];
+      const pkg = document.getElementById("package");
+      if (pkgTimer) clearInterval(pkgTimer);
+      let step = 0;
+      const movePkg = () => {
+        const [floor, idx] = path[step % path.length];
+        const room = document.querySelector(`.room[data-floor="${floor}"][data-idx="${idx}"]`);
+        if (!room) return;
+        const officeRect = document.getElementById("office").getBoundingClientRect();
+        const roomRect = room.getBoundingClientRect();
+        const x = roomRect.left - officeRect.left + roomRect.width / 2;
+        const y = roomRect.top - officeRect.top + roomRect.height / 2;
+        pkg.style.left = `${x}px`;
+        pkg.style.top = `${y}px`;
+        step++;
+      };
+      movePkg();
+      pkgTimer = setInterval(movePkg, 1300);
+    }
+
+    // ============================================================
+    // CONCEPT 8 — SPORTS FORMATION
+    // ============================================================
+    const FORMATIONS = {
+      bootstrap: {
+        "orchestrator":                   [50, 8],
+        "product-fingerprint-curator":    [7, 22],
+        "figma-component-bootstrapper":   [7, 38],
+        "critique-partner":               [93, 22],
+        "pm-metrics-architect":           [93, 38],
+        "discovery-researcher":           [28, 26],
+        "competitive-analyst":            [72, 26],
+        "ideation-facilitator":           [16, 50],
+        "product-positioner":             [38, 50],
+        "feature-prioritizer":            [62, 50],
+        "pm-strategist":                  [84, 50],
+        "prd-author":                     [50, 64],
+        "lo-fi-designer":                 [16, 80],
+        "figma-designer":                 [33, 84],
+        "design-engineer":                [50, 88],
+        "usability-tester":               [67, 84],
+        "handoff-engineer":               [84, 80],
+        "pm-launch-architect":            [50, 95],
+      },
+      audit: {
+        "critique-partner":               [50, 50],
+        "figma-designer":                 [35, 30],
+        "usability-tester":               [65, 30],
+        "design-engineer":                [25, 55],
+        "handoff-engineer":               [75, 55],
+        "lo-fi-designer":                 [35, 75],
+        "prd-author":                     [65, 75],
+        "orchestrator":                   [6, 8],
+        "product-fingerprint-curator":    [6, 22],
+        "figma-component-bootstrapper":   [6, 36],
+        "discovery-researcher":           [6, 50],
+        "competitive-analyst":            [6, 64],
+        "ideation-facilitator":           [6, 78],
+        "product-positioner":             [6, 92],
+        "pm-metrics-architect":           [94, 8],
+        "feature-prioritizer":            [94, 22],
+        "pm-strategist":                  [94, 36],
+        "pm-launch-architect":            [94, 92],
+      },
+      define: {
+        "orchestrator":                   [50, 10],
+        "discovery-researcher":           [28, 26],
+        "competitive-analyst":            [72, 26],
+        "ideation-facilitator":           [16, 50],
+        "product-positioner":             [38, 50],
+        "pm-strategist":                  [62, 50],
+        "feature-prioritizer":            [84, 50],
+        "prd-author":                     [50, 75],
+        "critique-partner":               [50, 92],
+        "product-fingerprint-curator":    [6, 10],
+        "figma-component-bootstrapper":   [6, 24],
+        "pm-metrics-architect":           [94, 10],
+        "lo-fi-designer":                 [6, 92],
+        "figma-designer":                 [20, 92],
+        "design-engineer":                [80, 92],
+        "usability-tester":               [94, 92],
+        "handoff-engineer":               [94, 78],
+        "pm-launch-architect":            [94, 64],
+      },
+      handoff: {
+        "orchestrator":                   [50, 6],
+        "prd-author":                     [50, 18],
+        "lo-fi-designer":                 [50, 32],
+        "figma-designer":                 [50, 46],
+        "design-engineer":                [50, 60],
+        "usability-tester":               [50, 74],
+        "handoff-engineer":               [50, 88],
+        "product-fingerprint-curator":    [18, 32],
+        "figma-component-bootstrapper":   [18, 46],
+        "critique-partner":               [82, 60],
+        "pm-launch-architect":            [82, 88],
+        "pm-metrics-architect":           [82, 96],
+        "discovery-researcher":           [6, 8],
+        "competitive-analyst":            [6, 20],
+        "ideation-facilitator":           [6, 32],
+        "product-positioner":             [6, 44],
+        "feature-prioritizer":            [6, 56],
+        "pm-strategist":                  [6, 68],
+      },
+    };
+    function buildPitch() {
+      const pitch = document.getElementById("pitch");
+      pitch.querySelectorAll(".player").forEach(p => p.remove());
+      let n = 1;
+      Object.entries(AGENTS).forEach(([key, agent]) => {
+        const p = document.createElement("div");
+        p.className = "player";
+        p.dataset.agent = key;
+        p.style.setProperty("--player-c", agent.color);
+        p.innerHTML = `
+          <div class="player-jersey">${agent.initials}</div>
+          <div class="player-name">${agent.name} · #${n}</div>
+        `;
+        pitch.appendChild(p);
+        n++;
+      });
+    }
+    function renderFormation() {
+      const formation = FORMATIONS[currentMode];
+      const active = new Set(MODE_ACTIVE[currentMode]);
+      const captain = MODE_FEATURED[currentMode];
+      document.querySelectorAll(".player").forEach(p => {
+        const key = p.dataset.agent;
+        const [x, y] = formation[key] || [50, 50];
+        p.style.left = `${x}%`;
+        p.style.top  = `${y}%`;
+        p.classList.toggle("bench", !active.has(key));
+        p.classList.toggle("captain", key === captain);
+      });
+    }
+
+    // ============================================================
+    // GLOBAL MODE SWITCH
+    // ============================================================
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll("#modes .mode").forEach(b => {
+        b.classList.toggle("active", b.dataset.mode === mode);
+      });
+      renderSubway();
+      renderCards();
+      renderOffice();
+      renderFormation();
+    }
+    document.querySelectorAll("#modes .mode").forEach(btn => {
+      btn.addEventListener("click", () => setMode(btn.dataset.mode));
+    });
+
+    // Pick buttons — show a confirmation chip the user can screenshot/send back
+    document.querySelectorAll(".pick-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const pick = btn.dataset.pick;
+        const names = { subway: "Subway map", cards: "Trading cards", office: "Office floor plan", formation: "Sports formation" };
+        const note = document.createElement("div");
+        note.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0066cc;color:#fff;padding:12px 18px;border-radius:9999px;font-size:13px;font-weight:500;box-shadow:0 12px 24px -8px rgba(0,0,0,0.3);z-index:200;transition:opacity 0.4s ease;`;
+        note.textContent = `Picked: ${names[pick]} — tell Claude to build it out.`;
+        document.body.appendChild(note);
+        setTimeout(() => { note.style.opacity = "0"; setTimeout(() => note.remove(), 400); }, 3200);
+      });
+    });
+
+    buildCards();
+    buildOffice();
+    buildPitch();
+    setMode("bootstrap");
+
+    window.addEventListener("resize", () => {
+      if (pkgTimer) clearInterval(pkgTimer);
+      renderOffice();
+    });
+  </script>
+</body>
+</html>
