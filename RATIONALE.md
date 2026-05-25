@@ -112,7 +112,7 @@ The user has explicitly called out $8/feature as unacceptable. $3 is a deliberat
 - Cap each agent's output per the Token Budget Rules
 - Surface the cost upfront and ask the user to approve
 
-The cost meter is surfaced on demand via `/agent-harry-cost` — turns yellow at $1.50 and red at $2.50 thresholds in the rendered output. (Pre-v5.0, this was an always-on banner on `dashboard.html`'s top bar — removed in v5.0 alongside the dashboard.)
+Cost is surfaced on demand via `/agent-harry-cost`. Pre-v5.0 had a colored cost meter banner on `dashboard.html`'s top bar (yellow at $1.50, red at $2.50) — removed in v5.0 alongside the dashboard, no replacement passive warning. If skipping the warning bites in practice, that's a deliberate future feature, not a covert reintroduction.
 
 ---
 

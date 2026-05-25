@@ -60,7 +60,7 @@ In Claude Code, open the project you want to work in. Type one of these:
 
 What happens:
 
-- 17 agent files land in `<project>/.claude/agents/`
+- 18 agent files land in `<project>/.claude/agents/`
 - 5 slash commands land in `<project>/.claude/commands/`
 - A `SHARED_CONTEXT.md` template lands at the project root
 - A `.gitignore` entry is added for the audit ledger file
@@ -131,7 +131,7 @@ In rough order of value:
 
 1. [First Feature Walkthrough](guides/first-feature-walkthrough.html) — see what a full session actually looks like, with realistic dialogue and costs
 2. [Stop Gate](concepts/stop-gate.html) — what to type after each agent
-3. [Agents](index.html#all-agents) — what each of the 17 agents does
+3. [Agents](index.html#all-agents) — what each of the 18 agents does
 4. [Commands](index.html#all-commands) — what each slash command does
 5. [Troubleshooting](guides/troubleshooting.html) — when something goes wrong
 

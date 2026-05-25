@@ -34,7 +34,7 @@ In Claude Code, open your project. Type one of these:
 
 What happens:
 
-- Overwrites the 17 agent files in `<project>/.claude/agents/` with the latest from `~/.claude/skills/agent-harry/templates/`.
+- Overwrites the 18 agent files in `<project>/.claude/agents/` with the latest from `~/.claude/skills/agent-harry/templates/`.
 - Overwrites the 5 slash commands.
 - **Preserves your `SHARED_CONTEXT.md`** — your project-specific config stays.
 - **Preserves your `product-fingerprint.md`** (v4.0+) — your curated visual vocabulary stays.

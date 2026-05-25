@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 17-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents + 1 cross-cutting curator (product-fingerprint-curator) — including lo-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates an 18-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents + 2 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2) — including lo-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps a 17-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps an 18-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -51,7 +51,7 @@ Steps:
 Expected output:
 
 ```
-Installed 17 Agent Harry subagents + 5 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
+Installed 18 Agent Harry subagents + 5 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
 
 Try this:
 1. "/audit-pipeline" — confirm the project is set up correctly.
@@ -94,7 +94,7 @@ Patch method: use `view` + `str_replace` for targeted edits. Don't regenerate te
 Expected output:
 
 ```
-Installed 17 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 18 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
 
 Customizations applied:
 - Removed Mobbin MCP from <agents> — using Web Search fallback

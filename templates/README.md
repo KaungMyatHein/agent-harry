@@ -25,7 +25,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
                              └────────────┘             └───────────┘
 ```
 
-## Agents (17 total)
+## Agents (18 total)
 
 | Agent | Phase | Voice | Model | Primary MCPs |
 |---|---|---|---|---|
@@ -46,6 +46,7 @@ Built around an **Orchestrator + specialized sub-agents** pattern with per-agent
 | `pm-metrics-architect` | Cross-cutting | Skeptical instrumentation lead | sonnet | Notion |
 | `prd-author` | Deliver | Precise PRD writer | sonnet | — |
 | `product-fingerprint-curator` (v4.0) | Cross-cutting | Pattern-extractor | sonnet | Figma |
+| `figma-component-bootstrapper` (v4.2) | Cross-cutting (one-time per project) | Pragmatic systems-designer | sonnet | Figma |
 
 `figma-designer` is the Figma-side counterpart to `design-engineer`: same pipeline slot (after `lo-fi-designer`), same hi-fi expectation, different surface. The user picks the Deliver path off the lo-fi handoff — Figma-first (designer-led) or code-first (developer-led). Both can run on the same flow; the second one consumes the first's handoff as reference.
 
@@ -265,7 +266,8 @@ product-designer-agents/
     │   ├── pm-launch-architect.md   (sonnet)
     │   ├── pm-metrics-architect.md  (sonnet)
     │   ├── prd-author.md            (sonnet) ← v3.5
-    │   └── product-fingerprint-curator.md (sonnet) ← v4.0
+    │   ├── product-fingerprint-curator.md (sonnet) ← v4.0
+    │   └── figma-component-bootstrapper.md (sonnet) ← v4.2
     └── commands/
         ├── audit-pipeline.md              ← /audit-pipeline
         ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync (v3.5)

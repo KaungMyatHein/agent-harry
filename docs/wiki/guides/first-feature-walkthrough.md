@@ -152,7 +152,7 @@ Target: address-step completion rate from current 64% → 80%
 Artifact written: design-workspace/saas-ecommerce/2026-05-24_pm-metrics-architect_checkout-metrics.md
 ```
 
-The Stop Gate text changes here. Instead of the usual "proceed?" chip, it asks for **confirmation** of the success metrics — that's the signal the Success-Metrics Gate uses to know you've actually agreed.
+The Stop Gate text changes here. Instead of the usual "proceed?" framing, it asks for **confirmation** of the success metrics — that's the signal the Success-Metrics Gate uses to know you've actually agreed.
 
 **You:**
 

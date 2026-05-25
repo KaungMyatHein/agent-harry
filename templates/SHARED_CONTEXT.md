@@ -219,7 +219,7 @@ Note: `lo-fi-designer` is Define-phase and is NOT blocked by this gate — layou
 1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND the user has explicitly confirmed it with `y` on the Stop Gate that followed the metrics run.
 2. The user has explicitly opted out with: *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* / equivalent phrasing.
 
-When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics (chip hint becomes `confirm success metrics`, TL;DR ends with *"Confirm these metrics so Deliver can proceed?"*).
+When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics: the TL;DR's open-question bullet becomes *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."*
 
 `/audit-pipeline` reports this gate's status alongside the Research-First Gate. See `RATIONALE.md` for the why.
 

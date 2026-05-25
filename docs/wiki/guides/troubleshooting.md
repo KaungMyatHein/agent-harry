@@ -59,15 +59,15 @@ Run [`/audit-pipeline`](../commands/audit-pipeline.html) to see what gates are b
 
 After 3 consecutive revise rounds, the agent suggests pivoting. Either pivot back to an earlier step (`pivot — re-do layout`) or accept the current output with `y` and refine manually.
 
-## The cost meter is hitting red ($2.50+)
+## Cumulative cost is climbing past the $3 soft ceiling
 
-Cumulative cost for this session is high. Common causes:
+Check by running [`/agent-harry-cost`](../commands/agent-harry-cost.html) — it aggregates measured cost from the audit ledger. Common causes when the number is high:
 
 - Multiple Mode A runs when Mode B would do.
 - Many revise rounds without converging.
 - Running expensive Opus agents (orchestrator, critique-partner) when they're not needed.
 
-Cancel, run [`/agent-harry-audit`](../commands/agent-harry-audit.html) to find the biggest spenders, and consider a different approach.
+Cancel, run [`/agent-harry-audit`](../commands/agent-harry-audit.html) to find the biggest spenders, and consider a different approach. (Pre-v5.0 had a colored cost meter on `dashboard.html` that warned at $1.50 / $2.50 — removed when the dashboard was ripped. Use `/agent-harry-cost` on demand instead.)
 
 ## Filed an issue, didn't get a response
 
