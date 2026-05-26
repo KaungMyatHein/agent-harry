@@ -615,6 +615,94 @@
     }
     .conn-empty { font-size: 13px; color: var(--ink-50); font-style: italic; }
 
+    /* Example banner — sits above the stage, gives the abstract tree a concrete brief */
+    .example-banner {
+      max-width: 1080px;
+      margin: 18px auto 0;
+      padding: 0 28px;
+    }
+    .example-banner-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 18px;
+      background: linear-gradient(180deg, #fff8e1 0%, #fff3c4 100%);
+      border: 1px solid #f0d97c;
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--ink-70);
+    }
+    .example-banner-tag {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #8a6d00;
+      font-weight: 600;
+      flex-shrink: 0;
+      background: rgba(255, 213, 79, 0.45);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .example-banner-title {
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .example-banner-brief {
+      color: var(--ink-70);
+    }
+    @media (max-width: 720px) {
+      .example-banner { padding: 0 20px; }
+      .example-banner-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+
+    /* "Example" block inside the detail panel — concrete agent output for this brief */
+    .example-block {
+      margin-top: 24px;
+      padding: 16px 18px;
+      background: linear-gradient(180deg, #fff8e1 0%, #fff3c4 100%);
+      border: 1px solid #f0d97c;
+      border-radius: 10px;
+    }
+    .example-block-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #8a6d00;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .example-block-label::before {
+      content: "★";
+      font-size: 11px;
+    }
+    .example-block-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .example-block-body {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+    .example-block-body code {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 12px;
+      background: rgba(255, 213, 79, 0.35);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .example-block-body em {
+      font-style: italic;
+      color: var(--ink);
+    }
+
     .gate-card {
       background: var(--ink);
       color: #fff;
@@ -666,6 +754,97 @@
       border: 1px solid var(--hairline);
       border-radius: 20px;
       padding: 22px 24px;
+    }
+
+    /* Shared Context — the artifact bundle this agent reads when it starts.
+       Walked from the selected agent's transitive upstream + always-on setup outputs. */
+    .context-card {
+      background: linear-gradient(180deg, #fff 0%, #f7f7fa 100%);
+      border: 1px solid var(--hairline);
+      border-radius: 20px;
+      padding: 22px 22px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .context-card::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--c-orchestrator), var(--c-positioner), var(--c-engineer), var(--c-launch));
+      opacity: 0.85;
+    }
+    .context-card .label {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--ink-50);
+      margin-bottom: 4px;
+    }
+    .context-card h3 {
+      font-family: "SF Pro Display", system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      margin-bottom: 14px;
+    }
+    .ctx-empty {
+      font-size: 12.5px;
+      color: var(--ink-50);
+      font-style: italic;
+      line-height: 1.5;
+    }
+    .ctx-group { margin-bottom: 12px; }
+    .ctx-group:last-of-type { margin-bottom: 0; }
+    .ctx-group-name {
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--group-c, var(--ink-50));
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ctx-group-name::before {
+      content: "";
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 1px;
+      background: var(--group-c, var(--ink-50));
+    }
+    .ctx-items {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 11px;
+    }
+    .ctx-item {
+      font-size: 12.5px;
+      color: var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      line-height: 1.4;
+    }
+    .ctx-item-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--item-c, var(--ink-30));
+      flex-shrink: 0;
+      transform: translateY(1px);
+    }
+    .ctx-item-text { flex: 1; }
+    .ctx-meta {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--divider);
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.6px;
+      color: var(--ink-50);
     }
     .hint-card .label {
       font-family: ui-monospace, "SF Mono", monospace;
@@ -766,6 +945,14 @@
     </button>
   </div>
 
+  <div class="example-banner">
+    <div class="example-banner-inner">
+      <span class="example-banner-tag">Example</span>
+      <span class="example-banner-title" id="exampleTitle"></span>
+      <span class="example-banner-brief" id="exampleBrief"></span>
+    </div>
+  </div>
+
   <div class="stage-wrap">
     <div class="stage" id="stage">
       <div class="stage-meta" id="stageMeta"><strong>Bootstrap</strong> · waterfall family tree</div>
@@ -802,6 +989,7 @@
   <section class="detail">
     <div class="detail-main" id="detail"></div>
     <aside class="detail-aside">
+      <div class="context-card" id="contextCard"></div>
       <div class="gate-card" id="gateCard"></div>
       <div class="hint-card" id="hintCard"></div>
     </aside>
@@ -944,6 +1132,61 @@
     // ---------------- Output artifacts (what each agent emits) ----------------
     // The thing that flows along every outgoing edge from this agent.
     // Used in the detail panel to label upstream/downstream connections.
+    // Short labels for compact display in the Shared Context card (full sentences in OUTPUTS).
+    const SHORT_OUTPUTS = {
+      orchestrator:                   "Run plan + sequence",
+      "critique-partner":             "Critique notes",
+      "product-fingerprint-curator":  "Visual fingerprint",
+      "figma-component-bootstrapper": "Component library",
+      "discovery-researcher":         "Interview findings",
+      "competitive-analyst":          "Competitor teardown",
+      "ideation-facilitator":         "3 concept angles",
+      "product-positioner":           "Positioning angle",
+      "feature-prioritizer":          "Prioritized backlog",
+      "pm-strategist":                "Roadmap bet",
+      "prd-author":                   "PRD + journey schema",
+      "lo-fi-designer":               "Lo-fi layout + flow",
+      "figma-designer":               "Hi-fi Figma file",
+      "design-engineer":              "Coded prototype",
+      "usability-tester":             "Stress-test report",
+      "handoff-engineer":             "Dev-ready spec",
+      "pm-launch-architect":          "Launch plan",
+      "pm-metrics-architect":         "Metrics + alerts",
+    };
+
+    // Phase grouping for the Shared Context card (which "bucket" each artifact came from).
+    const PHASE_GROUP = {
+      orchestrator:                   "meta",
+      "critique-partner":             "always-on",
+      "product-fingerprint-curator":  "setup",
+      "figma-component-bootstrapper": "setup",
+      "discovery-researcher":         "discovery",
+      "competitive-analyst":          "discovery",
+      "ideation-facilitator":         "define",
+      "product-positioner":           "define",
+      "feature-prioritizer":          "define",
+      "pm-strategist":                "define",
+      "prd-author":                   "define",
+      "lo-fi-designer":               "deliver",
+      "figma-designer":               "deliver",
+      "design-engineer":              "deliver",
+      "usability-tester":             "deliver",
+      "handoff-engineer":             "deliver",
+      "pm-launch-architect":          "launch",
+      "pm-metrics-architect":         "always-on",
+    };
+
+    // Phase groups in display order, with a swatch color and label.
+    const PHASE_ORDER = [
+      { id: "setup",      name: "Setup",      color: "var(--c-fingerprint)" },
+      { id: "meta",       name: "Conductor",  color: "var(--c-orchestrator)" },
+      { id: "discovery",  name: "Discovery",  color: "var(--c-discovery)" },
+      { id: "define",     name: "Define",     color: "var(--c-positioner)" },
+      { id: "deliver",    name: "Deliver",    color: "var(--c-engineer)" },
+      { id: "launch",     name: "Launch",     color: "var(--c-launch)" },
+      { id: "always-on",  name: "Always on",  color: "var(--c-critique)" },
+    ];
+
     const OUTPUTS = {
       orchestrator:                   "Decomposed plan, sub-agent sequence, Stop Gates inserted between phases",
       "critique-partner":             "List of weak reasoning, untested assumptions, and missing tradeoffs",
@@ -963,6 +1206,34 @@
       "handoff-engineer":             "Dev-ready spec — tokens, states, edge cases, the artifact engineers ship from",
       "pm-launch-architect":          "Launch plan — beachhead, wedge, messaging, channels, sequence",
       "pm-metrics-architect":         "North-star metric + input metrics + success thresholds + alert rules",
+    };
+
+    // ---------------- Real-world example (Merchant payouts) ----------------
+    // Concrete output for each agent on a specific brief — makes the abstract tree readable.
+    // Reused from the Use cases section on the landing page.
+    const EXAMPLE = {
+      title: "Food delivery — one-tap reorder for repeat orders",
+      brief: "A food delivery app wants to remove the 5-tap checkout for users who reorder the same meal from the same restaurant weekly. Goal: cut reorder time from 90s to under 5s and lift weekly active rate.",
+      byAgent: {
+        orchestrator:                   "Sequenced 9 agents across 3 phases. Estimated cost <code>$2.10</code> · ETA <code>~16 min</code> · model <code>sonnet</code>.",
+        "critique-partner":             "Flagged: \"one tap\" presumes the user wants the exact same order. 23% of repeat customers tweak quantities or sides — risk of confusing accidental reorders.",
+        "product-fingerprint-curator":  "Distilled 6 designer-picked frames: warm food-photography backgrounds, prominent CTA buttons, ratings in chips, delivery-time as the trust signal.",
+        "figma-component-bootstrapper": "Generated baseline library: 10 components (button, card, badge, list-row, image-tile, input, modal, toast, progress-bar, segmented-control) with project tokens applied.",
+        "discovery-researcher":         "15-question script across 3 user types (weekly regulars / occasional / first-time). Finding: 41% of orders come from the same restaurant in the last 30 days; current checkout takes 5 taps.",
+        "competitive-analyst":          "DoorDash, Uber Eats, Grubhub teardown. Pattern: \"reorder\" exists in all three but buried in profile/history. None surface it on home; all force a 3-step confirmation.",
+        "ideation-facilitator":         "(1) Big \"Order again\" card pinned to home for the last meal. (2) Lock-screen widget with one-tap reorder. (3) Voice trigger: \"reorder my Friday usual.\"",
+        "product-positioner":           "Picked angle: <em>\"From craving to confirmation in 5 seconds.\"</em> Explicitly NOT doing: new-restaurant discovery, group orders, scheduled future orders.",
+        "feature-prioritizer":          "P0: <code>home-reorder-card</code>, <code>tap-to-confirm</code>. P1: <code>lockscreen-widget</code>. Cut: <code>voice-trigger</code> (off-angle, infra-heavy).",
+        "pm-strategist":                "Q4 bet: Habit-loop wedge for the 41% repeat cohort. Trade-off: foregoing engagement metrics for new-restaurant exploration (~12% of WAU).",
+        "prd-author":                   "Persona: weekly-regular eater. Entry: app opened with a previous order in last 30 days. Success exit: order placed in <5s with a 5s undo timer. Failure exit: restaurant closed or item unavailable → suggest closest substitute.",
+        "lo-fi-designer":               "Primary: home-screen <em>\"Order Pad Thai again — $12.40, 25 min\"</em> card. Alt: bottom-sheet quick reorder. Risky: notification-as-CTA at 6pm. DS: card, button, badge, list-row, toast.",
+        "figma-designer":               "8 hi-fi frames covering the home reorder card, 5-second undo state, restaurant-closed fallback, and substitute-suggestion flow. All 5 states per screen.",
+        "design-engineer":              "React Native prototype on iOS + Android. 5 states wired including: restaurant closed, item out of stock, delivery zone changed, and payment-method-expired edge case.",
+        "usability-tester":             "5-task stress-test. Found: undo timer at 5s feels rushed when the user is distracted; haptic on tap-confirm missing on Android; \"order again\" feels presumptuous after only 1 prior order.",
+        "handoff-engineer":             "Dev spec: <code>color/accent/warm</code>, <code>radius/md</code>, <code>space/2</code>, haptic <code>impactMedium</code> on confirm, all button states + the 5s-countdown component, edge cases for missing food images.",
+        "pm-launch-architect":          "Beachhead: top-20 metro markets, users with 3+ orders/month. Wedge: \"Your usual, in one tap.\" Channels: in-app notification (Fri 5pm), email nudge for inactive repeaters, App Store screenshot refresh.",
+        "pm-metrics-architect":         "North-star: median reorder time (target <5s, current 90s). Inputs: reorder-card tap rate, undo-tap rate, completion rate, week-over-week reorder frequency. Alert: undo-rate > 8% for 24h.",
+      },
     };
 
     // ---------------- Auto-derive edges from AGENTS data ----------------
@@ -1464,7 +1735,76 @@
     function selectAgent(key) {
       selectedAgent = key;
       renderDetail(key);
+      renderSharedContext(key);
       highlightSelection();
+    }
+
+    // Walk the upstream graph from `key` and collect every transitive ancestor.
+    // These are the agents whose outputs are already "on the table" when `key` starts.
+    function getBundleFor(key) {
+      const visited = new Set();
+      const stack = [...(AGENTS[key]?.upstream || [])];
+      while (stack.length) {
+        const k = stack.pop();
+        if (!AGENTS[k] || visited.has(k)) continue;
+        visited.add(k);
+        (AGENTS[k].upstream || []).forEach(u => stack.push(u));
+      }
+      // Always-on setup artifacts are in scope for everyone except themselves.
+      ["product-fingerprint-curator", "figma-component-bootstrapper"].forEach(s => {
+        if (s !== key) visited.add(s);
+      });
+      return visited;
+    }
+
+    function renderSharedContext(key) {
+      const a = AGENTS[key];
+      if (!a) return;
+      const bundle = getBundleFor(key);
+      const contextCardEl = document.getElementById("contextCard");
+
+      if (bundle.size === 0) {
+        contextCardEl.innerHTML = `
+          <div class="label">⬢ Shared context</div>
+          <h3>Empty — nothing has run yet.</h3>
+          <p class="ctx-empty">This agent is the first hand on the wheel. Everything downstream will see <em>${SHORT_OUTPUTS[key] || a.name}</em> in their bundle.</p>
+        `;
+        return;
+      }
+
+      // Group bundle members by phase
+      const groups = {};
+      bundle.forEach(member => {
+        const g = PHASE_GROUP[member] || "always-on";
+        (groups[g] ||= []).push(member);
+      });
+
+      const groupsHtml = PHASE_ORDER
+        .filter(p => groups[p.id] && groups[p.id].length)
+        .map(p => {
+          const items = groups[p.id].map(m => {
+            const agent = AGENTS[m];
+            return `
+              <div class="ctx-item" title="${(OUTPUTS[m] || "").replace(/"/g, "&quot;")}">
+                <span class="ctx-item-dot" style="--item-c:${agent.color};"></span>
+                <span class="ctx-item-text">${SHORT_OUTPUTS[m] || agent.name}</span>
+              </div>
+            `;
+          }).join("");
+          return `
+            <div class="ctx-group">
+              <div class="ctx-group-name" style="--group-c:${p.color};">${p.name}</div>
+              <div class="ctx-items">${items}</div>
+            </div>
+          `;
+        }).join("");
+
+      contextCardEl.innerHTML = `
+        <div class="label">⬢ Shared context</div>
+        <h3>What <em style="font-style:italic;color:${a.color};">${a.name}</em> reads when it starts</h3>
+        ${groupsHtml}
+        <div class="ctx-meta">${bundle.size} artifact${bundle.size === 1 ? "" : "s"} on the table · grows as the run progresses</div>
+      `;
     }
 
     function renderDetail(key) {
@@ -1522,11 +1862,22 @@
         (downAgent) => `${key}→${downAgent}`,
       );
 
+      // Example block — render only if this agent has a concrete output for the brief
+      const exampleOutput = EXAMPLE.byAgent[key];
+      const exampleHtml = exampleOutput ? `
+        <div class="example-block">
+          <div class="example-block-label">Example output</div>
+          <div class="example-block-title">${EXAMPLE.title}</div>
+          <div class="example-block-body">${exampleOutput}</div>
+        </div>
+      ` : "";
+
       detailEl.innerHTML = `
         <div class="detail-eyebrow"><span class="dot" style="background:${a.color};"></span>${a.phase}</div>
         <h2>${a.name}</h2>
         <div class="role">${a.role}</div>
         <p class="short">${a.short}</p>
+        ${exampleHtml}
         <div class="detail-section">
           <h3>Reads from (upstream)</h3>
           <div class="conn-list">${upstreamCards}</div>
@@ -1581,9 +1932,14 @@
       });
     });
 
+    // Populate the example banner above the stage
+    document.getElementById("exampleTitle").textContent = EXAMPLE.title;
+    document.getElementById("exampleBrief").textContent = EXAMPLE.brief;
+
     buildNodes();
     applyMode("bootstrap");
     renderDetail("orchestrator");
+    renderSharedContext("orchestrator");
   </script>
 </body>
 </html>
