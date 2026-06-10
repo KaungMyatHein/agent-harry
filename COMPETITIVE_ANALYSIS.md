@@ -12,6 +12,10 @@ The one-line frame:
 
 > **Vibe design generates screens. Agentic design runs the design process — with a human at every gate.**
 
+![Vibe Design vs Agentic Design workflow comparison](docs/workflow-vibe-vs-agentic.png)
+
+*Regenerate with `python3 scripts/gen_workflow_diagram.py`.*
+
 The distinction is drawn on **process, not technology**. Figma's Design Agent and Stitch's real-time agent are technically agents too — they use tools and run multi-step generation. What they don't own is the process. Defining the split by process keeps the frame intact no matter how agentic the generation tools become:
 
 - **Vibe design** = telling an agent to produce a screen. Iterate by feel until it looks right.
