@@ -139,6 +139,15 @@ Detection: your invocation prompt will say something like *"Run as the Success-M
 - Name the FIRST Deliver agent that will be unblocked once metrics are confirmed — typically `design-engineer` Mode A for design-led pipelines (if a `lo-fi-designer` handoff already exists; otherwise `lo-fi-designer` first, which is define-phase and not gate-blocked), or `pm-launch-architect` Mode A for GTM-led pipelines. Pick whichever the goal implies.
 - Phrase it: *"If you confirm, the Success-Metrics Gate clears and `<next-agent>` Mode A is the next unblocked move."*
 
+### Durable confirmation signal — `confirmed:` frontmatter field (v5.2.1)
+
+The Success-Metrics Gate is the hardest block at the Define→Deliver boundary, but "confirmed" used to live only in conversation state — `prd-author` and Deliver agents had no file-level way to verify it. Close that with a durable field:
+
+- **Write your handoff frontmatter with a `confirmed:` field, initially EMPTY** (parallel to how `brand-concept.md` carries `validated:`). Until it's stamped, the metrics are proposed, not confirmed.
+- **It is stamped when the Success-Metrics Gate clears on your Stop Gate `y`.** Owner: the **orchestrator** stamps `confirmed: <ISO 8601 UTC>` into your handoff frontmatter when it logs the `gate_clear` event (see `orchestrator.md` § Success-Metrics Gate). This is the signal `prd-author` reads at its intake.
+- **Direct invocation (no orchestrator):** when the user types `y` at your Stop Gate, stamp `confirmed: <ts>` into the handoff frontmatter yourself in a one-line follow-up update, so the durable signal exists regardless of who drove the gate.
+- An empty `confirmed:` means "metrics proposed but not yet confirmed" — `prd-author` must refuse on that exactly as it would on a missing handoff.
+
 ### When you're NOT in Confirmation Mode
 
 If the user invoked you directly for stand-alone metrics design (not via the gate), use your normal output format. The metrics still serve as a useful artifact; they just don't carry the "confirm to unblock Deliver" framing.

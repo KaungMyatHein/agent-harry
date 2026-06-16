@@ -4,6 +4,17 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-16 — v5.2.2: Pipeline-audit P1 fixes — durable gate signals + anti-friction
+
+**Patch, non-breaking.** The four P1 findings from the v5.2.1 pipeline audit (pre-existing structural issues, not v5.2-specific) are now fixed:
+
+1. **Success-Metrics Gate had no file-level confirmation signal** — "confirmed" lived only in conversation state, so `prd-author` (especially on a later or direct invocation) couldn't verify it. Added a durable `confirmed:` timestamp to the `pm-metrics-architect` handoff frontmatter (parallel to `brand-concept.md`'s `validated:`). The orchestrator stamps it when the Success-Metrics Gate clears on `y` (alongside the `gate_clear` event); `prd-author` and the gate now check the field, not memory. (`pm-metrics-architect`, `orchestrator`, `prd-author`, `SHARED_CONTEXT`.)
+2. **prd-author ↔ feature-prioritizer contract was unpinned** — the prioritizer never declared an output path and prd-author hardcoded a "RICE" score column that broke under ICE/Kano/MoSCoW/CoD. Pinned the prioritizer's output to `./design-workspace/<slug>/define/prioritization.md` with a required `scoring_framework` + `items[]` (slug/score/tag) frontmatter contract; prd-author Globs that exact path and reads the framework instead of assuming RICE. Manifest column is now framework-agnostic ("Source score" + "Framework").
+3. **Cold-start friction wall** — on a zero-artifact project, the serial refuse-with-opt-out checks (fingerprint, IA, brand, journey) stacked into a wall that punished the hurried "just prototype this" user. Added a **Cold-Start Express Path** to the orchestrator: on a clear speed signal, it surfaces ONE consolidated opt-out gate and routes straight to `lo-fi-designer`, instead of letting each agent refuse in turn.
+4. **lo-fi-designer fingerprint was a hard block** — lo-fi is the cheapest, earliest exploration step, yet it required a ~$0.50 fingerprint curation before any ASCII wireframe. Softened lo-fi's fingerprint pre-intake to a **nudge that proceeds by default** (`visual_drift_risk: true`), while `figma-designer` / `design-engineer` keep the hard refuse (their output is where drift is expensive). Documented the agent-dependent severity in `SHARED_CONTEXT` § Product Fingerprint.
+
+Remaining backlog (P2, not yet implemented): orchestrator ordering-table refactor, fingerprint pre-intake shared-protocol extract, client-brand `provisional` Validation state, brand-concept staleness nudge, pm-strategist↔positioner value-prop boundary.
+
 ## 2026-06-16 — v5.2.1: Pipeline-simulation fixes — 5 v5.2 wiring gaps closed
 
 **Patch, non-breaking.** A full Discovery→Deliver **process simulation** plus a 3-cluster adversarial agent audit (all 20 agents) surfaced five P0 wiring bugs in the just-shipped v5.2 IA/brand integration. All were functional silent-fail risks (the IA/brand features would degrade quietly when used), not polish. Fixed:

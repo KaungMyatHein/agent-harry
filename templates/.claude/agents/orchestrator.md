@@ -105,7 +105,7 @@ When `pm-metrics-architect` runs as the gate-clearer, frame its Stop Gate as a *
 
 ### Once the Success-Metrics Gate clears (v3.5 follow-on routing)
 
-When the user confirms metrics with `y` and the Gate clears, your next smallest-next-move proposals should reflect what's now unblocked. Two new options surface:
+When the user confirms metrics with `y` and the Gate clears, **first stamp the durable signal** (v5.2.1): write `confirmed: <ISO 8601 UTC>` into the `pm-metrics-architect` handoff frontmatter, in the same step you append the `gate_clear` audit event. This is the file-level signal `prd-author` reads to verify confirmation — without it, "confirmed" lives only in this conversation and `prd-author` (especially on a later/direct invocation) can't tell a confirmed metrics handoff from an unconfirmed one. Then your next smallest-next-move proposals reflect what's now unblocked. Two new options surface:
 
 1. **`prd-author`** (sonnet) — if the prioritization has at least one "in"-tagged item, propose `prd-author` as the next move. It generates one PRD per sub-feature. Pre-Deliver-design step.
 2. **`/agent-harry-notion-sync`** (slash command, not a sub-agent) — if the user wants the team to see what's been confirmed in Notion, suggest they run this command. Don't auto-invoke it; surface it as a sidebar option in the Stop Gate's next-move-suggestion text.
@@ -164,6 +164,26 @@ Your job around the brand concept:
 3. **Consuming agents check it themselves** — you route unconditionally; their pre-intake is where the refuse-with-opt-out lives.
 
 Full brand protocol: `SHARED_CONTEXT.md` § Brand Concept. Agent behavior: `brand-decoder.md`.
+
+---
+
+## Cold-Start Express Path (v5.2.1 — anti-friction)
+
+The pipeline has several refuse-with-opt-out checks (fingerprint, IA, brand concept, journey spec). Run serially on a **cold start** (zero artifacts) they become a wall: a hurried user who just wants to see something gets refused at nearly every agent. That contradicts the lean, smallest-next-move ethos. Defuse it by **consolidating the opt-outs into ONE gate** when the signal is clear.
+
+**Trigger:** the user signals speed over rigor on a project with no Define/Deliver artifacts yet — e.g. *"just prototype this"*, *"I just want to see a rough version"*, *"skip the process, mock it up"*, *"quick and dirty"*, Burmese *"အမြန် mock up"* / *"process မလို၊ prototype ပဲ"*.
+
+**Behavior — present a single consolidated opt-out gate** instead of letting each agent refuse in turn:
+
+> **Express path — I'll skip the setup artifacts and go straight to a lo-fi layout.** That means:
+> - **No product fingerprint** → layouts use generic composition (`visual_drift_risk`)
+> - **No information architecture** → this feature designed in isolation, no product-wide structure (`ia_inferred`)
+> - **No brand concept** → generic voice, not your brand's (`brand_unaligned`)
+> - **No PRD journeys** → single layout, no persona/journey shaping (`journey_structure_skipped`)
+>
+> Type **`y`** to take the express path (I'll log each skip and route straight to `lo-fi-designer`), or name any you DO want first (e.g. *"do the fingerprint, skip the rest"*).
+
+On `y`: log all four `*_skipped` events up front, then route directly to `lo-fi-designer` (which, post-v5.2.1, soft-nudges on fingerprint anyway). The express path is for **prototyping throwaway exploration**, not shipping — say so, and note that running the real Discovery→Define steps later upgrades the work. Do NOT offer the express path when the user signals they care about rigor (research, metrics, brand alignment), or when artifacts already exist (the value of the gates is realized — don't discard it).
 
 ---
 

@@ -219,7 +219,7 @@ The Deliver-phase agents (`design-engineer`, `figma-designer`, `usability-tester
 
 Note: `lo-fi-designer` is Define-phase and is NOT blocked by this gate — layout exploration can run before metrics are confirmed, and may inform metric selection.
 
-1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND the user has explicitly confirmed it with `y` on the Stop Gate that followed the metrics run.
+1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND its frontmatter carries a **non-empty `confirmed:` timestamp** (v5.2.1 — the durable signal). The orchestrator stamps `confirmed: <ISO 8601 UTC>` into that frontmatter when the user types `y` at the metrics Stop Gate, in the same step it logs `gate_clear`. `prd-author` and Deliver agents gate on this field, not on conversational memory — an existing-but-unconfirmed handoff (`confirmed:` empty) does NOT clear the gate.
 2. The user has explicitly opted out with: *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* / equivalent phrasing.
 
 When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics: the TL;DR's open-question bullet becomes *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."*
@@ -253,7 +253,9 @@ Before any other intake question, `lo-fi-designer` / `figma-designer` / `design-
 
 ### Refusal model
 
-Refuse-with-explicit-opt-out, parallel to Research-First Gate and Success-Metrics Gate:
+**Severity is agent-dependent (v5.2.1):** `figma-designer` and `design-engineer` **hard-refuse** on missing/stale fingerprint — their output is visual/code where drift is expensive. `lo-fi-designer` runs a **soft nudge** instead: it surfaces the same options but proceeds by default with `visual_drift_risk: true` (no typed opt-out required), because ASCII layout exploration is the cheapest, earliest step and shouldn't be blocked by a ~$0.50 curation. The nudge still points the user to curate before hi-fi (where the hard refuse kicks in).
+
+For the hard-refuse agents — refuse-with-explicit-opt-out, parallel to Research-First Gate and Success-Metrics Gate:
 
 - `skip fingerprint` — accepts visual-drift risk; logged as `fingerprint_skipped` in audit ledger; Executive Summary flags `visual_drift_risk: true`
 - `proceed with stale fingerprint` — accepts outdated-signal risk; logged as `fingerprint_stale_proceeded`; flags `fingerprint_stale: true`

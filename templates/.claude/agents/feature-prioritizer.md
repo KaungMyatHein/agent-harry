@@ -101,6 +101,24 @@ Follow `SUBAGENT_AUDIT_PROTOCOL.md` for session_id derivation, ledger append, an
 5. **Riskiest assumption** — and a cheap test
 6. **Confidence notes** — per-feature
 
+### Artifact path (v5.2.1 — pinned so `prd-author` can find it)
+
+Write the handoff to the **declared path** `./design-workspace/<project_slug>/define/prioritization.md`. `prd-author` Globs this exact path at its intake — a Notion table alone is not enough; the file must exist here. Populate `files_written` with it.
+
+Frontmatter MUST include:
+
+```yaml
+scoring_framework: RICE | ICE | Kano | MoSCoW | CoD     # which framework you actually used — prd-author reads this, does NOT assume RICE
+items:
+  - slug: <kebab-case-feature-slug>
+    name: <feature name>
+    score: <numeric for RICE/ICE/CoD; tier label for MoSCoW/Kano>
+    tag: in | out | dropped                              # `in` = above the cut line for MVP
+cut_line_rationale: <one line on where you cut and why>
+```
+
+The `slug` + `tag` + `score` per item is the contract `prd-author` iterates: it generates one PRD per `tag: in` item, sorted by `score` under `scoring_framework`. Keep slugs kebab-case and stable — they become PRD filenames and `feature_slug` throughout the pipeline.
+
 ## Approval Gate
 
 `propose` — Prioritization is the user's call. You present the scored table + a recommended cut line, and ask explicitly: *"Cut here?"* — never silently assume a scope.
