@@ -138,7 +138,11 @@ If the user opts to run `information-architect`, halt this invocation; user re-i
 
 ## Pre-Intake Check #4 — Brand Concept (v5.2, Soft — Runs AFTER IA)
 
-If `<project-root>/brand-concept.md` exists and is validated, load its `vocabulary` (use/avoid) and `mental_model` to shape placeholder copy and tone — consistent with how `figma-designer` / `design-engineer` will. If missing, nudge once (no refusal): *"No brand concept loaded — placeholder copy follows the fingerprint's `copy_tone` only, not a decoded brand voice. Run `brand-decoder` if this product has an existing brand to align to."* Append a `brand_concept_skipped` event only if the user explicitly types `skip brand concept`.
+Check `<project-root>/brand-concept.md` and set `brand_status` in your handoff frontmatter (the signal Deliver agents inherit):
+- **`validated:` non-empty** → load `vocabulary` (use/avoid) + `mental_model` to shape placeholder copy/tone. Set `brand_status: loaded`.
+- **`provisional_self_confirmed:` set, `validated:` empty** (v5.2.2) → load it the same way, but set `brand_status: provisional` and flag `brand_provisional: true` in your Executive Summary (best read, not yet client-confirmed).
+- **Active timestamp > ~9 months old** → still load, but add a one-line staleness nudge ("brand decode is N months old — re-decode if the brand has evolved").
+- **Missing, or exists but neither validated nor provisional** → set `brand_status: skipped` (or `present_unvalidated` if the file exists), don't load, nudge once (no refusal): *"No usable brand concept — placeholder copy follows the fingerprint's `copy_tone` only. Run `brand-decoder` if this product has an existing brand."* Append a `brand_concept_skipped` event only if the user explicitly types `skip brand concept`.
 
 ## Intake Questions (Ask Before Any Layout Work)
 
@@ -435,7 +439,7 @@ ia_for_feature:                                                  # v5.2 — null
         secondary: [<action>, ...]
         tertiary: [<action>, ...]                                # includes destructive→ghost
   ia_action_priority_conflicts: [<one-line PRD-vs-IA conflicts surfaced in Open Questions; empty array if none>]
-brand_status: loaded | skipped | present_unvalidated            # v5.2 — present_unvalidated means brand-concept.md exists but hasn't passed brand-decoder's Validation Stop Gate
+brand_status: loaded | provisional | skipped | present_unvalidated   # v5.2 (+provisional v5.2.2) — `loaded`=validated; `provisional`=client decode accepted without sign-off (carry brand_provisional:true); `present_unvalidated`=exists but neither validated nor provisional
 ```
 
 If the user opted out via `skip fingerprint`, set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.

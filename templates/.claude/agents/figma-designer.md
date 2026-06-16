@@ -214,7 +214,7 @@ Do NOT silently expand scope. Do NOT skip screens to fit a token budget — batc
 2. **Read the lo-fi handoff** — extract the chosen primary layout, the complete screen list, the DS component references, the v4.0 frontmatter fields (`entry_point`, `fingerprint_compliance`), AND the **v4.3 journey fields**: `journey_source`, `persona_resolved`, `sub_feature.primary_journey`, `sub_feature.nested_journey_designs`. If `journey_source: skipped`, treat as legacy (no Journey Map frame, no persona-aware copy section, page organization is flat).
 2.5. **Inherit the IA + brand status from the lo-fi handoff frontmatter (v5.2)** — the Figma-led path enforces the same product-wide structure as the code-led path; it is NOT exempt. Read from the lo-fi handoff (not prose):
    - **`ia_status` / `ia_inferred`** — if `ia_inferred: true`, no action-priority map exists; fall back to per-screen judgment and set `action_priority_source: inferred`. If `ia_status: loaded`, read `ia_for_feature` — the `screens` (each with `primary_object` + `primary_action`) and the `action_priority_map` (global invariants + per-object rows).
-   - **`brand_status`** — if `loaded`, load `<project-root>/brand-concept.md` `vocabulary` (use/avoid) + `mental_model` to govern frame copy alongside the fingerprint's `copy_tone` and the persona's task language. If `present_unvalidated` or `skipped`, do NOT load it (an unvalidated decode is a hypothesis; defensively require a non-empty `validated:` timestamp if reading the file directly).
+   - **`brand_status`** — if `loaded` (or `provisional`, v5.2.2), load `<project-root>/brand-concept.md` `vocabulary` (use/avoid) + `mental_model` to govern frame copy alongside the fingerprint's `copy_tone` and the persona's task language; for `provisional`, also flag `brand_provisional: true` in your Executive Summary. If `present_unvalidated` or `skipped`, do NOT load it (an unvalidated-and-non-provisional decode is a hypothesis; defensively require a non-empty `validated:` OR `provisional_self_confirmed:` timestamp if reading the file directly).
    You inherit lo-fi's upstream gate decision — no separate refuse here.
 3. **Read the PRD** — extract real content per screen (microcopy, labels, value props, error messages).
 4. **Resolve the DS from intake** — inspect the Figma library (preferred) or token file. Produce a DS component inventory. Halt if the DS is unresolved and the user has not opted into the Material fallback.
@@ -422,7 +422,7 @@ fingerprint_anchors_applied:
   copy_tone: <value-applied>
   composition_patterns: [<pattern-names from fingerprint>]
   antipatterns_respected: [<anti-pattern names>]
-brand_status: loaded | skipped | present_unvalidated            # v5.2 — propagated from lo-fi handoff; only `loaded` means vocabulary was applied
+brand_status: loaded | provisional | skipped | present_unvalidated   # v5.2 (+provisional v5.2.2) — propagated from lo-fi handoff; `loaded`/`provisional` mean vocabulary was applied (provisional carries brand_provisional:true)
 action_priority_source: map | inferred                          # v5.2 — `inferred` when ia_inferred: true (no IA map)
 action_priority_compliance:                                     # v5.2 — null when action_priority_source: inferred. Per-frame attestation.
   - screen: <name>

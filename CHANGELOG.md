@@ -4,6 +4,19 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-16 — v5.2.3: Pipeline-audit P2 fixes — clarity, provisional brand, anti-deadlock
+
+**Patch, non-breaking.** Four of the five P2 (enhancement/maintainability) findings from the pipeline audit:
+
+1. **Orchestrator ordering was scattered across six near-identical "Awareness" prose sections** — the sequence relationships between the project-level artifacts were never shown in one place. Added an **Artifact Ordering Map** table (artifact · when-proposed · who-enforces · blocks-what · cardinality · severity) + the canonical happy-path sequence at the top of the routing block. The detail sections remain; the table is the single source for the order.
+2. **Client-brand Validation deadlock** — a client-brand decode required client sign-off the designer often can't get in-session, forcing either a fake `y` or an indefinite block. Added a **`provisional`** Validation Stop Gate state: saves the decode with `provisional_self_confirmed:` (and `validated:` empty), and downstream consumers load it while flagging `brand_provisional: true` — honest middle ground, re-run to `validated:` once the client confirms. Wired through brand-decoder, SHARED_CONTEXT, lo-fi, design-engineer, figma-designer (brand_status gains a `provisional` value).
+3. **Brand concept had no staleness mechanism** (the fingerprint does) — added an age-based nudge: consumers surface "this decode is N months old" when the active timestamp is > ~9 months, advisory only (brand has no machine-checkable `lastModified`).
+4. **pm-strategist ↔ product-positioner value-prop overlap** — made the split explicit in both agents: pm-strategist owns the value-prop **hypothesis** (strategic bet), product-positioner owns the value-prop **statement/copy** (Strategyzer canvas, shippable wording).
+
+**Deliberately NOT done — fingerprint pre-intake shared-protocol extract (the 5th P2).** The audit flagged the ~70-line fingerprint pre-intake block as duplicated across agents. Extracting it to a shared file would break Agent Harry's deliberate **self-contained-agent** design principle (every agent is readable and runnable standalone, with its full refusal copy inline) and add an installed file. After v5.2.1 softened lo-fi's copy, only two agents (figma-designer, design-engineer) still share the identical hard-refuse block — a Low-severity drift risk not worth fighting the architecture for. Left inline by design; the canonical reference is `SHARED_CONTEXT.md` § Product Fingerprint.
+
+This clears the pipeline-audit backlog (P0 → v5.2.1, P1 → v5.2.2, P2 → v5.2.3, minus the one intentional deferral).
+
 ## 2026-06-16 — v5.2.2: Pipeline-audit P1 fixes — durable gate signals + anti-friction
 
 **Patch, non-breaking.** The four P1 findings from the v5.2.1 pipeline audit (pre-existing structural issues, not v5.2-specific) are now fixed:

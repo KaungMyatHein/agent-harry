@@ -89,9 +89,15 @@ The entire reason this agent exists is that brand concept gets **assumed** inste
 > - `revise — <what's off>` — correct my read
 > - `cancel` — don't save
 
-When Question 2 answered **client**, add to the gate:
+When Question 2 answered **client**, add to the gate — including a **third option** so the designer isn't deadlocked waiting for client sign-off they can't get in-session:
 
-> ⚠ This is a **client's** brand. Before trusting this decode in design work, validate it **with the client** — show them this concept statement and confirm it in their words. A confident-but-wrong decode is worse than no decode.
+> ⚠ This is a **client's** brand. The real validation is the client confirming this in their own words — that's the gold standard. But if you can't reach them right now and need to keep moving:
+>
+> - `y` — you've confirmed WITH the client (or you ARE the authority). Sets `validated:` — fully trusted downstream.
+> - `provisional` — this is your best read but NOT yet client-confirmed. Saves the decode with `provisional_self_confirmed:` set and `validated:` left empty. Downstream agents load it but flag every run `brand_provisional: true` (Executive Summary), so the work proceeds without silently faking client sign-off — and you re-run `y` once the client confirms.
+> - `revise — <what's off>` / `cancel` — as above.
+
+The `provisional` state exists because a confident-but-fake `y` (typing yes without real client validation) defeats the entire mechanic, and an indefinite block (no path forward until the client replies) defeats the work. `provisional` is the honest middle: proceed, but visibly marked as unconfirmed.
 
 Never let downstream work proceed on an unvalidated decode. The `y` here is what flips `brand-concept.md` from hypothesis to input.
 
@@ -106,9 +112,11 @@ Path: `<project-root>/brand-concept.md`
 > Read by `product-positioner`, `ideation-facilitator`, `information-architect`, `lo-fi-designer`, `design-engineer` at intake.
 > Refresh via `brand-decoder` when the brand visibly evolves or the client corrects the read.
 
-validated: <ISO 8601 UTC timestamp — set only after the Validation Stop Gate passes>
+validated: <ISO 8601 UTC timestamp — set only after the Validation Stop Gate passes with `y`. Empty when provisional or unconfirmed.>
+provisional_self_confirmed: <ISO 8601 UTC timestamp — set when a client-brand decode was accepted via `provisional` (best read, not yet client-confirmed). Mutually exclusive with `validated:`; clearing happens when the client confirms and you re-run to set `validated:`.>
 owner: self | client
 decoder_session: <s_YYYYMMDD_NNNN>
+# Staleness (v5.2.2): consuming agents nudge when the active timestamp (validated or provisional_self_confirmed) is > ~9 months old — brand meaning drifts (repositioning, new mission) like visual frames do. No auto-refusal; just "this decode is N months old — re-decode if the brand has evolved."
 
 ## Concept Statement
 

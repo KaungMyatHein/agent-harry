@@ -375,8 +375,10 @@ A project-level artifact at `<project-root>/brand-concept.md` that **decodes an 
 
 `product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer` check for `brand-concept.md` at intake. Refuse-with-explicit-opt-out (softer for IA — a nudge, since IA can proceed brand-agnostic):
 
-- Missing → options: run `brand-decoder`, or `skip brand concept` → logged `brand_concept_skipped`, Executive Summary flags `brand_unaligned: true`
-- Present + validated → load into intake context (mental model + vocabulary shape copy, grouping, concepts)
+- **Validated** (`validated:` non-empty) → load into intake context (mental model + vocabulary shape copy, grouping, concepts) — fully trusted
+- **Provisional** (v5.2.2 — `validated:` empty but `provisional_self_confirmed:` set) → **load it, but flag `brand_provisional: true`** in the Executive Summary. This is a client-brand decode the designer accepted as their best read without in-session client sign-off; work proceeds without silently faking confirmation. Re-runs to `validated:` once the client confirms.
+- **Missing OR unvalidated-and-not-provisional** → options: run `brand-decoder`, or `skip brand concept` → logged `brand_concept_skipped`, Executive Summary flags `brand_unaligned: true`
+- **Stale** (v5.2.2 — active timestamp > ~9 months old) → load as normal but nudge once: *"brand decode is N months old — re-decode if the brand has evolved."* No auto-refusal (parallel to, but softer than, the fingerprint freshness check; brand has no machine-checkable `lastModified`, so it's age-based and advisory).
 
 ### What the brand concept contains
 

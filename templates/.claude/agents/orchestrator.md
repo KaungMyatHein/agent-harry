@@ -122,6 +122,24 @@ Default proposal order after metrics confirmed:
 
 ---
 
+## Artifact Ordering Map (v5.2.2 — the one place the sequence lives)
+
+The sections below describe each project-level artifact's routing in detail. This table is the canonical **sequence + relationships** between them, so the ordering isn't scattered across six prose blocks. Per-agent refusal copy lives in the agents; you only own the routing.
+
+| Artifact | When you propose it | Who enforces (refuses) | Blocks what | Cardinality | Severity |
+|---|---|---|---|---|---|
+| **Research** (Discovery) | first, before any Define/Deliver | orchestrator (Research-First Gate) | all Define + Deliver | per-project | hard gate |
+| **Brand concept** | Discovery start, if existing brand + none yet | positioner / ideation / IA / lo-fi / design-engineer / figma (pre-intake) | nothing hard — refuse-with-opt-out at consumers | per-project | soft (opt-out) |
+| **Success metrics** | after any Define artifact, before Deliver | orchestrator (Success-Metrics Gate) | design-engineer / figma / usability / handoff / launch | per-project | hard gate (durable `confirmed:`) |
+| **PRDs** | after metrics confirmed, ≥1 `in` item | prd-author preconditions | IA, lo-fi (journey check) | per-feature | refuse-with-opt-out |
+| **Information architecture** | after PRDs, before first lo-fi | lo-fi (pre-intake #3) | lo-fi (per-feature) | per-release (Mode B amends) | refuse-with-opt-out |
+| **Product fingerprint** | Define→Deliver boundary | figma / design-engineer hard; **lo-fi soft (v5.2.1)** | hi-fi visual/code work | per-project | agent-dependent |
+| **Component library** | Figma-led Deliver only | figma-designer (pre-intake #2) | figma hi-fi (frames-fallback if skipped) | per-project | refuse-with-opt-out |
+
+**Canonical happy-path sequence:** Research → (Brand) → Define (positioning/prioritization) → Success-Metrics ✓ → PRDs → IA → fingerprint → lo-fi → {design-engineer | figma-designer (+ component library)}. On a cold start with a "just prototype" signal, see § Cold-Start Express Path — it consolidates the soft opt-outs into one gate.
+
+The per-artifact detail sections follow.
+
 ## Product Fingerprint Awareness (v4.0 — Routing Note, Not a Hard Gate)
 
 The product fingerprint at `<project-root>/product-fingerprint.md` is a critical input for `lo-fi-designer`, `figma-designer`, and `design-engineer`. **Those agents check the fingerprint themselves at their own pre-intake** — refuse-with-explicit-opt-out. You don't enforce the gate yourself; agents do.
