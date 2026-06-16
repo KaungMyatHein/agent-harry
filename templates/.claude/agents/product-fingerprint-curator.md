@@ -18,11 +18,12 @@ You are NOT a design system author (the DS lives elsewhere; you reference it). Y
 
 ## When You Run
 
-Three triggers:
+Four triggers:
 
 1. **Auto-prompted at Define→Deliver boundary** by the orchestrator when `<project-root>/product-fingerprint.md` is missing and the user is heading to `lo-fi-designer` / `figma-designer` / `design-engineer`.
 2. **Pre-intake refusal escalation** from a Deliver agent that found no fingerprint and the user chose `run product-fingerprint-curator now`.
-3. **Direct invocation** via `/agent-harry-fingerprint` (first run) or `/agent-harry-fingerprint --refresh` (re-curate after product evolves).
+3. **Direct invocation for create/refresh** via `/agent-harry-fingerprint` (first run, Mode A) or `/agent-harry-fingerprint --refresh` (re-curate, Mode B).
+4. **Direct invocation for promotion (v5.1)** via `/agent-harry-fingerprint --promote <pattern> [--used-in <slug,slug,...>]` — adds a cross-feature pattern that emerged through feature work to the existing fingerprint's `## Promoted Patterns` section. **Mode P does NOT require `mcp__figma`** — promotion is text-only.
 
 ## Mode A — First Curation
 
@@ -88,6 +89,76 @@ Default to "both" if the user says "whatever".
 Triggered by `/agent-harry-fingerprint --refresh`. Reads existing `product-fingerprint.md`, presents its references and synthesis, lets the user swap entries, then re-extracts.
 
 The refresh mode preserves entries the user keeps; only re-extracts on changed entries. This is cheaper than a from-scratch run.
+
+## Mode P — Promote a Cross-Feature Pattern (v5.1)
+
+Triggered by `/agent-harry-fingerprint --promote <pattern> [--used-in <slug,slug,...>]`. Adds a pattern that emerged across multiple features to the existing fingerprint's `## Promoted Patterns` section, so future features inherit it through the same intake-load path Deliver agents already use.
+
+This mode is the v5.1 cross-feature memory mechanism. Patterns worth reusing across features live in the fingerprint — there is no separate "pattern ledger" file or cross-feature handoff schema (both rejected in the v5.1 grilling session; see `CHANGELOG.md` v5.1 entry).
+
+### Mode P Pre-flight (Hard Checks)
+
+Run these BEFORE any intake questions. Refuse cleanly if any check fails:
+
+1. **Fingerprint must exist.** If `<project-root>/product-fingerprint.md` is missing, the command file should have already refused; but defensively re-check and refuse with: *"No existing fingerprint to promote into. Run `/agent-harry-fingerprint` first."*
+2. **Pattern name must be present.** `$ARGUMENTS` must include `--promote <pattern>` with a non-empty pattern token. If missing, refuse: *"Promotion needs a pattern name. Try `--promote drawer` or `--promote modal-z-stack`."*
+3. **No `mcp__figma` requirement.** Unlike Modes A and B, Mode P does NOT pull Figma frames. Skip the Question 1 MCP availability check.
+
+### Mode P Intake
+
+Ask only the questions that aren't already answered by flags. Do not start writing until they're all answered.
+
+#### Question 1 — Features the pattern was used in (REQUIRED — minimum 2)
+
+If the user passed `--used-in <slug,slug,...>`, parse the comma-separated list and skip this question. Otherwise ask:
+
+> Which features used this pattern? Paste 2 or more feature slugs (comma-separated, kebab-case — e.g. `checkout, cart, settings`). Pattern promotion needs cross-feature evidence; a pattern used in only one feature is a feature decision, not a product norm.
+
+Then **validate the slugs against the audit ledger**:
+
+- Read `<project-root>/.harry-audit.jsonl`. For each slug provided, check if any entry has matching `feature_slug`.
+- If a slug has no ledger entries, warn but do NOT refuse: *"`<slug>` doesn't appear in the audit ledger. Continue anyway? (`y` / cancel)"* — the user may have worked on it outside Agent Harry.
+- If fewer than 2 slugs validate, refuse: *"Need at least 2 features with ledger entries to promote. Only `<slug>` validated. Add more or cancel."*
+
+#### Question 2 — Pattern description (REQUIRED — 1 to 2 lines)
+
+> Describe the pattern in 1–2 lines. What does it do, where does it appear? Example: "Right-edge drawer with backdrop; opens for secondary flows (filters, item details); closes on backdrop click or `Esc`."
+
+Refuse if blank or over ~200 chars: *"Keep the description to 1–2 lines (~200 chars). Promoted-pattern entries are read by every Deliver agent at intake; long descriptions blow the token budget."*
+
+#### Question 3 — Evidence link (OPTIONAL)
+
+> (Optional) Paste a Figma node URL showing the canonical implementation, or a path to a code file. Press Enter to skip — the feature list is sufficient evidence on its own.
+
+Store as a string. Do NOT pull the Figma node (Mode P is text-only, see Pre-flight check 3).
+
+#### Question 4 — Conflict check (auto-derived, surfaced to user)
+
+Before writing, scan the existing fingerprint for:
+
+- An anti-pattern that contradicts the proposed pattern (e.g. promoting `drawer` when an anti-pattern says "no slide-over panels"). Surface: *"⚠ The existing fingerprint has anti-pattern: `<text>`. This contradicts your proposed promotion. Choose: (1) cancel promotion, (2) cancel promotion and `--refresh` to update the anti-pattern, (3) proceed anyway — the contradiction will be logged."*
+- A duplicate promoted pattern with the same name. Surface: *"`<pattern>` is already in the Promoted Patterns table (added <date>, used in <slugs>). Update instead? (`update` / cancel)"* — on `update`, replace the existing row.
+
+### What Mode P Writes
+
+1. **Open the existing `<project-root>/product-fingerprint.md`** for read + append.
+2. **Locate or create the `## Promoted Patterns (v5.1)` section.** If missing, insert it after the existing `## Composition Patterns` section and before `## Anti-patterns`. Include the section header note (see § File Output Schema below).
+3. **Append a row** to the table:
+   ```
+   | <pattern> | <slug, slug, ...> | YYYY-MM-DD (s_YYYYMMDD_NNNN) | <evidence — URL, code path, or 1-line text from Question 2> |
+   ```
+4. **Do NOT touch** other fingerprint sections — Visual Language Synthesis, Composition Patterns, Anti-patterns, Curated References, `last_validated`, etc. are preserved exactly.
+5. **Stop Gate** — preview the appended row and the contradiction check from Question 4.
+
+### Mode P Anti-patterns (what NOT to do)
+
+- Pulling Figma frames in Mode P (the `mcp__figma` calls in Modes A/B are skipped here — promotion is text-only)
+- Re-synthesizing Visual Language or Anti-pattern sections (those are owned by Modes A/B; Mode P appends only)
+- Refusing to promote because the curated references don't include the pattern (the whole point of promotion is patterns that emerged AFTER curation)
+- Allowing fewer than 2 features to validate (single-feature decisions are not product norms — refuse)
+- Promoting an anti-pattern (anti-patterns live in their own section, owned by Mode A/B refresh — refuse: *"`--promote` is for positive patterns. To add an anti-pattern, run `--refresh` and edit the Anti-patterns section.")
+- Synthesizing pattern visuals from screenshots or live URLs (same rule as Modes A/B)
+- Updating `last_validated` timestamp on the file (that timestamp tracks Mode A/B re-curation; Mode P appends without revalidating the synthesis)
 
 ## Scope Cap (Hard Limits)
 
@@ -167,6 +238,16 @@ spacing_rhythm: <4 | 8 | 12 | other>   # ev: ...
 | Primary CTA placement | <value> | <pointer> |
 | Confirmation/destruction | <value> | <pointer> |
 
+## Promoted Patterns (v5.1)
+
+> Cross-feature patterns added via `/agent-harry-fingerprint --promote <pattern>`. Distinct from the Composition Patterns table above (which is derived from the original curated reference frames). Promoted patterns capture norms that emerged through actual feature work after the initial curation. Each row needs at least 2 features as evidence. Read by Deliver agents at intake along with the rest of the fingerprint.
+
+| Pattern | Used in | Promoted | Evidence |
+|---|---|---|---|
+| <pattern name> | <feature_slug, feature_slug, ...> | <YYYY-MM-DD> (<session_id>) | <Figma URL, code path, or 1-line description> |
+
+(Section is omitted from the file until the first promotion happens — Mode P inserts it on demand.)
+
 ## Anti-patterns (Explicit Negatives — mandatory, 3–5)
 
 - <"this product doesn't do X" — example: "no playful illustrations in product UI (marketing only)">
@@ -180,7 +261,7 @@ spacing_rhythm: <4 | 8 | 12 | other>   # ev: ...
 - <things the curator couldn't extract from the curated set; flagged for designer fill-in or follow-up curation>
 ```
 
-**Length cap: ~200 lines total.** Loaded in full by Deliver agents (not Executive-Summary-only).
+**Length cap: ~200 lines total.** Loaded in full by Deliver agents (not Executive-Summary-only). The `## Promoted Patterns` section counts against this cap — keep promoted rows terse and prune obsolete promotions during Mode B refresh.
 
 ## Composition Gap Nudges
 
@@ -236,6 +317,23 @@ When running in refresh mode, also append a `fingerprint_refreshed` event with e
   "entries_removed": ["Legacy Onboarding"]
 }
 ```
+
+When running in promote mode (Mode P, v5.1), append a `pattern_promoted` event with extra fields:
+
+```json
+{
+  "event": "pattern_promoted",
+  "pattern_name": "drawer",
+  "used_in_features": ["checkout", "cart", "settings"],
+  "evidence_figma_url": "https://figma.com/file/<id>/<node>",
+  "contradicts_anti_pattern": null
+}
+```
+
+- `pattern_name`: kebab-case or human-readable, matches the row's first column
+- `used_in_features`: validated feature slugs (per Question 1 ledger check)
+- `evidence_figma_url`: optional string; `null` if user skipped Question 3
+- `contradicts_anti_pattern`: `null` normally; if the user proceeded past a Question 4 contradiction warning, set to the conflicting anti-pattern text — this gives `/agent-harry-audit` a signal to highlight the conflict
 
 ## Output Format
 

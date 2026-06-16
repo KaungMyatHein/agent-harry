@@ -4,6 +4,68 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-05-29 — v5.1: Multi-feature scaling readiness — 3 surgical additions, 6 ideas explicitly rejected
+
+**Additive, non-breaking.** Three small surfaces that make Agent Harry more navigable as a project accumulates features, without introducing parallel storage or scope creep. Driven by a `/grill-me` session that stress-tested a 9-item improvement plan; six items were dropped (premature, duplicative, or scope-violating), three survived in reframed form.
+
+The work principle for this release: **reuse existing infrastructure (audit ledger, fingerprint, SHARED_CONTEXT) before adding new files.** Two of the rejected ideas (`_features.yaml` registry, `_patterns.md` ledger) were specifically rejected to avoid the drift-from-second-source-of-truth problem.
+
+- **Added — `/agent-harry-features` slash command** (`templates/.claude/commands/agent-harry-features.md`):
+  - Read-only projection over `.harry-audit.jsonl` — lists every `feature_slug` ever recorded, with derived `first_seen`, `last_touched`, agents involved, `cost_delta` sum, and latest handoff path
+  - Status (`active` / `stale` / `null`) is **inferred at render time** from the ledger — no `feature_status` field added to the schema, no `_features.yaml` written, no `deprecate` write command
+  - Detail mode: `/agent-harry-features <slug>` shows full timeline for one feature
+  - Filters: `--recent N`, `--days N`, `--status <active|stale|null>`
+  - Sits alongside `/agent-harry-audit` and `/agent-harry-cost` — same source file, same read-only contract, per-project scope
+- **Added — `--promote <pattern>` flag on `/agent-harry-fingerprint`** (`templates/.claude/commands/agent-harry-fingerprint.md` + `templates/.claude/agents/product-fingerprint-curator.md`):
+  - New Mode P (Promote) on the curator — appends a cross-feature pattern to the fingerprint's new `## Promoted Patterns (v5.1)` section
+  - Validates feature slugs against the audit ledger (minimum 2 required — single-feature decisions are not product norms)
+  - Conflict check against existing anti-patterns; user must explicitly proceed past contradictions (logged in `contradicts_anti_pattern` audit field)
+  - **No `mcp__figma` required for Mode P** — promotion is text-only (pattern name + features-used + optional Figma URL stored as a string, not pulled)
+  - Resolves the "cross-feature memory" question without introducing a separate pattern ledger or handoff schema — patterns worth reusing live in the fingerprint, where Deliver agents already load them at intake
+- **Added — `Roadmap link (v5.1)` field in `SHARED_CONTEXT.md` Project Context table**:
+  - External reference only (Notion / Linear / Jira / Productboard URL — or `"none"`)
+  - Agent Harry does NOT own, write, or sync roadmap content — strategy stays in the team's real product tool
+  - `critique-partner` may read the link at large scale to surface outcome-alignment prompts; small projects typically leave it as `"none"`
+- **Audit ledger schema** (`templates/SHARED_CONTEXT.md` § Event-specific optional fields): registers new event type `pattern_promoted` with fields `pattern_name`, `used_in_features` (string[]), `evidence_figma_url` (string or null), `contradicts_anti_pattern` (string or null).
+- **Fingerprint file schema** (in `product-fingerprint-curator.md` File Output Schema): adds optional `## Promoted Patterns (v5.1)` section, inserted between `## Composition Patterns` and `## Anti-patterns`. Section appears only after the first `--promote` call; section length counts against the existing ~200-line cap.
+
+### Explicitly rejected (with reasons — documented to prevent re-litigation)
+
+These six ideas were considered, grilled, and dropped. Recorded here so the next "we should add X" review starts from the existing decision instead of re-running the same debate:
+
+| Idea | Why rejected |
+|---|---|
+| Per-feature subfolder (`design-workspace/<project>/features/<slug>/`) | One-way door requiring updates to 9 files / 20+ references for cosmetic gain. Flat layout is fine; `/agent-harry-features` solves the navigation problem without restructuring |
+| `_features.yaml` registry file | Audit ledger already has `feature_slug`, `ts`, `agent`, `files_written`, `handoff_ref` — a separate registry duplicates the ledger and drifts. Derived command (`/agent-harry-features`) reads ledger directly |
+| Run-count-based fingerprint staleness counter | Existing Figma `lastModified` check (already integrated into 4 Deliver agents via `fingerprint_stale_detected` event) is a strictly better signal than a run-count proxy. Adding a counter creates a duplicate, lower-quality warning |
+| Auto cross-feature context injection (pre-load related features' Executive Summaries) | Conflicts with `product-fingerprint.md` as the single cross-feature source of truth. Pattern promotion (`--promote`, see above) handles the genuine cases; auto-injection adds token cost, stale-decision propagation risk, and hidden coupling |
+| `_patterns.md` separate pattern reuse ledger | Same drift-from-second-source problem as `_features.yaml`. Promoted patterns belong in the fingerprint where Deliver agents already load them |
+| Auto Figma→code component drift detection in bootstrapper Mode B | Existing flow surfaces missing components naturally via `figma-designer`'s "needs bootstrap extend" gap. Automating detection removes the audit-clarity signal ("when did DatePicker get added?") and adds false-positive risk on renames |
+
+### Explicitly deferred (not rejected — waiting for actual user friction signal)
+
+- Cross-feature handoff schema (`consumes_decisions_from`, `exposes_decisions_to` frontmatter fields) — duplicate of fingerprint promotion; reconsider only if promotion proves insufficient
+- Product roadmap as an Agent-Harry-owned file — scope creep; the `Roadmap link` reference field is sufficient. Reconsider only if `critique-partner` repeatedly needs to read roadmap content (not just link metadata) at large scale
+- Feature lifecycle gate (`deprecated` status, `/agent-harry-features deprecate <slug>` write command) — premature for current scale. Reconsider when a user reports deprecated features actually cluttering `/agent-harry-features` output. Today, status is `active` / `stale` / `null` only (all inferred from ledger contents)
+
+### Migration
+
+None required. v5.1 is fully additive:
+
+- Existing fingerprints continue to work unchanged — `## Promoted Patterns` appears only when a user runs `--promote`
+- Existing audit ledgers continue to work unchanged — `pattern_promoted` is a new event type, not a modification of existing fields
+- Existing project templates that haven't filled in the `Roadmap link` row in SHARED_CONTEXT are fine — `"none"` is a valid value and downstream agents tolerate absence
+- No agent file path changes; no slash-command rename or removal
+
+### Files touched
+
+- `templates/SHARED_CONTEXT.md` — added `Roadmap link (v5.1)` row in Project Context table + `pattern_promoted` event entry in audit ledger event-specific table
+- `templates/.claude/commands/agent-harry-fingerprint.md` — added Mode P routing in argument parsing + steps to execute + cost expectation + when-to-invoke
+- `templates/.claude/commands/agent-harry-features.md` — **new file**
+- `templates/.claude/agents/product-fingerprint-curator.md` — added Mode P section + `## Promoted Patterns` schema in file output + `pattern_promoted` audit event spec; expanded "When You Run" from 3 triggers to 4
+
+---
+
 ## 2026-05-25 — v5.0: Rip dashboard + Queue Mode — chat is the only decision surface
 
 **Breaking change.** Removes the entire dashboard surface (visual HTML companion + click-driven Queue Mode). Across 7 versions (v3.1–v4.3), the dashboard was never used in practice. Chat is the canonical decision surface. Structured `decisionData` now renders as markdown in chat at every Stop Gate. Full rationale: `RATIONALE.md` § "Why dashboard was removed (v5.0)".

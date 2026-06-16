@@ -241,7 +241,8 @@ templates/
         ├── audit-pipeline.md              ← /audit-pipeline — Research-First + Success-Metrics gates
         ├── agent-harry-notion-sync.md     ← /agent-harry-notion-sync — v3.5 push artifacts to Notion
         ├── agent-harry-audit.md           ← /agent-harry-audit — v3.8 render audit ledger as timeline
-        ├── agent-harry-fingerprint.md     ← /agent-harry-fingerprint — v4.0 create or refresh product-fingerprint.md
+        ├── agent-harry-features.md        ← /agent-harry-features — v5.1 derived feature list (read-only over ledger)
+        ├── agent-harry-fingerprint.md     ← /agent-harry-fingerprint — v4.0 create/refresh; v5.1 adds --promote for cross-feature pattern
         └── agent-harry-cost.md            ← /agent-harry-cost — v4.1 measured cost report
 ```
 
@@ -256,6 +257,8 @@ These are the source of truth. Don't regenerate — copy then patch.
 **v3.5 post-Deliver:** Once Success-Metrics confirmed, `prd-author` (new sonnet agent) generates one PRD per "in"-tagged sub-feature. `/agent-harry-notion-sync` (new slash command) publishes confirmed artifacts to Notion as a structured workspace.
 
 **v5.0 chat-only decision surface:** Removed `dashboard.html`, `dashboard-server.py`, `.harry-queue.json`, `/agent-harry-loop`. Decision Data renders as markdown in chat at every Stop Gate. The dashboard surface was never used in practice; chat is canonical. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md`.
+
+**v5.1 multi-feature scaling readiness:** Added `/agent-harry-features` (derived feature list over the audit ledger — no separate registry file), `/agent-harry-fingerprint --promote <pattern>` (cross-feature pattern promotion into the existing fingerprint — no separate pattern ledger), and `Roadmap link` field in SHARED_CONTEXT (external reference only — Agent Harry does not own roadmap content). Fully additive, non-breaking. Six related improvement ideas were considered and explicitly rejected to avoid drift-from-second-source-of-truth and scope creep — see `CHANGELOG.md` v5.1 entry for the rejection rationale.
 
 ---
 

@@ -17,8 +17,11 @@ Generator-mode install fills this section. Bundled-mode install leaves it as pla
 | Figma file | <main project file URL or "none"> |
 | DS Figma file (v4.2) | <URL — auto-populated by `figma-component-bootstrapper`; or "none — run bootstrapper to create"> |
 | Component library manifest (v4.2) | <`project-component-library.md` if bootstrapper has run; else "none"> |
+| Roadmap link (v5.1) | <Notion / Linear / Jira / Productboard URL — or "none"> |
 
 The **Stack** line is read by `lo-fi-designer` and `design-engineer` as the tier-1 source for stack detection (before repo scan, before intake question). Keep it accurate — wrong stack here means wireframes recommend components that don't exist in the codebase.
+
+The **Roadmap link (v5.1)** is an external reference only. Agent Harry does NOT own, write, or sync roadmap content — that lives in your real product tool (Notion, Linear, Jira, Productboard, etc.). At small scale (under ~10 features) this field is typically `"none"`. At larger scale, `critique-partner` may surface "does this feature align with a known outcome?" prompts using the link as context. Set to `"none"` if you don't track a roadmap externally; downstream agents tolerate absence.
 
 ---
 
@@ -459,6 +462,7 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `scope_refused` / `iteration_cap_hit` | `cap_hit` (string — which cap fired, e.g. `"design-engineer:1-flow-per-invocation"`) |
 | `fingerprint_stale_detected` | `stale_count` (int), `stale_refs` (string[] — names of stale references), `stale_reasons` (`["lastModified-newer"]` / `["archive-prefix-name"]` / mixed) |
 | `fingerprint_refreshed` | `entries_kept` (string[]), `entries_replaced` (string[]), `entries_removed` (string[]) |
+| `pattern_promoted` (v5.1) | `pattern_name` (string), `used_in_features` (string[] — validated against ledger, min 2), `evidence_figma_url` (string or null), `contradicts_anti_pattern` (string or null — set if user proceeded past Q4 conflict warning) |
 | `token_usage` (v4.1) | `tokens_in` (int), `tokens_cache_read` (int), `tokens_cache_write` (int), `tokens_out` (int), `model` (string), `cost_usd` (number — computed), `linked_to_ts` (string — the `ts` of the `stop_gate` event this measures, or `null` for orchestrator-only runs), `source` (string — `"transcript"` or `"estimate"`) |
 | `bootstrap_created` (v4.2) | `figma_file_url` (string), `component_count` (int), `feature_specific_added` (string[] — names of feature-specific components beyond the baseline), `tokens_source` (string — path or `null`), `fingerprint_status` (`"fresh"` / `"stale_proceeded"` / `"defaulted"`) |
 | `bootstrap_extended` (v4.2) | `components_added` (string[]), `component_count_after` (int), `source_scanned` (string — lo-fi handoff path or `"explicit-list"`) |
