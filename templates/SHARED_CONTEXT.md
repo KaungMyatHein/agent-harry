@@ -307,6 +307,93 @@ Primary layout anchors on entry-point first, fingerprint second. When they disag
 
 ---
 
+## Information Architecture (Define-phase Structure — v5.2)
+
+A project/release-level artifact at `./design-workspace/<project_slug>/information-architecture.md` that captures the **cross-feature structure** — object model, navigation hierarchy, screen inventory, and a product-wide **action-priority system**. Written by `information-architect`, read by `lo-fi-designer` and `design-engineer` at intake.
+
+### Why it exists
+
+`lo-fi-designer` designs **one feature at a time**; `prd-author` writes **one PRD per sub-feature**. Nobody owns the seams. A product where every screen is individually well-designed can still feel messy and inconsistent when there's no structural pass holding it together. The IA is that pass. It closes two specific failure modes: **messy information architecture** (no coherent navigation/object structure across features) and **inconsistent action priorities** (primary/secondary/tertiary actions varying screen-to-screen).
+
+### Cardinality
+
+- **Written once per product/release** by `information-architect` — a single structural pass across all in-scope features. `feature_slug` is `null`.
+- **`lo-fi-designer` runs once per feature** — inheriting the IA structure. A once-per-product concern can't live inside a per-feature agent; that mismatch is why IA is its own agent, not part of lo-fi.
+
+### Placement
+
+Define phase, between `prd-author` and the first `lo-fi-designer` run: `prioritizer → prd-author → information-architect → lo-fi-designer → design-engineer`.
+
+### Pre-intake check (lo-fi-designer)
+
+`lo-fi-designer` validates the IA at its pre-intake (after the fingerprint + PRD checks). Refuse-with-explicit-opt-out:
+
+- Missing IA → refuse; options: run `information-architect`, or `proceed without IA` (legacy per-feature layout, no global structure) → logged `ia_structure_skipped`, Executive Summary flags `ia_inferred: false`
+- Present → load into intake context; layouts inherit the screen inventory's nav location + the action-priority map
+
+### What the IA contains
+
+| Section | Content |
+|---|---|
+| Object model | Domain entities + relationships (1:many, many:many, ownership) |
+| Navigation structure | Recommended hierarchy + one genuinely-different alternative + rationale; `max_depth` (flagged if > 3) |
+| Action-Priority Map | Part A: 3–5 product-wide global invariants (one primary per screen, destructive never primary, consistent placement, same-action-same-priority). Part B: per-object primary/secondary/tertiary table |
+| Screen inventory | One row per screen: `screen · feature_slug · nav_location · primary_object · primary_action` |
+| Grouping rationale | Why the structure clusters the way it does (the "why" `critique-partner` checks against) |
+
+### Enforcement (downstream)
+
+- **lo-fi-designer**: places actions per the action-priority map; anchors each screen's nav location from the inventory
+- **design-engineer**: assigns button variants (primary/secondary/ghost) per the action-priority map
+- **critique-partner**: IA lens — checks for orphan screens (not in the sitemap), action-priority-map violations, and grouping that contradicts the rationale
+
+### What's out of scope (v5.2)
+
+- Per-screen layout (that's `lo-fi-designer`) and visuals (that's `figma-designer` / `design-engineer`)
+- Auto-detecting IA drift after the fact (user-in-the-loop only; `critique-partner` surfaces it on request)
+
+---
+
+## Brand Concept (Critical Input — v5.2)
+
+A project-level artifact at `<project-root>/brand-concept.md` that **decodes an existing brand's concept** — what it stands for, its worldview, the mental model it wants users to hold, its vocabulary, and on/off-brand tells. Written by `brand-decoder`, read by `product-positioner`, `ideation-facilitator`, `information-architect`, `lo-fi-designer`, and `design-engineer` at intake.
+
+### Why it exists
+
+`product-fingerprint-curator` captures how the product **looks** and explicitly disclaims brand ("brand voice is observed, not legislated"). `product-positioner` **creates** outward positioning (what the product IS vs. competitors). Neither decodes the **meaning** of an existing brand. When that meaning is assumed instead of decoded, design comes back "technically fine but not how we think about our brand." Brand Concept is the inward, interpretive layer that prevents that — distinct from the fingerprint (visual) and positioning (outward, create).
+
+### Lifecycle
+
+- **Written once per project** by `brand-decoder` (interpretation of an existing brand — refuses and routes to `product-positioner` if there's no brand to decode, e.g. greenfield)
+- **Read by consuming agents at intake** — full file (~120 lines max)
+- **Trusted only after the Validation Stop Gate passes** — the `validated:` timestamp is set only on user confirmation that the decode matches how they (or the client) actually think. An unvalidated decode is a hypothesis, not an input.
+
+### Pre-intake check (consuming agents)
+
+`product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer` check for `brand-concept.md` at intake. Refuse-with-explicit-opt-out (softer for IA — a nudge, since IA can proceed brand-agnostic):
+
+- Missing → options: run `brand-decoder`, or `skip brand concept` → logged `brand_concept_skipped`, Executive Summary flags `brand_unaligned: true`
+- Present + validated → load into intake context (mental model + vocabulary shape copy, grouping, concepts)
+
+### What the brand concept contains
+
+| Section | Content |
+|---|---|
+| Concept statement | 1–2 lines the brand owner would read and say "yes, that's us" |
+| Worldview / values | How the brand sees its users, its category, what it won't compromise |
+| Mental model | The model the brand wants users to hold about it |
+| Vocabulary | `use` words / `avoid` words |
+| On/off-brand tells | Concrete moves that feel right vs. wrong (off-brand is half the value, mirrors fingerprint anti-patterns) |
+| Sources | What was decoded, by type |
+
+### What's out of scope (v5.2)
+
+- Inventing a brand from nothing (that's `product-positioner` create-mode — `brand-decoder` refuses)
+- Pulling visual signal (that's `product-fingerprint-curator`)
+- Writing outward competitive positioning (that's `product-positioner`)
+
+---
+
 ## PM Skills Map
 
 Agents are skill-aware. When the user has PM skill packs installed (`pm-execution`, `pm-market-research`, `pm-marketing-growth`, `pm-product-strategy`, `pm-go-to-market`, `pm-product-discovery`, `pm-toolkit`, `product-management`, `product-tracking-skills`), agents invoke specific skills via the Skill tool instead of re-deriving artifacts.
@@ -471,6 +558,11 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `bootstrap_with_defaults` (v4.2) | `reason` (string — usually `"fingerprint-missing"`) |
 | `journey_structure_inferred` (v4.3) | `prd_path` (string), `prd_schema_version` (string — usually `null` or pre-v4.3) |
 | `journey_structure_skipped` (v4.3) | `prd_present` (bool), `reason` (string — usually `"user-opted-out"`) |
+| `ia_created` (v5.2) | `features_in` (string[] — in-scope feature slugs), `nav_structure_chosen` (string — e.g. `"object-centric"`), `max_depth` (int), `screen_count` (int), `global_invariant_count` (int) |
+| `ia_structure_skipped` (v5.2) | `reason` (string — usually `"user-opted-out"`); written by `lo-fi-designer` when user types `proceed without IA` |
+| `prds_skipped` (v5.2) | `reason` (string — usually `"user-opted-out"`); written by `information-architect` when user types `proceed without prds` |
+| `brand_decoded` (v5.2) | `owner` (`"self"` / `"client"`), `sources_count` (int), `validated` (bool — true only after Validation Stop Gate passes) |
+| `brand_concept_skipped` (v5.2) | `reason` (string — usually `"user-opted-out"`); written by the consuming agent (`product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer`) when user types `skip brand concept` |
 
 ### Events to log
 
@@ -496,6 +588,11 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `journey_structure_inferred` (v4.3) | A consumer agent (`lo-fi-designer` / `figma-designer` / `design-engineer`) read an old-format PRD (no `schema_version: v4.3`); journey structure was inferred from loose user-stories section rather than derived |
 | `journey_structure_skipped` (v4.3) | User typed `proceed without journey spec` at `lo-fi-designer`'s Pre-Intake Check #2; deliverable falls back to legacy single-layout, no persona, no nested-journey awareness |
 | `journey_spec_inline` (v4.3) | Reserved for v4.4 — currently unused. Originally for inline yaml journey-spec, dropped per Theme A Q4 |
+| `ia_created` (v5.2) | `information-architect` completes a structural pass and the user confirms at the Stop Gate |
+| `ia_structure_skipped` (v5.2) | User typed `proceed without IA` at `lo-fi-designer`'s IA pre-intake check; layouts fall back to per-feature with no global structure |
+| `prds_skipped` (v5.2) | User typed `proceed without prds` at `information-architect`'s PRD pre-intake check; structure derived from prioritization handoff only (degraded fidelity) |
+| `brand_decoded` (v5.2) | `brand-decoder` passed its Validation Stop Gate (decode confirmed as matching how the owner/client thinks) |
+| `brand_concept_skipped` (v5.2) | User typed `skip brand concept` at a consuming agent's brand pre-intake check |
 
 ### Who writes the ledger — ownership by event type (v3.8 final)
 
@@ -519,6 +616,11 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `bootstrap_skipped` (v4.2) | **`figma-designer`** | Fires when the user opts out of the bootstrapper at figma-designer's Pre-Intake Check #2. Logged before figma-designer proceeds with the frames+groups fallback. |
 | `journey_structure_inferred` (v4.3) | **Consumer agent** that read the old PRD (`lo-fi-designer` / `figma-designer` / `design-engineer`) | Informational event; no opt-in required. Fires once per agent run when an old-format PRD is loaded. Multiple events may fire for one feature as it moves through Discovery → Define → Deliver. |
 | `journey_structure_skipped` (v4.3) | **`lo-fi-designer`** | Fires when the user types `proceed without journey spec` at lo-fi-designer's Pre-Intake Check #2. Logged before lo-fi-designer proceeds with the legacy single-layout fallback. Downstream agents (figma-designer, design-engineer) will propagate the `journey_source: skipped` flag from the lo-fi handoff and won't re-fire this event. |
+| `ia_created` (v5.2) | **`information-architect`** | The agent owns its completion event, in addition to the standard `stop_gate`. Project-level, fires once per IA pass. |
+| `ia_structure_skipped` (v5.2) | **`lo-fi-designer`** | Fires when the user types `proceed without IA` at lo-fi-designer's IA pre-intake check. Downstream agents propagate `ia_inferred: false` from the handoff and won't re-fire. |
+| `prds_skipped` (v5.2) | **`information-architect`** | Fires when the user types `proceed without prds` at the IA PRD pre-intake check. |
+| `brand_decoded` (v5.2) | **`brand-decoder`** | Fires only on a passed Validation Stop Gate. Project-level, `feature_slug: null`. |
+| `brand_concept_skipped` (v5.2) | **Consuming agent** that did the brand pre-intake check (`product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer`) | Whichever agent's pre-intake the user opted out of owns the event, parallel to `fingerprint_skipped`. |
 
 Single writer per event type → **no race condition, no duplicate entries, no detection logic needed**. Direct-invocation works naturally — the subagent self-logs its `stop_gate` whether orchestrator is in the loop or not.
 

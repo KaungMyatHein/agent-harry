@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates an 18-subagent UX pipeline (orchestrator + critique-partner + 14 phase agents + 2 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2) — including lo-fi-designer, figma-designer, design-engineer, prd-author) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 20-subagent UX pipeline (orchestrator + critique-partner + 15 phase agents + 3 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2, brand-decoder v5.2) — including lo-fi-designer, figma-designer, design-engineer, prd-author, information-architect) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps an 18-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps a 20-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -51,7 +51,7 @@ Steps:
 Expected output:
 
 ```
-Installed 18 Agent Harry subagents + 5 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
+Installed 20 Agent Harry subagents + 6 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
 
 Try this:
 1. "/audit-pipeline" — confirm the project is set up correctly.
@@ -59,9 +59,9 @@ Try this:
 
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
-- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, lo-fi-designer (v3.7)
-- Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect, prd-author (all gated by Research-First + Success-Metrics checks)
-- Cross-cutting: pm-metrics-architect
+- Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, prd-author, information-architect (v5.2), lo-fi-designer (v3.7)
+- Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect (all gated by Research-First + Success-Metrics checks)
+- Cross-cutting: pm-metrics-architect, product-fingerprint-curator (v4.0), brand-decoder (v5.2), figma-component-bootstrapper (v4.2)
 - Meta: orchestrator (opus), critique-partner (opus)
 - Commands: /audit-pipeline · /agent-harry-notion-sync · /agent-harry-audit · /agent-harry-fingerprint · /agent-harry-cost
 - Decision surface: chat (v5.0 — was dashboard.html pre-v5.0; ripped because never used)
@@ -94,7 +94,7 @@ Patch method: use `view` + `str_replace` for targeted edits. Don't regenerate te
 Expected output:
 
 ```
-Installed 18 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 20 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
 
 Customizations applied:
 - Removed Mobbin MCP from <agents> — using Web Search fallback
@@ -259,6 +259,8 @@ These are the source of truth. Don't regenerate — copy then patch.
 **v5.0 chat-only decision surface:** Removed `dashboard.html`, `dashboard-server.py`, `.harry-queue.json`, `/agent-harry-loop`. Decision Data renders as markdown in chat at every Stop Gate. The dashboard surface was never used in practice; chat is canonical. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md`.
 
 **v5.1 multi-feature scaling readiness:** Added `/agent-harry-features` (derived feature list over the audit ledger — no separate registry file), `/agent-harry-fingerprint --promote <pattern>` (cross-feature pattern promotion into the existing fingerprint — no separate pattern ledger), and `Roadmap link` field in SHARED_CONTEXT (external reference only — Agent Harry does not own roadmap content). Fully additive, non-breaking. Six related improvement ideas were considered and explicitly rejected to avoid drift-from-second-source-of-truth and scope creep — see `CHANGELOG.md` v5.1 entry for the rejection rationale.
+
+**v5.2 structure + brand (Atria gap-closing):** Two new agents close gaps surfaced by a real design-test rejection (messy IA, inconsistent action priorities, brand-concept misalignment). `information-architect` (Define phase, runs once per release between `prd-author` and `lo-fi-designer`) owns the cross-feature structure — object model, navigation hierarchy, screen inventory, and a product-wide **action-priority system** — closing the "every screen is fine but the product feels messy" gap that no per-feature agent could own. `brand-decoder` (cross-cutting, recommended at Discovery start) **decodes an existing brand's concept** into `brand-concept.md` (worldview, mental model, vocabulary, on/off-brand tells) so design aligns with how a brand actually thinks — distinct from the fingerprint (how it *looks*) and the positioner (outward, *create*). Both are refuse-with-opt-out at their consuming agents (`ia_structure_skipped` / `brand_concept_skipped`); `critique-partner` gains an IA lens. See `CHANGELOG.md` v5.2 entry.
 
 ---
 

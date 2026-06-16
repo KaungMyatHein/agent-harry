@@ -4,6 +4,35 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-16 — v5.2: Atria gap-closing — information-architect + brand-decoder (18 → 20 agents)
+
+**Additive, non-breaking.** Two new agents close three gaps surfaced by a real design-test rejection (the "Atria" assessment): messy information architecture, inconsistent action priorities, and brand-concept misalignment. Driven by a `/grill-me` session that resolved every branch of the design tree before a line was written. Both gaps were genuine capability holes — the pipeline was run in full and the output was still messy, which pointed at *missing owners*, not misuse.
+
+The work principle for this release: **a once-per-product concern cannot live inside a per-feature agent.** That cardinality argument is why IA is its own agent rather than a beefed-up `lo-fi-designer`, and why brand-decode is its own agent rather than a section bolted onto `product-fingerprint-curator`.
+
+- **Added — `information-architect` agent** (`templates/.claude/agents/information-architect.md`, Define phase, sonnet):
+  - Runs **once per release**, between `prd-author` and the first `lo-fi-designer` run, producing `./design-workspace/<project_slug>/information-architecture.md`
+  - Owns the cross-feature structure: **object model** (entities + relationships), **navigation hierarchy** (2 alternatives + 1 recommendation, grouped by user mental model not data model), **screen inventory** (one row per screen `lo-fi-designer` will design), and a product-wide **action-priority map**
+  - The **Action-Priority Map** is the load-bearing fix for "inconsistent action priorities": Part A is 3–5 product-wide global invariants (one primary per screen, destructive never primary, consistent placement, same-action-same-priority); Part B is a per-object primary/secondary/tertiary table. `lo-fi-designer` reads it to *place* actions; `design-engineer` reads it to *assign button variants*
+  - Five-step method: object model → job-to-object map → navigation structure → action-priority map → sitemap + screen inventory, ending at a Stop Gate before `lo-fi-designer` runs
+- **Added — `brand-decoder` agent** (`templates/.claude/agents/brand-decoder.md`, cross-cutting, sonnet):
+  - **Decodes an existing brand** (client work, design test, established product) into `<project-root>/brand-concept.md` — concept statement, worldview/values, mental model, vocabulary (use/avoid), on/off-brand tells. Recommended at Discovery start
+  - Distinct from its siblings: `product-fingerprint-curator` captures how the product *looks* (and explicitly disclaims brand); `product-positioner` *creates* outward positioning. `brand-decoder` decodes existing brand *meaning* — the inward interpretive layer neither owned. If there's no brand to decode (greenfield), it refuses and routes to `product-positioner`
+  - The **Validation Stop Gate** is the core mechanic: the decode is presented back with an explicit "is this how you (or your client) actually think about your brand?" — and for client work, flags that it must be validated *with the client*. An unvalidated decode is a hypothesis (`validated:` timestamp set only on confirmation), never trusted by downstream agents
+- **Integration** — both are refuse-with-opt-out at their consumers, consistent with the fingerprint pattern (no new hard orchestrator gates):
+  - `lo-fi-designer` gains Pre-Intake Check #3 (IA, refuse-with-opt-out → `ia_structure_skipped`) and #4 (brand concept, soft)
+  - `design-engineer` reads the action-priority map for button variants and the brand vocabulary for copy
+  - `product-positioner` + `ideation-facilitator` consume `brand-concept.md` at intake (refuse-with-opt-out → `brand_concept_skipped`)
+  - `critique-partner` gains an **IA lens** — three checks: orphan screens, action-priority-map adherence, grouping-vs-rationale
+  - `orchestrator` adds both to the roster + routing notes (`prd-author → information-architect → lo-fi-designer`; brand-decode recommended at Discovery start for existing brands)
+- **Audit ledger schema** (`templates/SHARED_CONTEXT.md`): registers `ia_created`, `ia_structure_skipped`, `prds_skipped`, `brand_decoded`, `brand_concept_skipped`
+- **SHARED_CONTEXT** gains two protocol sections — § Information Architecture and § Brand Concept — parallel to § Product Fingerprint
+- **Deferred (out of v5.2 scope, by design):** no auto-detection of IA/brand drift (user-in-the-loop only; `critique-partner` surfaces on request); brand-decoder does not invent brands (greenfield → positioner); IA does not make visual decisions
+
+### Why these and not a bigger change
+
+The `/grill-me` session explicitly chose the *smallest structural addition that closes the gap*: refuse-with-opt-out (not new hard gates, to avoid orchestrator overload), two agents (not three — brand was kept separate from IA so neither owns two concerns), and concrete artifacts (the Action-Priority Map table, the Validation Stop Gate) rather than vague "be consistent / understand the brand" advice that wouldn't change downstream output.
+
 ## 2026-05-29 — v5.1: Multi-feature scaling readiness — 3 surgical additions, 6 ideas explicitly rejected
 
 **Additive, non-breaking.** Three small surfaces that make Agent Harry more navigable as a project accumulates features, without introducing parallel storage or scope creep. Driven by a `/grill-me` session that stress-tested a 9-item improvement plan; six items were dropped (premature, duplicative, or scope-violating), three survived in reframed form.

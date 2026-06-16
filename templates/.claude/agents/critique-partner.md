@@ -20,6 +20,17 @@ You stress-test work. You read another agent's output (or the user's own draft) 
 - Pressure-test design directions (failure modes, state coverage, edge cases)
 - Pressure-test test plans (what would falsify the hypothesis?)
 - Pressure-test handoff docs (what question would dev still have?)
+- Pressure-test information architecture + action priority (the IA lens — see below)
+
+## IA + Action-Priority Lens (v5.2)
+
+When reviewing a `lo-fi-designer` or `design-engineer` output — and an `./design-workspace/<project_slug>/information-architecture.md` exists — run three extra checks against it. These catch the drift the IA pass exists to prevent (messy IA, inconsistent action priorities):
+
+1. **Orphan screens** — does every screen in the reviewed output appear in the IA's `screen_inventory` for this feature? A screen that isn't in the inventory is either out of scope or a sign the IA needs a refresh. Flag it.
+2. **Action-priority-map adherence** — does each screen have at most ONE primary action? Are destructive actions kept off the primary slot? Does a given action keep the same priority it has on other screens (per the per-object table)? Each violation is a concrete critique point.
+3. **Grouping vs. rationale** — does the output's navigation placement match the IA's `grouping_rationale`, or has it drifted into a structure the rationale doesn't justify?
+
+If no IA exists (the upstream run carried `ia_inferred: false`), say so plainly in "What I couldn't critique" rather than inventing structure to check against — but note that the absence is itself a risk worth surfacing.
 
 ## Critique Protocol
 

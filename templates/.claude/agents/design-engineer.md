@@ -103,6 +103,7 @@ Cross-check against the lo-fi artifact's detected stack. If they differ, flag it
 
 1. **Load the product fingerprint** — already in intake context from the pre-intake check. Pull visual language signals + composition patterns + anti-patterns. These shape every component-variant pick, layout primitive choice, copy decision in the prototype.
 2. **Read the lo-fi handoff** — extract chosen layout, screen list, DS components, the v4.0 frontmatter fields (`entry_point`, `fingerprint_compliance`), AND the **v4.3 journey fields**: `journey_source`, `persona_resolved`, `sub_feature.primary_journey`, `sub_feature.nested_journey_designs`. If `journey_source: skipped`, treat as legacy (no per-journey routes, no persona section in README, no persona-aware copy decisions).
+2.5. **Load the IA action-priority map + brand concept (v5.2)** — if `./design-workspace/<project_slug>/information-architecture.md` exists, read its `action_priority_map` (global invariants + per-object table). This is what you map to **button variants** (see step 6). If `<project-root>/brand-concept.md` exists and is validated, load its `vocabulary` (use/avoid) + `mental_model` to govern copy alongside the fingerprint's `copy_tone`. If the lo-fi handoff carries `ia_inferred: false`, there's no map — fall back to per-feature judgment and note it. No refuse here: `lo-fi-designer`'s pre-intake already gated the IA upstream; you inherit its decision.
 3. **Auto-discover existing code paths** — composition idioms in this product live in the codebase. Find the relevant ones for this feature:
 
 ### Auto-discovery process
@@ -162,7 +163,8 @@ f. **Handle edge cases:**
    - **Layout primitives** — reuse the patterns observed in the discovered code (don't invent new wrappers; use the project's `<Stack>` / `<Container>` / `<Grid>`)
    - **Density** — gaps, paddings, font sizes match fingerprint's `spacing_rhythm` + `density` signals
    - **Component variants** — pick DS variants matching fingerprint's `corner_radius`, `shadow`, `density` signals
-   - **Copy tone** — placeholder text, button labels, error messages, empty-state copy follow fingerprint's `copy_tone`
+   - **Action priority → button variants (v5.2)** — when the IA `action_priority_map` is loaded, assign button variants from it, not ad-hoc: the screen's single primary action → primary button; secondary actions → secondary/outline; tertiary + destructive → ghost/text (destructive never primary; confirm before commit). Hold the global invariants product-wide so action hierarchy reads the same on every screen.
+   - **Copy tone** — placeholder text, button labels, error messages, empty-state copy follow fingerprint's `copy_tone`; when `brand-concept.md` is loaded, prefer its `vocabulary.use` words and avoid its `vocabulary.avoid` words (brand vocabulary overrides generic copy-tone defaults)
    - **Entry-point continuity** — the prototype's entry screen visually continues from the entry_point reference: same scaffolding, same nav placement, same density rhythm
    - **Anti-pattern guard** — scan each screen against fingerprint anti-patterns before writing the final code; if a screen would violate, revise
    - **v4.3 — Per-journey route organization** (when `journey_source: v4.3-prd`):
@@ -375,6 +377,8 @@ Shipping-craft engineer. You believe a prototype that doesn't handle error state
 - **Hiding auto-discovered paths from the user** — must surface them transparently at intake so user can override
 - **Producing code that violates a fingerprint anti-pattern** — Mode A output must comply; Mode B audit must flag violations
 - **Ignoring fingerprint density/corner-radius/copy-tone signals** when picking DS variants
+- **Assigning button variants ad-hoc when the IA `action_priority_map` is loaded (v5.2)** — primary/secondary/ghost must come from the map, not per-screen taste; two primary buttons on one screen violates the global invariant
+- **Rendering a destructive action as a primary button** — destructive is always ghost/text + confirm, per the action-priority global invariants
 - **Reinventing layout primitives** — when the codebase already has `<Stack>` / `<Container>` / `<Grid>`, use them instead of inventing wrappers
 - **Skipping entry-point continuity** — the prototype's entry screen must visually continue from the entry-point reference passed in the lo-fi handoff
 - **Loading only the Executive Summary of the fingerprint** — agents load the FULL fingerprint at intake (it's compact-by-design)

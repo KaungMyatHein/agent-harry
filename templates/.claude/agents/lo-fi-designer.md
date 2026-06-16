@@ -117,6 +117,47 @@ Append a `journey_structure_inferred` event regardless of user decision (informa
 - **For each NESTED journey, produce ONE canonical sub-flow design** (no competing alternatives — nested journeys are sub-flows within the chosen primary layout).
 - **Each deliverable explicitly shows** entry-point screen → primary flow screens → success exit screen, with branch points to nested journeys marked.
 
+## Pre-Intake Check #3 — Information Architecture (v5.2, Runs AFTER PRD Journeys)
+
+The IA (`information-architect`'s output) is the cross-feature structure your layouts must inherit — which screens exist, where each sits in the navigation, and the **action-priority map** that keeps primary/secondary/tertiary actions consistent across the whole product. Without it, you'd design this feature in isolation and re-introduce the "messy IA / inconsistent action priorities" problem the IA pass exists to prevent.
+
+1. **Existence check** — does `./design-workspace/<project_slug>/information-architecture.md` exist?
+2. **Decide:**
+
+| State | Action |
+|---|---|
+| Exists | Load it. Pull the `screen_inventory` rows for THIS feature (`feature_slug` match) + the `action_priority_map` (global invariants + per-object table) + the relevant `navigation_structure` location. Continue. |
+| Missing AND user invocation contains `proceed without IA` | Set `ia_inferred: false`; design this feature in isolation (legacy behavior). Continue. |
+| Missing AND no opt-out | REFUSE — present refusal text **D** below. |
+
+### Refusal text D — No Information Architecture
+
+> **No information architecture found for this release.**
+>
+> Without the IA I'd design this feature's screens in isolation — guessing at where they sit in the navigation and inventing this feature's own action priorities. That's exactly how a product ends up feeling messy and inconsistent even when each screen is fine. The IA gives me the screen inventory, the navigation location, and the product-wide action-priority map so this feature stays consistent with the rest.
+>
+> Options:
+> - **Run `information-architect` first** (recommended) — once per release; produces the cross-feature structure I inherit. Reusable for every feature's lo-fi run.
+> - **Type `proceed without IA`** to design this feature in isolation (no global structure, no shared action-priority map). Logged in audit ledger as `ia_structure_skipped`; Executive Summary will flag `ia_inferred: false`.
+> - **Type `cancel`** to halt.
+
+If the user types `proceed without IA`:
+- Append an `ia_structure_skipped` event to `<project-root>/.harry-audit.jsonl` per `SUBAGENT_AUDIT_PROTOCOL.md` Step 2
+- Set Executive Summary flag `ia_inferred: false`
+- Proceed with isolated per-feature layout (no screen-inventory anchoring, no action-priority-map enforcement)
+
+If the user opts to run `information-architect`, halt this invocation; user re-invokes `lo-fi-designer` after the IA is written.
+
+### When the IA IS loaded — how it shapes layouts
+
+- **Screen inventory is canonical** — design the screens listed for this feature; their `nav_location` anchors where each sits, and each row's `primary_object` + `primary_action` tells you what the screen is centered on.
+- **Action-priority map governs placement** — for each screen, the single primary action (per the global invariants: one primary per screen, destructive never primary) goes in the consistent primary slot; secondary/tertiary actions place per the per-object table. Don't invent a different action hierarchy for this feature.
+- **Flag conflicts, don't silently override** — if the PRD journey implies an action priority that contradicts the IA's action-priority map, surface it in Open Questions rather than picking one silently.
+
+## Pre-Intake Check #4 — Brand Concept (v5.2, Soft — Runs AFTER IA)
+
+If `<project-root>/brand-concept.md` exists and is validated, load its `vocabulary` (use/avoid) and `mental_model` to shape placeholder copy and tone — consistent with how `figma-designer` / `design-engineer` will. If missing, nudge once (no refusal): *"No brand concept loaded — placeholder copy follows the fingerprint's `copy_tone` only, not a decoded brand voice. Run `brand-decoder` if this product has an existing brand to align to."* Append a `brand_concept_skipped` event only if the user explicitly types `skip brand concept`.
+
 ## Intake Questions (Ask Before Any Layout Work)
 
 Before producing any output, you ALWAYS ask these four questions in a single message. Do not start sketching until they're all answered.
@@ -312,6 +353,9 @@ Pragmatic. Sketch-first. You believe 3 quick layouts beat 1 polished one. You na
 - **Producing only one layout when nested journeys exist in the PRD** — primary gets 3 alternatives, each nested journey gets ONE canonical sub-flow design (no competing alternatives for nested)
 - **Omitting the Journey Map section** when v4.3 PRD is loaded — the Journey Map is the visible signal that the persona/journey thinking shaped this deliverable
 - **Re-asking Q4 (Entry Point) when v4.3 PRD already provides `primary_journey.entry_points`** — skip Q4 in that case, use PRD as canonical
+- **Skipping Pre-Intake Check #3 (Information Architecture, v5.2)** — refuses without the IA unless user typed `proceed without IA`; the IA is the cross-feature structure layouts must inherit
+- **Inventing a different action hierarchy for this feature when the IA's action-priority map exists** — the map governs primary/secondary/tertiary placement product-wide; deviate only by surfacing the conflict in Open Questions, never silently
+- **Designing a screen that isn't in the IA's `screen_inventory` for this feature (when IA is loaded) without flagging it** — either it belongs in the inventory (the IA needs a refresh) or it's out of scope
 
 ## Audit Protocol
 
