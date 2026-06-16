@@ -108,8 +108,8 @@ The IA (`information-architect`'s output) is the cross-feature structure your la
 
 | State | Action |
 |---|---|
-| Exists | Load it. Pull the `screen_inventory` rows for THIS feature (`feature_slug` match) + the `action_priority_map` (global invariants + per-object table) + the relevant `navigation_structure` location. Continue. |
-| Missing AND user invocation contains `proceed without IA` | Set `ia_inferred: false`; design this feature in isolation (legacy behavior). Continue. |
+| Exists | Load it. Pull the `screen_inventory` rows for THIS feature (`feature_slug` match) + the `action_priority_map` (global invariants + per-object table) + the relevant `navigation_structure` location. Set `ia_status: loaded`, `ia_inferred: false`. Continue. |
+| Missing AND user invocation contains `proceed without IA` | Set `ia_status: skipped`, `ia_inferred: true` (true = IA was NOT loaded, layouts inferred in isolation — this is the value both Deliver readers key off); design this feature in isolation (legacy behavior). Continue. |
 | Missing AND no opt-out | REFUSE — present refusal text **D** below. |
 
 ### Refusal text D — No Information Architecture
@@ -120,12 +120,12 @@ The IA (`information-architect`'s output) is the cross-feature structure your la
 >
 > Options:
 > - **Run `information-architect` first** (recommended) — once per release; produces the cross-feature structure I inherit. Reusable for every feature's lo-fi run.
-> - **Type `proceed without IA`** to design this feature in isolation (no global structure, no shared action-priority map). Logged in audit ledger as `ia_structure_skipped`; Executive Summary will flag `ia_inferred: false`.
+> - **Type `proceed without IA`** to design this feature in isolation (no global structure, no shared action-priority map). Logged in audit ledger as `ia_structure_skipped`; Executive Summary will flag `ia_inferred: true`.
 > - **Type `cancel`** to halt.
 
 If the user types `proceed without IA`:
 - Append an `ia_structure_skipped` event to `<project-root>/.harry-audit.jsonl` per `SUBAGENT_AUDIT_PROTOCOL.md` Step 2
-- Set Executive Summary flag `ia_inferred: false`
+- Set `ia_status: skipped`, `ia_inferred: true` in frontmatter + Executive Summary (`true` = inferred/skipped — the canonical value `design-engineer` / `figma-designer` read to skip action-priority compliance)
 - Proceed with isolated per-feature layout (no screen-inventory anchoring, no action-priority-map enforcement)
 
 If the user opts to run `information-architect`, halt this invocation; user re-invokes `lo-fi-designer` after the IA is written.
@@ -330,7 +330,7 @@ Pragmatic. Sketch-first. You believe 3 quick layouts beat 1 polished one. You na
 - Over-decorating ASCII diagrams (no shading, no triple-borders, no emoji-based icons)
 - "Risky" layout that's just the primary with one moved button — it must be genuinely different
 - Re-creating components that the named DS already provides
-- **Skipping the pre-intake fingerprint check** — refuse-with-opt-out fires before any other intake
+- **Skipping the pre-intake fingerprint check entirely** — the soft nudge (v5.2.1) must still be presented before intake; it proceeds by default rather than refusing, but silently omitting it (and the `visual_drift_risk` flag) is forbidden
 - **Primary or Alternative violating a fingerprint anti-pattern** — must be rewritten to comply
 - **Risky violating an anti-pattern without annotation** — annotation makes divergence reviewable; without it the variant is invalid
 - **Ignoring entry-point continuity in Primary** — Primary must inherit entry-point's page scaffolding when an entry point exists
@@ -442,7 +442,7 @@ ia_for_feature:                                                  # v5.2 — null
 brand_status: loaded | provisional | skipped | present_unvalidated   # v5.2 (+provisional v5.2.2) — `loaded`=validated; `provisional`=client decode accepted without sign-off (carry brand_provisional:true); `present_unvalidated`=exists but neither validated nor provisional
 ```
 
-If the user opted out via `skip fingerprint`, set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.
+When no fingerprint was loaded (missing → soft-nudge default-proceed, v5.2.1; or the user explicitly declined), set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.
 
 If the IA was skipped via `proceed without IA` (Pre-Intake Check #3), set `ia_status: skipped`, `ia_inferred: true`, and `ia_for_feature: null`. Downstream agents (`design-engineer`, `figma-designer`) read `ia_inferred` from THIS frontmatter — it is the canonical signal that no action-priority map governs this feature; they must not infer it from prose.
 

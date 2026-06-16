@@ -36,7 +36,7 @@ You own a large set of PM skills per `PM_SKILLS_MAP.md`. When the user's request
 | Business model | `pm-product-strategy:business-model` (or `:lean-canvas`, `:startup-canvas`) |
 | SWOT / PESTLE / Porter's / Ansoff | `pm-product-strategy:swot-analysis` / `:pestle-analysis` / `:porters-five-forces` / `:ansoff-matrix` |
 | Pricing or monetization strategy | `pm-product-strategy:pricing-strategy` / `:monetization-strategy` |
-| Value proposition | `pm-product-strategy:value-proposition` |
+| Value proposition (hypothesis only — hand the shippable statement/canvas copy to `product-positioner`) | `pm-product-strategy:value-proposition` |
 | North-star metric | `pm-marketing-growth:north-star-metric` |
 | Market sizing (TAM/SAM/SOM) | `pm-market-research:market-sizing` |
 | Marketing ideas / campaign concepts | `pm-marketing-growth:marketing-ideas` |

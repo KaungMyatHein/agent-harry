@@ -4,6 +4,19 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-16 — v5.2.4: Re-simulation regression fixes — 6 inconsistencies from the v5.2.x edits
+
+**Patch, non-breaking.** A second full-pipeline simulation + adversarial re-audit of the v5.2.1–v5.2.3 fix-chains caught six inconsistencies the fixes themselves introduced. The two parallel re-audits confirmed every field/event chain otherwise consistent (IA handoff echo, brand_status enum, provisional chain, action-priority compliance shapes, audit-ledger tables). Fixed:
+
+1. **(Critical) `ia_inferred` polarity inversion.** lo-fi's IA pre-intake (Check #3 table, refusal D, the skip-path steps) set `ia_inferred: false` when the IA was *skipped* — but the canonical frontmatter spec and BOTH Deliver readers (`design-engineer`, `figma-designer`) treat `ia_inferred: true` = skipped/no-map. A literal IA-skip would have written `false`, which readers interpret as "map exists" → they'd run action-priority compliance against an absent map. Aligned all five sites (lo-fi ×3, SHARED_CONTEXT ×2) to the canonical `skip ⇒ ia_inferred: true` (and the loaded path now explicitly sets `false`).
+2. **(Med) Orchestrator Success-Metrics requirement still said "Check the chat history for the confirmation signal"** — contradicting the v5.2.2 durable `confirmed:` field. Now gates on the non-empty `confirmed:` timestamp.
+3. **(Med) prd-author manifest schema mismatch** — the v5.2.2 "Framework" column made `cols` = 6 but the example rows still had 5 cells. Added the Framework cell to both example rows.
+4. **(Low-Med) Value-prop boundary leftover** — pm-strategist's skill-integration table still listed a bare "Value proposition" deliverable, contradicting the v5.2.3 boundary. Annotated it "hypothesis only — hand the statement/canvas copy to product-positioner."
+5. **(Low) Cold-Start Express Path over-promised** — it consolidated the four soft opt-outs but didn't note the **hard** Research-First Gate still applies on a zero-artifact cold start. Added that note (it only consolidates the soft opt-outs; it never bypasses the two hard gates).
+6. **(Low) figma-designer's `ia_for_feature.screens` read dropped `nav_location`** vs lo-fi's writer spec + design-engineer's reader. Aligned the field list.
+
+Lesson logged: every cross-agent edit needs a writer↔reader polarity/shape check — the Critical here was a value-inversion that mechanical "field exists in both files" checks pass but semantic checks catch.
+
 ## 2026-06-16 — v5.2.3: Pipeline-audit P2 fixes — clarity, provisional brand, anti-deadlock
 
 **Patch, non-breaking.** Four of the five P2 (enhancement/maintainability) findings from the pipeline audit:

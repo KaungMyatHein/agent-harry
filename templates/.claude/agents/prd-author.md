@@ -178,14 +178,16 @@ decisionData:
         - { html: "<code>guest-checkout.md</code>" }
         - { num: true, html: "<word-count>" }
         - { num: true, html: "76" }
+        - { html: "RICE" }
         - { html: "<span class=\"pill-in\">new</span>" }
     - cells:
         - { html: "Phone-verify retry" }
         - { html: "<code>phone-verify-retry.md</code>" }
         - { num: true, html: "<word-count>" }
         - { num: true, html: "65" }
+        - { html: "RICE" }
         - { html: "<span class=\"pill-in\">new</span>" }
-    # ... one row per PRD
+    # ... one row per PRD (the 5th cell = the prioritizer's framework, from `scoring_framework`)
 ```
 
 The manifest is the table the user sees in the chat's Decision Data block (v5.0 — was dashboard's panel pre-v5.0) — it's what they confirm with `y` (ship all) or `revise — <slug>` (regenerate one).

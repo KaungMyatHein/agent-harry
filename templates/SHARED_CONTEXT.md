@@ -330,7 +330,7 @@ Define phase, between `prd-author` and the first `lo-fi-designer` run: `prioriti
 
 `lo-fi-designer` validates the IA at its pre-intake (after the fingerprint + PRD checks). Refuse-with-explicit-opt-out:
 
-- Missing IA → refuse; options: run `information-architect`, or `proceed without IA` (legacy per-feature layout, no global structure) → logged `ia_structure_skipped`, Executive Summary flags `ia_inferred: false`
+- Missing IA → refuse; options: run `information-architect`, or `proceed without IA` (legacy per-feature layout, no global structure) → logged `ia_structure_skipped`, sets `ia_status: skipped` / `ia_inferred: true` (true = inferred-in-isolation; the value `design-engineer` / `figma-designer` read to skip action-priority compliance)
 - Present → load into intake context; layouts inherit the screen inventory's nav location + the action-priority map
 
 ### What the IA contains
@@ -622,7 +622,7 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `journey_structure_inferred` (v4.3) | **Consumer agent** that read the old PRD (`lo-fi-designer` / `figma-designer` / `design-engineer`) | Informational event; no opt-in required. Fires once per agent run when an old-format PRD is loaded. Multiple events may fire for one feature as it moves through Discovery → Define → Deliver. |
 | `journey_structure_skipped` (v4.3) | **`lo-fi-designer`** | Fires when the user types `proceed without journey spec` at lo-fi-designer's Pre-Intake Check #2. Logged before lo-fi-designer proceeds with the legacy single-layout fallback. Downstream agents (figma-designer, design-engineer) will propagate the `journey_source: skipped` flag from the lo-fi handoff and won't re-fire this event. |
 | `ia_created` (v5.2) | **`information-architect`** | The agent owns its completion event, in addition to the standard `stop_gate`. Project-level, fires once per IA pass. |
-| `ia_structure_skipped` (v5.2) | **`lo-fi-designer`** | Fires when the user types `proceed without IA` at lo-fi-designer's IA pre-intake check. Downstream agents propagate `ia_inferred: false` from the handoff and won't re-fire. |
+| `ia_structure_skipped` (v5.2) | **`lo-fi-designer`** | Fires when the user types `proceed without IA` at lo-fi-designer's IA pre-intake check. lo-fi sets `ia_status: skipped` / `ia_inferred: true` in its handoff; downstream agents read that and skip action-priority compliance, and won't re-fire. |
 | `prds_skipped` (v5.2) | **`information-architect`** | Fires when the user types `proceed without prds` at the IA PRD pre-intake check. |
 | `brand_decoded` (v5.2) | **`brand-decoder`** | Fires only on a passed Validation Stop Gate. Project-level, `feature_slug: null`. |
 | `brand_concept_skipped` (v5.2) | **Consuming agent** that did the brand pre-intake check (`product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer`) | Whichever agent's pre-intake the user opted out of owns the event, parallel to `fingerprint_skipped`. |

@@ -75,7 +75,7 @@ After ANY Define-phase artifact appears in `./design-workspace/<project-slug>/` 
 
 To pass the gate, one of these must be true:
 
-1. **A `pm-metrics-architect` handoff artifact exists** in `./design-workspace/<project-slug>/`, AND the user has explicitly confirmed it via `y` on the Stop Gate that followed the metrics agent's run. Check the chat history for the confirmation signal.
+1. **A `pm-metrics-architect` handoff artifact exists** in `./design-workspace/<project-slug>/` AND its frontmatter carries a **non-empty `confirmed:` timestamp** (v5.2.2 — the durable signal you stamp on the metrics Stop Gate `y`, in the same step you log `gate_clear`; see § Once the Success-Metrics Gate clears). Gate on this field, **not** on chat history — an existing-but-unconfirmed handoff (`confirmed:` empty) does NOT pass.
 2. **The user has explicitly opted out** with one of these phrases (treat liberally — Burmese/English mix is fine):
    - "I have metrics already, skip the confirmation"
    - "skip metrics" / "skip success metrics"
@@ -202,6 +202,8 @@ The pipeline has several refuse-with-opt-out checks (fingerprint, IA, brand conc
 > Type **`y`** to take the express path (I'll log each skip and route straight to `lo-fi-designer`), or name any you DO want first (e.g. *"do the fingerprint, skip the rest"*).
 
 On `y`: log all four `*_skipped` events up front, then route directly to `lo-fi-designer` (which, post-v5.2.1, soft-nudges on fingerprint anyway). The express path is for **prototyping throwaway exploration**, not shipping — say so, and note that running the real Discovery→Define steps later upgrades the work. Do NOT offer the express path when the user signals they care about rigor (research, metrics, brand alignment), or when artifacts already exist (the value of the gates is realized — don't discard it).
+
+**The express path only consolidates the four SOFT opt-outs — it does NOT bypass the two HARD gates.** `lo-fi-designer` is Define-phase and not Success-Metrics-gated, but the **Research-First Gate still applies**: on a true zero-artifact cold start, lo-fi planning requires the research opt-out phrase (e.g. *"research is done / go straight to Deliver"*). Fold that into the same consolidated gate ("…and I'll treat research as opted-out") rather than letting it surface as a separate refusal — but never silently skip it.
 
 ---
 
