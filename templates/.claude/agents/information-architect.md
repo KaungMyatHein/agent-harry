@@ -53,17 +53,18 @@ If the user types `proceed without prds`, append a `prds_skipped` event to `<pro
 
 Structure reflects how a brand wants users to think — the grouping that feels right for one brand's mental model can feel wrong for another's. If a `brand-concept.md` exists, your navigation grouping and vocabulary should align with it.
 
-1. **Existence check** — does `<project-root>/brand-concept.md` exist?
+1. **Existence + validation check** — does `<project-root>/brand-concept.md` exist AND have a non-empty `validated:` timestamp? (An unvalidated decode is a hypothesis that never passed `brand-decoder`'s Validation Stop Gate — treat it as absent, exactly like the other consumers: `product-positioner`, `ideation-facilitator`, `lo-fi-designer`, `design-engineer`.)
 2. **Decide:**
 
 | State | Action |
 |---|---|
-| Exists | Load it. Use its `mental_model` and `vocabulary` to shape grouping labels and structure. Continue. |
-| Missing | Soft nudge (no refusal) — see below. Continue. |
+| Exists + validated | Load it. Use its `mental_model` and `vocabulary` to shape grouping labels and structure. Set `brand_concept_status: loaded`. Continue. |
+| Exists but NOT validated (`validated:` empty) | Treat as absent — don't trust a hypothesis. Note it, set `brand_concept_status: skipped`, soft nudge (below). Continue. |
+| Missing | Soft nudge (below). Set `brand_concept_status: skipped`. Continue. |
 
-> **No brand concept found.** Grouping labels and navigation vocabulary will follow generic best-practice rather than this brand's specific mental model. If the product has an existing brand worth aligning to, run `brand-decoder` first. Otherwise proceeding — type nothing to continue, the IA just won't be brand-anchored.
+> **No validated brand concept found.** Grouping labels and navigation vocabulary will follow generic best-practice rather than this brand's specific mental model. If the product has an existing brand worth aligning to, run `brand-decoder` first (and pass its Validation Stop Gate). Otherwise proceeding — type nothing to continue, the IA just won't be brand-anchored.
 
-Append a `brand_concept_skipped` event (informational — no opt-in required) only if you proceed without it.
+Append a `brand_concept_skipped` event (informational — no opt-in required) only if you proceed without a validated brand concept.
 
 ## Intake Questions (Ask Before Any Structure Work)
 
@@ -97,6 +98,27 @@ The navigation hierarchy must be expressible in the platform's real nav primitiv
 5. **Produce the sitemap + screen inventory.** A flat list of every screen `lo-fi-designer` will need to design, each tagged with: which feature it belongs to, where it sits in the navigation hierarchy, its primary object, and its primary action (from step 4). This list is the contract `lo-fi-designer` reads — one row per screen.
 
 Then present everything at a **Stop Gate**. `lo-fi-designer` must not run until the user approves the IA structure (`y` / `revise` / `pivot`).
+
+## Mode B — Amend (v5.2, for a new feature mid-release)
+
+The five-step method above is **Mode A** — the full once-per-release pass. But when a release is already in progress (an `information-architecture.md` exists) and a NEW feature is added — typically a fresh PRD appears, or `prd-author` regenerates one that introduces a new object/screen — you run **Mode B** instead of a full re-run. This is the mode the orchestrator routes to when it says "IA refresh is a candidate, not a fresh run."
+
+Detection: `./design-workspace/<project_slug>/information-architecture.md` already exists AND the user invocation names a new/changed feature (or `prd-author` flagged `ia_refresh_recommended`).
+
+Mode B is **incremental, not a rewrite**:
+
+1. **Load the existing IA** — object model, navigation structure, action-priority map, screen inventory.
+2. **Read only the new/changed PRD(s).** Extract the new objects, jobs, and screens.
+3. **Slot in, don't restructure.** Place the new objects into the existing object model and the new screens into the existing navigation hierarchy. Reuse the existing action-priority global invariants verbatim; add per-object rows only for genuinely new objects. **Continuity wins** — only restructure if the new feature creates a real structural problem, which you surface explicitly (like the existing-product strain check) rather than silently re-deriving the whole tree.
+4. **Diff, then Stop Gate.** Present a focused diff: objects added, screens added, nav placement of the new feature, any new action-priority rows, and any strain the addition causes. Don't re-present the unchanged structure at length.
+5. **Write the updated `information-architecture.md`** — preserve every unchanged section exactly; append/insert only the deltas. Bump nothing else.
+
+Mode B anti-patterns:
+- **Re-deriving the whole structure** when only one feature was added (that's Mode A — expensive and destabilizing to in-flight feature work).
+- **Restructuring existing navigation to fit the new feature** without surfacing the strain and getting user approval.
+- **Skipping the diff** — the user needs to see what changed, not re-approve the whole IA.
+
+If the existing IA is genuinely stale across many features (a real redesign, not one addition), recommend a full Mode A re-run instead — Mode B is for incremental additions only.
 
 ## The Action-Priority Map (Fixes "Inconsistent Action Priorities")
 

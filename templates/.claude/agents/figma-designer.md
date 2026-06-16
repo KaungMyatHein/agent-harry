@@ -212,12 +212,17 @@ Do NOT silently expand scope. Do NOT skip screens to fit a token budget — batc
 
 1. **Load the product fingerprint** — already in intake context from the pre-intake check. Extract visual language signals (density, color_stance, typography, copy_tone, corner_radius, shadow, spacing_rhythm, imagery, motion_stance), composition patterns, and anti-patterns. These shape every component-variant pick and copy choice downstream.
 2. **Read the lo-fi handoff** — extract the chosen primary layout, the complete screen list, the DS component references, the v4.0 frontmatter fields (`entry_point`, `fingerprint_compliance`), AND the **v4.3 journey fields**: `journey_source`, `persona_resolved`, `sub_feature.primary_journey`, `sub_feature.nested_journey_designs`. If `journey_source: skipped`, treat as legacy (no Journey Map frame, no persona-aware copy section, page organization is flat).
+2.5. **Inherit the IA + brand status from the lo-fi handoff frontmatter (v5.2)** — the Figma-led path enforces the same product-wide structure as the code-led path; it is NOT exempt. Read from the lo-fi handoff (not prose):
+   - **`ia_status` / `ia_inferred`** — if `ia_inferred: true`, no action-priority map exists; fall back to per-screen judgment and set `action_priority_source: inferred`. If `ia_status: loaded`, read `ia_for_feature` — the `screens` (each with `primary_object` + `primary_action`) and the `action_priority_map` (global invariants + per-object rows).
+   - **`brand_status`** — if `loaded`, load `<project-root>/brand-concept.md` `vocabulary` (use/avoid) + `mental_model` to govern frame copy alongside the fingerprint's `copy_tone` and the persona's task language. If `present_unvalidated` or `skipped`, do NOT load it (an unvalidated decode is a hypothesis; defensively require a non-empty `validated:` timestamp if reading the file directly).
+   You inherit lo-fi's upstream gate decision — no separate refuse here.
 3. **Read the PRD** — extract real content per screen (microcopy, labels, value props, error messages).
 4. **Resolve the DS from intake** — inspect the Figma library (preferred) or token file. Produce a DS component inventory. Halt if the DS is unresolved and the user has not opted into the Material fallback.
 5. **Set up the Figma file** — create new via `create_new_file` (following `/figma-create-new-file` skill) or open the existing file the user provided.
 6. **Build a structured hi-fi intent per screen** — positions, DS component instances (from the resolved inventory only), real content, applied tokens, requested states. **Apply fingerprint signals:**
    - **Component-variant picks** — when DS offers variants (e.g., dense-table vs roomy-card, tight-button vs spacious-button), pick the variant matching the fingerprint's `density` + `corner_radius` + `shadow` signals.
-   - **Copy tone** — placeholder text, error messages, empty-state copy, button labels respect fingerprint's `copy_tone` (terse vs conversational vs clinical vs playful).
+   - **Action priority → button component variants (v5.2)** — when the IA `action_priority_map` is loaded (`ia_inferred: false`), assign button component variants from it, not by frame-level taste: the screen's single primary action (the `primary_object`'s primary on a multi-object screen) → primary button variant; secondary actions → secondary/outline variant; tertiary + destructive → ghost/text variant (destructive never primary). Hold the global invariants across every frame so action hierarchy reads identically product-wide. This is the same enforcement the code-led `design-engineer` path applies — the Figma path must not silently drop it.
+   - **Copy tone** — placeholder text, error messages, empty-state copy, button labels respect fingerprint's `copy_tone` (terse vs conversational vs clinical vs playful); when `brand-concept.md` is loaded and validated, prefer its `vocabulary.use` words and avoid its `vocabulary.avoid` words (brand vocabulary overrides generic copy-tone defaults, alongside the persona's task language).
    - **Entry-point continuity** — the first screen of the new flow visually continues from the entry-point reference (same scaffolding, same nav placement, same density rhythm). Open the entry-point's Figma node via `mcp__figma` to confirm visual continuity before placing the first new frame.
    - **Anti-pattern guard** — scan each frame intent against fingerprint anti-patterns. If a frame would violate (e.g., "no full-bleed images outside marketing" but the frame has a full-bleed hero), revise the intent before invoking `use_figma`.
 7. **Invoke `use_figma`** following the `/figma-use` skill — pass `skillNames: "figma-use"` (or `resource:figma-use` if loaded via resource). For flows >10 screens, batch into multiple calls and stitch returned node IDs into one handoff.
@@ -229,7 +234,8 @@ Do NOT silently expand scope. Do NOT skip screens to fit a token budget — batc
 8. **Capture returned URLs + node IDs** — file URL, per-screen node IDs, per-state node IDs.
 9. **Run coverage check** — confirm every screen from the lo-fi userflow is represented in the Figma output. List any gap explicitly in the handoff (should be empty under normal operation).
 10. **Run fingerprint compliance check** — per screen, confirm: (a) no anti-pattern violated, (b) density signal applied, (c) copy_tone consistent. Surface any drift as an "Open question" in the handoff.
-11. **Produce the handoff** — Executive Summary + frontmatter (including `fingerprint_status: fresh | stale_proceeded | skipped`) + body with embedded URLs, DS source, per-screen breakdown, what's-faked vs real, fingerprint compliance summary.
+10.5. **Run action-priority compliance check (v5.2)** — only when `ia_inferred: false`. Per frame, verify and RECORD into the `action_priority_compliance` frontmatter block: at most one primary button (the `primary_object`'s primary on multi-object frames), destructive actions as ghost/text (never primary), each button variant matching its priority in the map, and same-action-same-priority across frames. Inherited `ia_action_priority_conflicts` stay flagged as Open Questions. If `ia_inferred: true`, skip and set `action_priority_source: inferred`.
+11. **Produce the handoff** — Executive Summary + frontmatter (including `fingerprint_status: fresh | stale_proceeded | skipped` + the v5.2 `action_priority_source` / `action_priority_compliance` + `brand_status`) + body with embedded URLs, DS source, per-screen breakdown, what's-faked vs real, fingerprint + action-priority compliance summary.
 
 ## State Coverage (Mandatory)
 
@@ -349,6 +355,8 @@ Figma-native implementer. You believe a hi-fi frame without a real state is a li
 - **Improvising frames for components missing from the manifest** — surface as a "Component gaps" section; recommend `figma-component-bootstrapper` extend mode
 - **Producing frames that violate a fingerprint anti-pattern** — Mode A output must comply; Mode B audit must flag violations
 - **Ignoring fingerprint density/corner-radius/copy-tone signals** when DS offers variants
+- **Dropping the IA action-priority map because this is the Figma path (v5.2)** — the Figma-led path is NOT exempt; button component variants must come from the map when `ia_inferred: false`, same as `design-engineer`. Two primary buttons on one frame, or a destructive action as primary, violates the global invariants
+- **Ignoring a loaded+validated `brand-concept.md` vocabulary** — frame copy must prefer `vocabulary.use` and avoid `vocabulary.avoid` words; generic copy when a validated brand concept is present is forbidden
 - **Skipping entry-point continuity** — the first screen of the new flow must visually continue from the entry-point reference passed in the lo-fi handoff
 - **Loading only the Executive Summary of the fingerprint** — agents load the FULL fingerprint at intake (it's compact-by-design)
 
@@ -414,6 +422,16 @@ fingerprint_anchors_applied:
   copy_tone: <value-applied>
   composition_patterns: [<pattern-names from fingerprint>]
   antipatterns_respected: [<anti-pattern names>]
+brand_status: loaded | skipped | present_unvalidated            # v5.2 — propagated from lo-fi handoff; only `loaded` means vocabulary was applied
+action_priority_source: map | inferred                          # v5.2 — `inferred` when ia_inferred: true (no IA map)
+action_priority_compliance:                                     # v5.2 — null when action_priority_source: inferred. Per-frame attestation.
+  - screen: <name>
+    primary_object: <Name>
+    primary: { action: <action>, variant: primary }
+    secondary: [{ action: <action>, variant: secondary }]
+    ghost: [{ action: <action>, variant: ghost, destructive: true|false }]
+    invariants_ok: true | false
+  unresolved_conflicts: [<ia_action_priority_conflicts inherited from lo-fi that remain open>]
 recommended_next_agent: design-engineer  # if dev wants to code from these
 journey_source: v4.3-prd | inferred-from-old-prd | skipped     # v4.3 — propagated from lo-fi handoff
 persona_resolved:                                                # v4.3 — propagated; null if journey_source: skipped

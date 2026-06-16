@@ -4,6 +4,18 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-16 — v5.2.1: Pipeline-simulation fixes — 5 v5.2 wiring gaps closed
+
+**Patch, non-breaking.** A full Discovery→Deliver **process simulation** plus a 3-cluster adversarial agent audit (all 20 agents) surfaced five P0 wiring bugs in the just-shipped v5.2 IA/brand integration. All were functional silent-fail risks (the IA/brand features would degrade quietly when used), not polish. Fixed:
+
+1. **`ia_inferred` handoff break** — `lo-fi-designer` referenced an `ia_inferred` signal that it never actually wrote to its handoff frontmatter, so `design-engineer` couldn't detect an IA-skip. lo-fi now writes `ia_status` / `ia_inferred` / `ia_for_feature` (the per-feature `screen_inventory` + `action_priority_map` subset) + `brand_status` into frontmatter; both Deliver agents read the canonical field instead of inferring from prose (also a token win — they inherit the subset rather than re-loading the whole IA file).
+2. **IA trusted an unvalidated brand concept** — `information-architect`'s brand pre-intake checked existence only, while the other four consumers gate on a non-empty `validated:` timestamp. Aligned to the 4-state table; an unvalidated decode is treated as absent.
+3. **figma-designer parity gap** — the Figma-led Deliver path ignored the IA action-priority map and brand concept entirely, while the code-led path enforced both. figma-designer now consumes both (button **component** variants from the map, brand vocabulary for frame copy) with the same compliance attestation; the path is explicitly marked NOT exempt.
+4. **Action-priority enforcement had no teeth** — it was advisory prose with no check or record, unlike the fingerprint (which has a compliance step + frontmatter attestation). Added an action-priority compliance check + per-screen `action_priority_compliance` frontmatter block to both Deliver agents.
+5. **IA "refresh candidate" orphan** — the orchestrator routed to an IA refresh mode that didn't exist. Added `information-architect` **Mode B (Amend)** — incremental slot-in of a new feature mid-release (load existing IA, read only the new PRD, slot in without restructuring, diff + Stop Gate) — and pointed the orchestrator routing note at it.
+
+`SHARED_CONTEXT.md` § Information Architecture "Enforcement (downstream)" updated to name figma-designer and document the handoff-echo + attestation contract. Remaining audit findings (P1: Success-Metrics `confirmed:` file signal, prioritizer path/score contract, cold-start express gate, lo-fi fingerprint soft-nudge; P2: orchestrator ordering-table refactor, fingerprint shared-protocol extract, client-brand `provisional` state, brand staleness nudge) are logged as backlog, not yet implemented.
+
 ## 2026-06-16 — v5.2: Atria gap-closing — information-architect + brand-decoder (18 → 20 agents)
 
 **Additive, non-breaking.** Two new agents close three gaps surfaced by a real design-test rejection (the "Atria" assessment): messy information architecture, inconsistent action priorities, and brand-concept misalignment. Driven by a `/grill-me` session that resolved every branch of the design tree before a line was written. Both gaps were genuine capability holes — the pipeline was run in full and the output was still messy, which pointed at *missing owners*, not misuse.

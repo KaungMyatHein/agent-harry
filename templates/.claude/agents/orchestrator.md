@@ -149,7 +149,7 @@ Your job around the IA:
 
 1. **After PRDs exist and before the first `lo-fi-designer` run**, propose `information-architect` as the smallest-next-move (see proposal order above). Frame it: *"PRDs are done. Before we design screens, let's fix the cross-feature structure — object model, navigation, and a product-wide action-priority system — so the screens stay consistent."*
 2. **When routing to `lo-fi-designer` for the first time**, mention that an IA pre-check will fire. If it halts with "IA missing" and the user opts to run it, route to `information-architect`, then back to `lo-fi-designer`.
-3. **Run it once per release, not per feature** — IA is cross-feature. Track its existence in your pipeline-state model; don't re-propose it for each feature's lo-fi run. If a new feature is added to an in-progress release, an IA refresh is a candidate, not a fresh run.
+3. **Run it once per release, not per feature** — IA is cross-feature. Track its existence in your pipeline-state model; don't re-propose it for each feature's lo-fi run. If a new feature is added to an in-progress release (a fresh PRD appears, or a regenerated PRD introduces a new object/screen), route to `information-architect` **Mode B (Amend)** — incremental slot-in of the new feature, NOT a full Mode A re-run. The agent detects an existing `information-architecture.md` and runs Mode B automatically.
 
 Full IA protocol: `SHARED_CONTEXT.md` § Information Architecture. Agent behavior: `information-architect.md`.
 

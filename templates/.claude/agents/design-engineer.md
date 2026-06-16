@@ -103,7 +103,11 @@ Cross-check against the lo-fi artifact's detected stack. If they differ, flag it
 
 1. **Load the product fingerprint** — already in intake context from the pre-intake check. Pull visual language signals + composition patterns + anti-patterns. These shape every component-variant pick, layout primitive choice, copy decision in the prototype.
 2. **Read the lo-fi handoff** — extract chosen layout, screen list, DS components, the v4.0 frontmatter fields (`entry_point`, `fingerprint_compliance`), AND the **v4.3 journey fields**: `journey_source`, `persona_resolved`, `sub_feature.primary_journey`, `sub_feature.nested_journey_designs`. If `journey_source: skipped`, treat as legacy (no per-journey routes, no persona section in README, no persona-aware copy decisions).
-2.5. **Load the IA action-priority map + brand concept (v5.2)** — if `./design-workspace/<project_slug>/information-architecture.md` exists, read its `action_priority_map` (global invariants + per-object table). This is what you map to **button variants** (see step 6). If `<project-root>/brand-concept.md` exists and is validated, load its `vocabulary` (use/avoid) + `mental_model` to govern copy alongside the fingerprint's `copy_tone`. If the lo-fi handoff carries `ia_inferred: false`, there's no map — fall back to per-feature judgment and note it. No refuse here: `lo-fi-designer`'s pre-intake already gated the IA upstream; you inherit its decision.
+2.5. **Inherit the IA + brand status from the lo-fi handoff frontmatter (v5.2)** — read these fields from the lo-fi handoff (NOT from prose, NOT by re-deriving):
+   - **`ia_status` / `ia_inferred`** — the canonical signal. If `ia_inferred: true` (IA was skipped upstream), there is no action-priority map; fall back to per-feature judgment and set `action_priority_source: inferred` in your handoff. Do NOT silently invent a map.
+   - **`ia_for_feature`** (present when `ia_status: loaded`) — the per-feature subset lo-fi already distilled: `screens` (each with `nav_location`, `primary_object`, `primary_action`), the `action_priority_map` (global invariants + per-object rows), and `ia_action_priority_conflicts`. Use this directly; only re-open `./design-workspace/<project_slug>/information-architecture.md` if a field you need is missing from the handoff. This `screens` list (with `primary_object`) is how you resolve the primary action on a multi-object screen — the screen's `primary_object` owns the single primary slot.
+   - **`brand_status`** — if `loaded`, load `<project-root>/brand-concept.md` `vocabulary` (use/avoid) + `mental_model` to govern copy alongside the fingerprint's `copy_tone`. If `present_unvalidated` or `skipped`, do NOT load it — an unvalidated decode is a hypothesis. (Defensive: if reading brand-concept directly, require a non-empty `validated:` timestamp before trusting it.)
+   No refuse here: `lo-fi-designer`'s pre-intake already gated the IA + brand upstream; you inherit its decision.
 3. **Auto-discover existing code paths** — composition idioms in this product live in the codebase. Find the relevant ones for this feature:
 
 ### Auto-discovery process
@@ -176,7 +180,14 @@ f. **Handle edge cases:**
 
 7. **Run fingerprint compliance check** — per screen, confirm no anti-pattern violated, density signal applied, copy_tone consistent. Surface any drift as "Open question" in the handoff.
 
-8. **Write the handoff** — Executive Summary + frontmatter (including `fingerprint_status` + `discovered_code_paths`) + body with file manifest, run instructions, fingerprint compliance summary.
+7.5. **Run action-priority compliance check (v5.2)** — only when `ia_inferred: false` (a map exists). Per screen, verify and RECORD, don't just intend:
+   - **At most one primary button** per screen (the global invariant). Two primaries is a fail — demote one per the per-object table.
+   - **Destructive actions are ghost/text + confirm** — never a primary or solid button.
+   - **Variant ↔ priority match** — each action's button variant matches its priority in the `action_priority_map` (primary→primary, secondary→secondary/outline, tertiary→ghost). On a multi-object screen, the `primary_object`'s primary action wins the single primary slot.
+   - **Same-action-same-priority** — an action keeps the variant it has on other screens.
+   Emit a per-screen attestation into the `action_priority_compliance` frontmatter block (below). Any unresolved `ia_action_priority_conflicts` inherited from the lo-fi handoff stay flagged as Open Questions — do not silently resolve them. If `ia_inferred: true`, skip this check and set `action_priority_source: inferred`.
+
+8. **Write the handoff** — Executive Summary + frontmatter (including `fingerprint_status` + `discovered_code_paths` + the v5.2 `action_priority_compliance` block) + body with file manifest, run instructions, fingerprint + action-priority compliance summary.
 
 ## Scope Cap (Hard Limit)
 
@@ -452,6 +463,15 @@ discovered_code_paths:
   feature_area_matches: [<relative paths studied>]
   universal_primitives: [<relative paths studied>]
   user_overrides: [<paths user explicitly added or replaced via `revise`>]
+action_priority_source: map | inferred                          # v5.2 — `inferred` when ia_inferred: true (no IA map); `map` when enforced from the IA action-priority map
+action_priority_compliance:                                     # v5.2 — null when action_priority_source: inferred. Per-screen attestation that button variants came from the map.
+  - screen: <name>
+    primary_object: <Name>                                      # from ia_for_feature.screens; owns the single primary slot
+    primary: { action: <action>, variant: primary }
+    secondary: [{ action: <action>, variant: secondary }]
+    ghost: [{ action: <action>, variant: ghost, destructive: true|false }]
+    invariants_ok: true | false                                 # one-primary, destructive-never-primary, same-action-same-priority
+  unresolved_conflicts: [<ia_action_priority_conflicts inherited from lo-fi that remain open>]
 journey_source: v4.3-prd | inferred-from-old-prd | skipped     # v4.3 — propagated from lo-fi handoff
 persona_resolved:                                                # v4.3 — propagated; null if journey_source: skipped
   id: <persona-id>

@@ -437,9 +437,28 @@ sub_feature:                                                     # v4.3 — null
       screens: [<screen names in the nested sub-flow>]
       success_exit: <from PRD>
       failure_exits_designed: [<which PRD failure_exits this design covers>]
+ia_status: loaded | skipped                                      # v5.2 — was the IA loaded at Pre-Intake Check #3?
+ia_inferred: false | true                                        # v5.2 — true means IA was skipped; layouts designed in isolation, no global structure
+ia_for_feature:                                                  # v5.2 — null if ia_status: skipped. The per-feature subset downstream agents inherit so they don't re-load the whole IA file.
+  screens:                                                       # this feature's rows from the IA screen_inventory
+    - screen: <name>
+      nav_location: <path in hierarchy, e.g. "Operations > Schedules">
+      primary_object: <Name>
+      primary_action: <action>
+  action_priority_map:                                           # global invariants + the per-object rows relevant to this feature
+    global_invariants: [<rule>, ...]
+    per_object:
+      - object: <Name>
+        primary: <action or "—">
+        secondary: [<action>, ...]
+        tertiary: [<action>, ...]                                # includes destructive→ghost
+  ia_action_priority_conflicts: [<one-line PRD-vs-IA conflicts surfaced in Open Questions; empty array if none>]
+brand_status: loaded | skipped | present_unvalidated            # v5.2 — present_unvalidated means brand-concept.md exists but hasn't passed brand-decoder's Validation Stop Gate
 ```
 
 If the user opted out via `skip fingerprint`, set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.
+
+If the IA was skipped via `proceed without IA` (Pre-Intake Check #3), set `ia_status: skipped`, `ia_inferred: true`, and `ia_for_feature: null`. Downstream agents (`design-engineer`, `figma-designer`) read `ia_inferred` from THIS frontmatter — it is the canonical signal that no action-priority map governs this feature; they must not infer it from prose.
 
 If the user opted out via `proceed without journey spec`, set `journey_source: skipped`, set `persona_resolved: null`, set `sub_feature: null`, and omit the Journey Map section in the handoff body. Executive Summary in this case includes `journey_structure_inferred: false`.
 

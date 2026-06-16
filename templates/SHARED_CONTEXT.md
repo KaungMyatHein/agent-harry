@@ -343,8 +343,9 @@ Define phase, between `prd-author` and the first `lo-fi-designer` run: `prioriti
 
 ### Enforcement (downstream)
 
-- **lo-fi-designer**: places actions per the action-priority map; anchors each screen's nav location from the inventory
-- **design-engineer**: assigns button variants (primary/secondary/ghost) per the action-priority map
+- **lo-fi-designer**: places actions per the action-priority map; anchors each screen's nav location from the inventory; echoes the per-feature subset (`ia_for_feature`) + `ia_status` / `ia_inferred` into its handoff frontmatter so Deliver agents inherit it without re-loading the whole IA file
+- **design-engineer**: assigns button variants (primary/secondary/ghost) per the action-priority map, then runs an action-priority compliance check and records a per-screen `action_priority_compliance` attestation in its handoff
+- **figma-designer**: same enforcement as design-engineer on the Figma-led path — button **component** variants come from the map, with the same compliance attestation. The Figma path is NOT exempt; both Deliver surfaces enforce action priority identically
 - **critique-partner**: IA lens — checks for orphan screens (not in the sitemap), action-priority-map violations, and grouping that contradicts the rationale
 
 ### What's out of scope (v5.2)
