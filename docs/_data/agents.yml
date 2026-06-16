@@ -37,6 +37,13 @@ figma-component-bootstrapper:
   role: Library builder.
   short: Generates a baseline Figma component library so the team has shared vocabulary before any feature work begins.
 
+brand-decoder:
+  name: brand-decoder
+  phase: Cross-cutting · v5.2 setup
+  color: "#b45309"
+  role: Brand interpreter.
+  short: Decodes an existing brand's concept — worldview, mental model, vocabulary, on/off-brand tells — into brand-concept.md, so design aligns with how the brand actually thinks. A Validation Stop Gate confirms the read before anyone trusts it.
+
 discovery-researcher:
   name: discovery-researcher
   phase: Discovery
@@ -85,6 +92,13 @@ prd-author:
   color: "#1e3a8a"
   role: The scribe.
   short: Writes the PRD. Emits the structured journey shape — persona, entry condition, success exit, failure exit — that every downstream agent consumes.
+
+information-architect:
+  name: information-architect
+  phase: Define
+  color: "#4338ca"
+  role: Structural systems-thinker.
+  short: Runs once per release, between PRDs and layout. Maps the object model, navigation hierarchy, screen inventory, and a product-wide action-priority system — so every screen stays consistent and the product never feels messy.
 
 lo-fi-designer:
   name: lo-fi-designer
