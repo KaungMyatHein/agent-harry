@@ -57,6 +57,8 @@ Chat-rendered output:
    _Evidence:_ ... · _Confidence:_ `medium`
 ```
 
+> **Optional inline widget (v5.3):** when an inline-widget tool (`show_widget`) is available in the session, the orchestrator may render any of the 4 shapes as a card UI via its `widgets/<shape>.widget.html` template instead of markdown (`insights` → `widgets/insights.widget.html`, `table` → `widgets/table.widget.html`, `callout` → `widgets/callout.widget.html`, `metrics` → `widgets/metrics.widget.html`). Markdown stays the default and the only universal fallback. The widget costs *more* output tokens, not fewer — it's a UX upgrade, not a token saving. See `orchestrator.md` § Decision Data Rendering → "Widget render" for the shape→template→island-schema map.
+
 ## Type 2 — `table` (used by: feature-prioritizer, competitive-analyst)
 
 Structured comparison/scoring table.

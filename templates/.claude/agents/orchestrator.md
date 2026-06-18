@@ -566,6 +566,44 @@ For `flavor: launch` (pm-launch-architect's beachhead callout), prepend `🎯 ` 
 
 Group by layer; comma-separate metrics within a layer.
 
+### Widget render (v5.3 — all 4 shapes)
+
+Markdown is the default and universal render. A richer **inline widget** is an *optional enhancement*, used only when **an inline-widget tool is available in this session** — i.e. `show_widget` (or an equivalent that renders HTML inline in chat) is in your tool list. If it is not, you MUST use the markdown path above. Never describe a widget you cannot render.
+
+When the tool is available, render the widget instead of the markdown block. Each shape has a pre-built template and a JSON-island id:
+
+| Shape | Template file | Island `id` | Island schema (fields) |
+|---|---|---|---|
+| `insights` | `widgets/insights.widget.html` | `insights-data` | `agent`, `phaseLabel`, `revisePrompt`, `pivotPrompt`, `stats[].{label,value,tone}`, `insights[].{text,evidence,conf}` |
+| `table` | `widgets/table.widget.html` | `table-data` | `agent`, `phaseLabel`, `label`, `revisePrompt`, `pivotPrompt`, `cols[].{label,num}`, `rows[].cells[].{text,num,pill,delta}` |
+| `callout` | `widgets/callout.widget.html` | `callout-data` | `agent`, `phaseLabel`, `headline`, `body`, `flavor`, `revisePrompt`, `pivotPrompt` |
+| `metrics` | `widgets/metrics.widget.html` | `metrics-data` | `agent`, `phaseLabel`, `label`, `revisePrompt`, `pivotPrompt`, `layers[].{label,metrics[]}` |
+
+Steps:
+
+1. Read `<project-root>/<template file for the shape>`.
+2. Replace **only** the `<script id="<island id>" type="application/json">…</script>` block with the agent's `decisionData`, mapped to that island's schema. Leave every other byte unchanged — the UI is designed in the file, not re-authored here. Map `revisePrompt` / `pivotPrompt` to the agent-appropriate revise/pivot phrasing.
+3. Pass the whole resulting string as `show_widget`'s `widget_code`.
+4. Still print the Executive Summary stat-card and the 3-bullet TL;DR as normal text — the widget replaces the *Decision Data markdown block* only, not the surrounding chat.
+
+If the shape isn't one of the four above (or `decisionData` is null), there is no widget — render markdown (or skip, per the omit rules below).
+
+**Token honesty:** the widget costs *more* output tokens than the markdown block (~400–700 extra), because the constant shell is re-emitted each render — tool-call output is not prompt-cached. Pre-generation saves *design* tokens (UI authored once in the template), not *render* tokens. Choose the widget for UX, not for token savings. When in doubt, or when minimizing tokens, use markdown.
+
+#### Supplemental: IA sitemap tree
+
+Beyond the 4 decisionData shapes, `information-architect` has one **supplemental** widget — `widgets/ia-tree.widget.html` — that renders the recommended navigation hierarchy as an explorer-style tree. It is *additional to*, not a replacement for, the IA's `insights` decisionData (which compares the two nav alternatives).
+
+At the information-architect Stop Gate, when a widget tool is available: read `widgets/ia-tree.widget.html`, replace its `<script id="ia-tree-data">` island with data built from the IA handoff frontmatter:
+
+- `navigation_structure.{chosen, alternative_considered, max_depth}` → `chosen` / `alternative` / `maxDepth`.
+- **Build the tree down to individual screens, not just sections.** Place EVERY `screen_inventory` row as a **screen leaf** at the path given by its `nav_location` (e.g. `Operations > Schedules` → the screen hangs under `Operations` › `Schedules`). Section/area nodes are the `nav_location` path segments (cross-checked against `navigation_structure.hierarchy`). Each screen leaf carries `primaryAction` (from `screen_inventory.primary_action`) and `object` (from `primary_object`).
+- **Do not collapse screens into a count** (no "4 screens" abstraction) — `lo-fi-designer` designs each screen individually, so show every screen by name. The widget shows the total-screens chip itself. Each screen leaf also carries `feature` (from `screen_inventory.feature_slug`).
+- **Per-screen contract (click-to-expand)** — each screen leaf is clickable: it expands the contract `lo-fi-designer` inherits for that screen — nav location (from the screen's ancestor folders), primary object, feature, and the resolved action hierarchy (the screen's own `primary_action` as primary; the object's `secondary`/`tertiary` from the action-priority map). The widget resolves secondary/tertiary itself by looking up the screen's object — no per-screen secondary/tertiary in the data. This is still IA scope (which actions, ranked), not element layout.
+- **Action-priority panel** — also map `action_priority_map.global_invariants` → `globalInvariants` (the 3–5 product-wide rules) and `action_priority_map.per_object` → `actionPriority` (each `{object, primary, secondary[], tertiary[]}`). This is IA's element-*governing* layer (which action is primary), distinct from `lo-fi-designer`'s element-*placing* layer (where the button sits). The widget renders it as a second panel below the sitemap. Do NOT enumerate per-screen UI elements here — element layout is lo-fi's job, out of IA scope.
+
+Node shape: a node with `children` is a section/area (folder); a node without is a screen leaf carrying `primaryAction` / `object` / optional `note`. Render it after the insights block. No widget tool → render the nav hierarchy + screens as a markdown nested list and the action-priority map as a markdown table (the existing IA markdown path). This is the only agent-specific supplemental widget; other agents use the 4 shapes only.
+
 ### TL;DR <-> Decision Data relationship
 
 The TL;DR (exactly 3 bullets — first two = findings, third = open question) **references** the Decision Data rather than duplicating it. Examples:

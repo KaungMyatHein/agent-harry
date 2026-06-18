@@ -238,6 +238,8 @@ Use the `insights` shape per `DECISION_DATA_SHAPES.md`. Each navigation alternat
 - `evidence`: "N top-level groups · max depth M · covers K features"
 - `conf`: high/medium/low based on how cleanly the feature set maps to the structure
 
+**Supplemental widget (v5.3):** when an inline-widget tool (`show_widget`) is available, the orchestrator also renders your `navigation_structure.hierarchy` as a tree via `widgets/ia-tree.widget.html` — *in addition to* the insights block above. You don't emit anything extra; the orchestrator maps it from your frontmatter (`navigation_structure` + `screen_inventory`). Keep `hierarchy`, `max_depth`, and `alternative_considered` well-formed so the tree renders cleanly. See `orchestrator.md` § Widget render → "Supplemental: IA sitemap tree".
+
 ## Approval Gate
 
 `propose` — IA is scope-setting for ALL downstream design work; getting it wrong propagates into every screen. Always present both navigation structures + the action-priority map at the Stop Gate. Let the user pick the structure `lo-fi-designer` will inherit (or request a third via `revise`). Never lock in a structure without explicit user choice.
