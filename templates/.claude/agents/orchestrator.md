@@ -618,6 +618,27 @@ At the lo-fi-designer Stop Gate, when a widget tool is available: read `widgets/
 
 **Fidelity guard:** if the lo-fi handoff has no `wireframe` frontmatter block (older runs, or `journey_structure_skipped` minimal output), there is no wireframe widget — render the ASCII layouts from the `.md` body as fenced code blocks in chat (the existing lo-fi markdown path). Render the wireframe widget after the insights block.
 
+##### Section Detail Loop (v5.5) — you drive it
+
+The wireframe widget has two modes, and **you orchestrate the second one.** Mode is decided by whether the handoff's `wireframe` block has a `detail_loop` field:
+
+- **Layout-choice gate** (no `detail_loop`) — the first lo-fi run. Render all layouts (above). When the user picks one (`y`), do NOT route straight to Deliver. Instead **enter the Section Detail Loop**: the user asked to detail the chosen layout's sections down to their lo-fi components, one section at a time.
+- **Section-detail gate** (`detail_loop` present) — each loop iteration, described below.
+
+**The loop you run** (between `lo-fi-designer` invocations — you own the gates, the agent details one section per run):
+
+1. On `y` at the layout gate, re-invoke `lo-fi-designer` with `mode: detail-section`, the `chosen_layout` name, and `target_section` = the first region in reading order. (If the user instead typed `skip detailing` / `build as-is`, skip the loop entirely and route to Deliver with the region-level wireframe.)
+2. The agent returns a handoff whose `wireframe` block now has `detail_loop` + that section's `components`. Render the wireframe widget (detail-loop mode) — it shows only `chosen_layout`, the current section auto-expanded, others marked detailed/pending.
+3. Map the data: `wireframe.detail_loop` → `detailLoop` (`status`, `chosen_layout`→`chosenLayout`, `sections_total`→`sectionsTotal`, `sections_detailed`→`sectionsDetailed`, `current_section`→`currentSection`, `approve_prompt`→`approvePrompt`, `revise_section_prompt`→`reviseSectionPrompt`, `done_prompt`→`donePrompt`). On the chosen layout's regions, map `detail_status`→`detailStatus`, `focus`, and `components[].{name,type,role,repeat}` straight through.
+4. Read the user's reply at the section gate:
+   - `y` → re-invoke with `target_section` = next `pending` region. If none remain, the agent sets `detail_loop.status: complete`; render the final wireframe and route to Deliver.
+   - `revise <delta>` → re-invoke for the SAME `target_section` with the delta.
+   - `done detailing` / `done` → tell the agent to set `status: complete`, leave remaining sections region-level, render once, route to Deliver.
+   - `cancel` → halt.
+5. Track loop state from the handoff's `detail_loop` counters — never from chat memory. The handoff `.md` is the source of truth for which sections are detailed.
+
+**Section components are lo-fi labeled boxes** (`name · type · role`), the visual companion to the agent's per-section `insights` decisionData. Same fidelity guard as above applies *harder* here: if a section's `components` ever carry styling, real copy, or props/states, that's a fidelity violation — it belongs to `figma-designer` / `design-engineer` (hi-fi) or `handoff-engineer` (contracts), not lo-fi.
+
 These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe); other agents use the 4 shapes only.
 
 ### TL;DR <-> Decision Data relationship
