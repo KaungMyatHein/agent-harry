@@ -639,7 +639,19 @@ The wireframe widget has two modes, and **you orchestrate the second one.** Mode
 
 **Section components are lo-fi labeled boxes** (`name · type · role`), the visual companion to the agent's per-section `insights` decisionData. Same fidelity guard as above applies *harder* here: if a section's `components` ever carry styling, real copy, or props/states, that's a fidelity violation — it belongs to `figma-designer` / `design-engineer` (hi-fi) or `handoff-engineer` (contracts), not lo-fi.
 
-These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe); other agents use the 4 shapes only.
+#### Supplemental: lo-fi flow (v5.6)
+
+`lo-fi-designer` has a third **supplemental** widget — `widgets/flow.widget.html` — that renders the **Journey Map** and **Userflow** as native vertical-spine flow diagrams in chat. The flow is the context the layouts serve, so render it **at the layout-choice gate, BEFORE the wireframe widget** (flow → wireframe → insights text). It does not appear at the section-detail gates (those show only the wireframe in detail-loop mode).
+
+When a widget tool is available and the lo-fi handoff has a `flow` frontmatter block: read `widgets/flow.widget.html`, replace its `<script id="flow-data">` island from that block:
+
+- `flow.flows[]` → `flows[]`. Each flow carries `type` (`journey` | `userflow`), and for `journey` also `persona` + `intent`; both may carry `stats[]` (short chips) and `title`.
+- Each flow's `nodes[]` → the spine, top to bottom. A node is `{ kind, label, note?, branches? }` where `kind` ∈ `entry|action|screen|decision|process|success|fail|nested`. `branches[]` are off-spine forks — failure exits (`kind: fail`) and nested-journey branch points (`kind: nested`, which may carry `steps[]`).
+- The widget renders the `journey` flow expanded and the `userflow` flow collapsed (tap to expand), so two spines don't flood the gate. Map fields straight through (snake_case in YAML → the same keys in the island).
+
+**Fallback:** no widget tool, or no `flow` block (Figjam-only userflow, `journey_structure_skipped`, older runs) → render the body's Mermaid/ASCII as a fenced block and surface the Figjam URL as a link (the existing lo-fi flow markdown path). This is a *visual companion* to the flow the agent already documents in the `.md`, never a replacement for it.
+
+These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe + lo-fi flow); other agents use the 4 shapes only.
 
 ### TL;DR <-> Decision Data relationship
 

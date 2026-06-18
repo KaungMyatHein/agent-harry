@@ -402,6 +402,8 @@ Use the handoff schema from `SHARED_CONTEXT.md` — **start with the Executive S
    - **Nested journey branch points** (if any) marked at the screen where each one starts; each nested journey rendered as a sub-graph with its own entry/success/failures
    - **Failure exits** for both primary and nested journeys
 3. **Userflow** — Figjam URL OR inline Mermaid flowchart (this is the detailed flow; Journey Map above is the high-level persona-shaped view)
+
+> **Flow widget (v5.6):** the Journey Map (item 2) and the inline Userflow (item 3) are *also* surfaced visually in chat — the orchestrator renders the `flow` frontmatter block as a native vertical-spine flow widget at the layout-choice gate (Journey Map expanded, Userflow collapsible). The Mermaid/ASCII here + any Figjam URL stay as the durable `.md` record and the no-widget fallback. Restate the same flows into the `flow` block; don't design a different flow.
 4. **DS component inventory** — what exists in the named DS, what's missing for this feature
 5. **Fingerprint anchors used** — which composition patterns + density + tone signals informed the variants (1 short paragraph)
 6. **Entry-point summary** — screen, trigger affordance, return target, type (`existing_screen` / `new_top_level`)
@@ -524,9 +526,34 @@ wireframe:                                                           # v5.4 — 
       rationale: "<what this divergence buys>"
       breaks: "breaks_antipattern: <which> — rationale: <why worth considering>"   # Risky only; mirrors the body annotation
       bands: [ ... ]
+flow:                                                                # v5.6 — structured node data the orchestrator renders as the native vertical-spine flow widget in chat. The Mermaid/ASCII in the body (items 2–3) + any Figjam URL stay as the durable .md record + no-widget fallback; THIS block is the visual surface. Restatement of the Journey Map + Userflow you already produce — NOT a new flow.
+  flows:                                                             # one entry per flow you have; emit whichever exist (journey, userflow, or both)
+    - type: journey                                                  # the persona-shaped high-level view (item 2). Omit if journey_structure_skipped.
+      persona: "<role — context, e.g. receptionist — front-desk clinic staff>"
+      intent: "<the user-story caption, lifted from the Journey Map>"
+      stats: ["6 steps", "1 nested", "1 failure exit"]               # short chips (optional)
+      nodes:                                                         # the spine, top → bottom
+        - { kind: entry,    label: "Patient list", note: "entry point" }   # kind: entry|action|screen|decision|process|success|fail|nested
+        - { kind: action,   label: "Tap Register", note: "trigger affordance" }
+        - kind: screen
+          label: "Patient info form"
+          note: "name · DOB · contact"
+          branches:                                                  # off-spine forks: failure exits + nested-journey branch points
+            - { kind: fail, label: "Validation error", note: "inline recovery" }
+        - kind: decision
+          label: "Existing patient?"
+          branches:
+            - { kind: nested, label: "Duplicate resolution", note: "nested journey", steps: [ { label: "Match candidates" }, { label: "Merge or keep separate" } ] }
+        - { kind: success,  label: "Patient registered", note: "→ back to list" }
+    - type: userflow                                                 # the detailed step-by-step flow (item 3). Rendered collapsed (tap to expand). Omit if you only have a Figjam URL and no inline flow.
+      title: "Detailed userflow"
+      stats: ["9 steps"]
+      nodes: [ ... ]                                                 # same node shape; more granular steps + decision/error branches
 ```
 
 Build the `wireframe` block from the SAME layouts as the ASCII (items 7–9) — one `layouts[]` entry per ASCII layout, same region names, same behavior notes, same rationale text. It is a structured restatement, not a new design. When `journey_structure_skipped: true` (single layout, legacy mode), emit just the one Primary layout. If you cannot produce the block for any reason, omit it — the orchestrator falls back to rendering the body ASCII as fenced code in chat.
+
+Build the `flow` block from the SAME Journey Map + Userflow you already write in the body (items 2–3) — one `flows[]` entry per flow, same nodes, same branches. It is a structured restatement of those, not a new flow. Emit `type: journey` whenever the Journey Map is present (omit it when `journey_structure_skipped: true`); emit `type: userflow` whenever you produced an inline flow (omit it if you only have a Figjam URL). If you cannot produce the block, omit it — the orchestrator falls back to the body Mermaid/ASCII + the Figjam link.
 
 **Two gates, two shapes of this block:**
 - **Layout-choice gate** (default, first lo-fi run): omit `detail_loop`; regions are region+label only (no `components` / `detail_status` / `focus`). The widget renders all layouts so the user can pick.

@@ -4,6 +4,16 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-18 — v5.6: lo-fi flow widget — Journey Map + Userflow as native vertical-spine diagrams in chat
+
+**Additive, non-breaking.** The lo-fi flow (the Journey Map + Userflow) now renders **in chat** as a native vertical-spine diagram, instead of only a Mermaid/ASCII block or a Figjam link. Third agent-specific supplemental widget, consistent with `ia-tree` and `wireframe` (hand-rolled, themeable, no diagram library).
+
+1. **New supplemental widget — `templates/widgets/flow.widget.html`.** Renders `flows[]` as vertical spines: nodes (entry / action / screen / decision / process / success / fail / nested) connected top-to-bottom, with off-spine `branches` for failure exits and nested-journey forks. Grayscale dominant; semantic color only on success (green) / failure (amber) / nested (info) because those encode meaning. The **Journey Map** flow renders expanded (persona chip + intent caption + spine); the **Userflow** flow renders collapsed (tap to expand, ia-tree idiom) so two spines don't flood the gate.
+2. **`lo-fi-designer` emits a `flow` frontmatter block** — a structured restatement of the Journey Map (item 2) + inline Userflow (item 3) it already writes: `flows[].{type, persona?, intent?, stats[], nodes[].{kind, label, note?, branches[]}}`. `type: journey` whenever the Journey Map exists (omitted if `journey_structure_skipped`); `type: userflow` whenever an inline flow exists (omitted if only a Figjam URL). Not a new flow — the same one, restated.
+3. **Orchestrator renders it at the layout-choice gate, before the wireframe** (flow → wireframe → insights text) — the flow is the context the layouts serve. It does NOT appear at the section-detail gates. Data maps straight through (snake_case YAML → island keys). Wired in `orchestrator.md` § Widget render → "Supplemental: lo-fi flow".
+4. **Companion, never a replacement.** The body Mermaid/ASCII + any Figjam URL remain the durable `.md` record and the no-widget / Figjam-only fallback. Token-honest like the other widgets — a UX upgrade, not a saving.
+5. **Docs** — `lo-fi-designer.md` (flow frontmatter + output-format note), `orchestrator.md`, `DECISION_DATA_SHAPES.md`, `README.md`, `SKILL.md` updated. `templates/widgets/*` copy propagates the new file on install/refresh.
+
 ## 2026-06-18 — v5.5: lo-fi Section Detail Loop — drill the chosen layout down to its lo-fi component composition
 
 **Additive, non-breaking.** Extends the v5.4 wireframe from region-level to **component-level**. After the user picks a layout, the orchestrator runs a **section-by-section detail loop**: each section of the chosen layout is detailed, at its own Stop Gate, down to the lo-fi components that fill it. This connects the previously-flat Per-Layout Component Table to the wireframe — components now sit *in their section* instead of in a separate list.
