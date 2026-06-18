@@ -4,6 +4,16 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-18 — v5.4: lo-fi wireframe widget — grayscale region+label render in chat (ASCII stays in the `.md`)
+
+**Additive, non-breaking.** `lo-fi-designer`'s layout alternatives can now render in chat as a **grayscale region+label wireframe** instead of ASCII art. ASCII reads poorly in chat — proportion is lost, a sidebar doesn't look like a sidebar — and that undercut the one question lo-fi exists to answer: *does this screen architecture make sense?* The wireframe widget answers it directly while staying lo-fi (no brand color, no real type, region+label only).
+
+1. **New supplemental widget — `templates/widgets/wireframe.widget.html`** (the second agent-specific supplemental, alongside `information-architect`'s `ia-tree.widget.html`). Renders all 3 layout alternatives (primary / alternative / risky) stacked: each is a framed stack of `bands`, each band a horizontal row of dashed region boxes carrying a label + one-line content hint + optional behavior note. Region weights (`w`) make a sidebar sit narrower than its main pane. Risky layouts get a warning-toned `breaks_antipattern` banner. Mobile form factor frames each layout in a narrow column.
+2. **`lo-fi-designer` emits a `wireframe` frontmatter block** — a structured restatement of the SAME layouts as the body ASCII (one `layouts[]` entry per ASCII layout, same region names / notes / rationale). The agent authors both from one design; it is not a second design pass. Single-layout legacy mode (`journey_structure_skipped`) emits just the Primary.
+3. **Orchestrator render path** (`orchestrator.md` § Decision Data Rendering → Widget render → "Supplemental: lo-fi wireframe") — reads the template, swaps the `<script id="wireframe-data">` island from the handoff's `wireframe` block, renders after the `insights` block. **Fidelity guard:** region+label only — never skeleton lines or placeholder content (that's hi-fi, owned by `figma-designer` / `design-engineer`). No `wireframe` block or no widget tool → falls back to rendering the body ASCII as fenced code in chat.
+4. **Token honesty (unchanged stance):** the wireframe widget is a UX upgrade, not a token saving — it costs *more* render tokens than ASCII (shell re-emitted, not prompt-cached), but dramatically *less* than producing the real hi-fi UI. Pre-generation saves *design* tokens (the widget UI is authored once in the template), not *render* tokens.
+5. **Docs** — `DECISION_DATA_SHAPES.md` (lo-fi section) and `SKILL.md` install/refresh notes updated to list the supplemental wireframe widget. The `templates/widgets/*` copy step already propagates the new file on install/refresh.
+
 ## 2026-06-18 — v5.3: inline-widget render for Stop Gate `decisionData` (all 4 shapes)
 
 **Additive, non-breaking.** Stop Gate results can render as a Generative-UI card inline in chat instead of markdown text. Markdown stays the default and the only universal fallback — the widget path only fires when an inline-widget tool (`show_widget`) is present in the session.

@@ -74,6 +74,8 @@ Every Stop Gate renders the just-completed sub-agent's `decisionData` as markdow
 - **`callout`** — blockquote with optional 🎯 flavor for beachhead/launch (product-positioner, pm-strategist, pm-launch-architect)
 - **`metrics`** — grouped bullet list of measurement-plan layers (pm-metrics-architect)
 
+When an inline-widget tool (`show_widget`) is available, these render as Generative-UI cards from `widgets/<shape>.widget.html` instead of markdown (a UX upgrade, not a token saving — the shell re-emits each render). Two **agent-specific supplemental widgets** go beyond the 4 shapes: `widgets/ia-tree.widget.html` (information-architect — sitemap drilled to screens + action-priority map) and `widgets/wireframe.widget.html` (v5.4 — lo-fi-designer's 3 layout alternatives as grayscale region+label wireframes; ASCII stays in the handoff `.md` as the record + fallback).
+
 Full shape spec: `DECISION_DATA_SHAPES.md`. The TL;DR (3 bullets — 2 findings + 1 open question) references the Decision Data rather than duplicating it.
 
 This is the post-v5.0 decision surface. Pre-v5.0 versions emitted an HTML `dashboard.html` mirror plus an optional Queue Mode click-driven loop — both ripped in v5.0 because they were never used in practice. See `RATIONALE.md` § "Why dashboard was removed (v5.0)" and `CHANGELOG.md` for the history.

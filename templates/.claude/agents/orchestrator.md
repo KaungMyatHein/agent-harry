@@ -602,7 +602,23 @@ At the information-architect Stop Gate, when a widget tool is available: read `w
 - **Per-screen contract (click-to-expand)** — each screen leaf is clickable: it expands the contract `lo-fi-designer` inherits for that screen — nav location (from the screen's ancestor folders), primary object, feature, and the resolved action hierarchy (the screen's own `primary_action` as primary; the object's `secondary`/`tertiary` from the action-priority map). The widget resolves secondary/tertiary itself by looking up the screen's object — no per-screen secondary/tertiary in the data. This is still IA scope (which actions, ranked), not element layout.
 - **Action-priority panel** — also map `action_priority_map.global_invariants` → `globalInvariants` (the 3–5 product-wide rules) and `action_priority_map.per_object` → `actionPriority` (each `{object, primary, secondary[], tertiary[]}`). This is IA's element-*governing* layer (which action is primary), distinct from `lo-fi-designer`'s element-*placing* layer (where the button sits). The widget renders it as a second panel below the sitemap. Do NOT enumerate per-screen UI elements here — element layout is lo-fi's job, out of IA scope.
 
-Node shape: a node with `children` is a section/area (folder); a node without is a screen leaf carrying `primaryAction` / `object` / optional `note`. Render it after the insights block. No widget tool → render the nav hierarchy + screens as a markdown nested list and the action-priority map as a markdown table (the existing IA markdown path). This is the only agent-specific supplemental widget; other agents use the 4 shapes only.
+Node shape: a node with `children` is a section/area (folder); a node without is a screen leaf carrying `primaryAction` / `object` / optional `note`. Render it after the insights block. No widget tool → render the nav hierarchy + screens as a markdown nested list and the action-priority map as a markdown table (the existing IA markdown path).
+
+#### Supplemental: lo-fi wireframe (v5.4)
+
+`lo-fi-designer` has the second **supplemental** widget — `widgets/wireframe.widget.html` — that renders its 3 layout alternatives (primary / alternative / risky) as **grayscale region+label wireframes** instead of ASCII. It is *additional to*, not a replacement for, lo-fi's `insights` decisionData (which compares the 3 layouts as text + DS-vs-new component counts).
+
+Why a widget here: ASCII schematics read poorly in chat (proportion is lost, a sidebar doesn't look like a sidebar). A boxed wireframe answers the lo-fi question — *"does this screen architecture make sense?"* — far more directly, while staying lo-fi (no brand color, no real type, region+label only). The **ASCII stays in the handoff `.md` body** as the durable record and the no-widget fallback.
+
+At the lo-fi-designer Stop Gate, when a widget tool is available: read `widgets/wireframe.widget.html`, replace its `<script id="wireframe-data">` island with data built from the lo-fi handoff frontmatter's `wireframe` block:
+
+- `wireframe.form_factor` → `formFactor` (`web` | `mobile` — `mobile` frames each layout in a narrow column).
+- `wireframe.layouts[]` → `layouts[]`. One entry per layout the agent designed. Each carries `name`, `tone` (`primary` | `alternative` | `risky`), `rationale` (the one-liner from the layout's rationale), and — Risky only — `breaks` (the `breaks_antipattern: … — rationale: …` annotation).
+- Each layout's `bands[]` is a top-to-bottom stack; each band is one horizontal row of `regions[]`. A region is `{ label, hint?, note?, w? }` — `label` is the region name (e.g. `Sidebar`), `hint` is the one-line content hint, `note` is the behavior note (e.g. `sticky`), and `w` is a flex weight so a sidebar (`w: 0.3`) sits narrower than its main pane (`w: 0.7`). Region+label fidelity only — **never** add skeleton lines or placeholder content; that would push it to hi-fi, which is `figma-designer` / `design-engineer`'s job.
+
+**Fidelity guard:** if the lo-fi handoff has no `wireframe` frontmatter block (older runs, or `journey_structure_skipped` minimal output), there is no wireframe widget — render the ASCII layouts from the `.md` body as fenced code blocks in chat (the existing lo-fi markdown path). Render the wireframe widget after the insights block.
+
+These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe); other agents use the 4 shapes only.
 
 ### TL;DR <-> Decision Data relationship
 

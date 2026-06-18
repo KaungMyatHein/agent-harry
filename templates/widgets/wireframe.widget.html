@@ -1,0 +1,167 @@
+<!--
+  wireframe.widget.html — v5.4, supplemental widget for lo-fi-designer
+  Renders the 3 lo-fi layout alternatives (primary / alternative / risky) as
+  GRAYSCALE region+label wireframes — the visual form of the ASCII schematics.
+
+  Fidelity is REGION + LABEL only: each region is a dashed box carrying a label,
+  an optional one-line content hint, and an optional behavior note. NO placeholder
+  skeleton lines, NO brand color, NO real type — that would make it hi-fi. The
+  point is "does this screen ARCHITECTURE make sense?", not "does it look right?".
+
+  NOT a decisionData shape — agent-specific supplemental widget at the lo-fi
+  Stop Gate, alongside lo-fi's `insights` decisionData (which compares the 3
+  layouts as text). This widget is the visual companion: structure markdown
+  renders poorly, a boxed wireframe renders it well.
+
+  ORCHESTRATOR USE (see orchestrator.md § Decision Data Rendering → Widget render →
+  "Supplemental: lo-fi wireframe"):
+    Read this file → replace ONLY the `<script id="wireframe-data">` island with
+    data built from the lo-fi handoff frontmatter's `wireframe` block:
+      • layouts[]   ← one per layout the agent designed (primary/alternative/risky).
+                      Each: { name, tone, rationale, breaks?, bands[] }.
+      • bands[]     ← vertical stack; each band is one horizontal row of regions.
+      • regions[]   ← { label, hint?, note?, w? }. `w` = flex weight (default 1) so
+                      a sidebar (w:0.3) sits narrower than its main pane (w:0.7).
+    Pass the whole string as show_widget's widget_code. ASCII (in the handoff .md
+    body) is the markdown fallback when no widget tool is available.
+
+  Layout shape: { "name": str, "tone": "primary"|"alternative"|"risky",
+                  "rationale": str, "breaks": str?, "bands": [ { "regions": [
+                    { "label": str, "hint": str?, "note": str?, "w": num? } ] } ] }
+-->
+<div style="padding: 1rem 0;">
+<h2 class="sr-only" id="wf-summary">Low-fi designer Stop Gate: three grayscale region-and-label wireframes — a primary layout, an alternative, and a riskier divergence — each a stack of labeled boxes showing screen structure only.</h2>
+
+<div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+  <div style="width:32px; height:32px; border-radius:50%; background:var(--color-background-secondary); display:flex; align-items:center; justify-content:center; color:var(--color-text-secondary);"><i class="ti ti-layout-2" style="font-size:18px;" aria-hidden="true"></i></div>
+  <div>
+    <p style="margin:0; font-size:15px; font-weight:500;" id="wf-agent">lo-fi-designer · Stop Gate</p>
+    <p style="margin:0; font-size:13px; color:var(--color-text-secondary);" id="wf-phase">ready for your call</p>
+  </div>
+</div>
+
+<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
+  <span id="wf-form" style="font-size:12px; padding:3px 12px; border-radius:var(--border-radius-md); background:var(--color-background-secondary); color:var(--color-text-secondary);"></span>
+  <span id="wf-count" style="font-size:12px; padding:3px 12px; border-radius:var(--border-radius-md); background:var(--color-background-secondary); color:var(--color-text-secondary);"></span>
+  <span style="font-size:12px; padding:3px 12px; border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-tertiary);">lo-fi · region + label · grayscale</span>
+</div>
+<p style="margin:0 0 14px; font-size:12px; color:var(--color-text-tertiary);">Structure only — no color, no type. The question is whether the screen architecture makes sense.</p>
+
+<div id="wf-layouts"></div>
+
+<div style="margin-top:16px; padding-top:14px; border-top:0.5px solid var(--color-border-tertiary); display:flex; gap:8px; flex-wrap:wrap;">
+  <button onclick="sendPrompt('y')">Build the Primary ↗</button>
+  <button id="wf-revise">Revise a layout ↗</button>
+  <button id="wf-fourth">Try a 4th variation ↗</button>
+</div>
+</div>
+
+<script id="wireframe-data" type="application/json">
+{
+  "agent": "lo-fi-designer",
+  "phaseLabel": "Phase 8 of 15 · pick the layout design-engineer builds",
+  "formFactor": "web",
+  "revisePrompt": "revise the Primary layout",
+  "pivotPrompt": "propose a 4th layout variation",
+  "layouts": [
+    {
+      "name": "Primary",
+      "tone": "primary",
+      "rationale": "Inherits sidebar+main from the entry-point (Cart page); matches the fingerprint's dominant workhorse scaffolding.",
+      "bands": [
+        { "regions": [ { "label": "TopBar", "hint": "project name · cost · settings", "note": "persistent · sticky" } ] },
+        { "regions": [
+          { "label": "Sidebar", "hint": "History · Active · Archived", "w": 0.3 },
+          { "label": "MainContent", "hint": "tabbed: Insights · insight cards", "w": 0.7 }
+        ] },
+        { "regions": [ { "label": "CommandBar", "hint": "5 chips · keyboard-driven", "note": "always visible" } ] }
+      ]
+    },
+    {
+      "name": "Alternative",
+      "tone": "alternative",
+      "rationale": "Two-pane (observed in the fingerprint's settings screens) — breaks entry-point continuity for the case where this flow needs side-by-side comparison.",
+      "bands": [
+        { "regions": [ { "label": "TopBar", "hint": "title · actions" } ] },
+        { "regions": [
+          { "label": "List pane", "hint": "selectable rows", "w": 0.4 },
+          { "label": "Detail pane", "hint": "selected item", "w": 0.6 }
+        ] }
+      ]
+    },
+    {
+      "name": "Risky",
+      "tone": "risky",
+      "rationale": "Full-bleed canvas with a floating command bar — fewer chrome regions, more focus on the work surface.",
+      "breaks": "breaks_antipattern: persistent sidebar — rationale: this flow is single-object, so the sidebar is dead weight.",
+      "bands": [
+        { "regions": [ { "label": "Canvas", "hint": "full-bleed work surface", "note": "no sidebar" } ] },
+        { "regions": [ { "label": "FloatingCommandBar", "hint": "overlay · 3 actions", "note": "breaks on small viewports" } ] }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('wireframe-data').textContent);
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  };
+
+  document.getElementById('wf-agent').textContent = (data.agent || 'lo-fi-designer') + ' · Stop Gate';
+  document.getElementById('wf-phase').textContent = data.phaseLabel || 'ready for your call';
+  document.getElementById('wf-revise').onclick = function () { sendPrompt(data.revisePrompt || 'revise a layout'); };
+  document.getElementById('wf-fourth').onclick = function () { sendPrompt(data.pivotPrompt || 'propose a 4th layout variation'); };
+
+  var layouts = data.layouts || [];
+  var isMobile = (data.formFactor || 'web') === 'mobile';
+  document.getElementById('wf-form').textContent = isMobile ? 'Mobile · single column' : 'Web · responsive';
+  document.getElementById('wf-count').textContent = layouts.length + (layouts.length === 1 ? ' layout' : ' layouts');
+
+  var toneAccent = function (tone) {
+    if (tone === 'risky') return { border: 'var(--color-border-warning)', chipBg: 'var(--color-background-warning)', chipFg: 'var(--color-text-warning)', label: 'risky' };
+    if (tone === 'alternative') return { border: 'var(--color-border-secondary)', chipBg: 'var(--color-background-secondary)', chipFg: 'var(--color-text-secondary)', label: 'alternative' };
+    return { border: 'var(--color-border-primary)', chipBg: 'var(--color-background-secondary)', chipFg: 'var(--color-text-secondary)', label: 'primary' };
+  };
+
+  var region = function (r) {
+    var w = (typeof r.w === 'number' && r.w > 0) ? r.w : 1;
+    var hint = r.hint ? '<span style="font-size:11px; color:var(--color-text-tertiary); display:block; margin-top:4px; line-height:1.4;">' + esc(r.hint) + '</span>' : '';
+    var note = r.note ? '<span style="font-size:10px; font-style:italic; color:var(--color-text-tertiary); display:block; margin-top:5px;">&larr; ' + esc(r.note) + '</span>' : '';
+    return '<div style="flex:' + w + '; min-width:0; border:1px dashed var(--color-border-secondary); border-radius:6px; background:var(--color-background-primary); padding:10px 12px; min-height:46px;">'
+      + '<span style="font-size:12px; font-weight:500; color:var(--color-text-secondary);">' + esc(r.label) + '</span>'
+      + hint + note + '</div>';
+  };
+
+  var band = function (b) {
+    var regions = (b.regions || []).map(region).join('');
+    return '<div style="display:flex; gap:8px; margin-bottom:8px;">' + regions + '</div>';
+  };
+
+  var card = function (l, idx) {
+    var a = toneAccent(l.tone);
+    var frameMax = isMobile ? 'max-width:300px;' : '';
+    var bands = (l.bands || []).map(band).join('');
+    var breaks = l.breaks
+      ? '<div style="margin-top:10px; padding:8px 12px; border-radius:var(--border-radius-md); background:var(--color-background-warning); color:var(--color-text-warning); font-size:12px; display:flex; align-items:start; gap:8px;">'
+          + '<i class="ti ti-alert-triangle" style="font-size:15px; flex-shrink:0; margin-top:1px;" aria-hidden="true"></i><span>' + esc(l.breaks) + '</span></div>'
+      : '';
+    var rationale = l.rationale
+      ? '<p style="margin:10px 0 0; font-size:12px; color:var(--color-text-secondary); line-height:1.5;">' + esc(l.rationale) + '</p>'
+      : '';
+    return '<div style="margin-bottom:20px;">'
+      + '<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">'
+        + '<span style="font-size:14px; font-weight:500;">' + esc(l.name || ('Layout ' + (idx + 1))) + '</span>'
+        + '<span style="font-size:11px; padding:2px 10px; border-radius:var(--border-radius-md); background:' + a.chipBg + '; color:' + a.chipFg + ';">' + a.label + '</span>'
+      + '</div>'
+      + '<div style="border:1px solid ' + a.border + '; border-radius:var(--border-radius-lg); background:var(--color-background-tertiary); padding:10px; ' + frameMax + '">' + bands + '</div>'
+      + breaks + rationale
+      + '</div>';
+  };
+
+  document.getElementById('wf-layouts').innerHTML = layouts.map(card).join('');
+})();
+</script>

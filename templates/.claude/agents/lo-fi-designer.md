@@ -440,7 +440,32 @@ ia_for_feature:                                                  # v5.2 — null
         tertiary: [<action>, ...]                                # includes destructive→ghost
   ia_action_priority_conflicts: [<one-line PRD-vs-IA conflicts surfaced in Open Questions; empty array if none>]
 brand_status: loaded | provisional | skipped | present_unvalidated   # v5.2 (+provisional v5.2.2) — `loaded`=validated; `provisional`=client decode accepted without sign-off (carry brand_provisional:true); `present_unvalidated`=exists but neither validated nor provisional
+wireframe:                                                           # v5.4 — structured layout data the orchestrator renders as the grayscale region+label wireframe widget in chat. The ASCII in the body (items 7–9) is the durable .md record + the no-widget fallback; THIS block is the visual surface. Region+label fidelity ONLY — no skeleton lines, no placeholder content.
+  form_factor: web | mobile                                          # from the Form Factor Inference table; mobile frames each layout narrow
+  layouts:                                                           # one entry per layout you designed — mirrors the ASCII layouts 1:1
+    - name: Primary
+      tone: primary                                                  # primary | alternative | risky
+      rationale: "<the layout's one-line rationale — same text as the body>"
+      bands:                                                         # top-to-bottom stack; each band = one horizontal row of regions
+        - regions:
+            - { label: TopBar, hint: "project · cost · settings", note: "sticky" }   # label = region name; hint = content hint; note = behavior note; w = flex weight (default 1)
+        - regions:
+            - { label: Sidebar, hint: "History · Active · Archived", w: 0.3 }
+            - { label: MainContent, hint: "tabbed: Insights · cards", w: 0.7 }
+        - regions:
+            - { label: CommandBar, hint: "5 chips · keyboard-driven", note: "always visible" }
+    - name: Alternative
+      tone: alternative
+      rationale: "<secondary fingerprint pattern rationale>"
+      bands: [ ... ]                                                 # schematic — fewer regions/hints than Primary
+    - name: Risky
+      tone: risky
+      rationale: "<what this divergence buys>"
+      breaks: "breaks_antipattern: <which> — rationale: <why worth considering>"   # Risky only; mirrors the body annotation
+      bands: [ ... ]
 ```
+
+Build the `wireframe` block from the SAME layouts as the ASCII (items 7–9) — one `layouts[]` entry per ASCII layout, same region names, same behavior notes, same rationale text. It is a structured restatement, not a new design. When `journey_structure_skipped: true` (single layout, legacy mode), emit just the one Primary layout. If you cannot produce the block for any reason, omit it — the orchestrator falls back to rendering the body ASCII as fenced code in chat.
 
 When no fingerprint was loaded (missing → soft-nudge default-proceed, v5.2.1; or the user explicitly declined), set `fingerprint_status: skipped` and omit the `fingerprint_compliance` block (no fingerprint to comply with). Executive Summary in this case includes `visual_drift_risk: true`.
 
@@ -454,6 +479,8 @@ Use the `insights` shape per `DECISION_DATA_SHAPES.md`. Each layout = one insigh
 - `text`: "<strong>Primary</strong> — <one-line summary of the layout's bet>"
 - `evidence`: "Uses N DS components · M new components"
 - `conf`: high/medium/low based on how well the layout fits the flow
+
+**Supplemental wireframe widget (v5.4):** the `insights` data above is the text comparison. The `wireframe` frontmatter block (see Output Format) is *additional* — the orchestrator renders it as a grayscale region+label wireframe widget in chat, the visual companion to this text. It mirrors the same 3 layouts; you author both from one design. The ASCII in the body stays as the durable `.md` record and the no-widget fallback.
 
 ## Approval Gate
 

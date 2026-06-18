@@ -215,6 +215,8 @@ Renders in chat as:
 
 Long-form data (full ASCII layouts, full component tables, per-layout rationale) lives in the handoff body — the panel surfaces only the headline data.
 
+> **Supplemental wireframe widget (v5.4):** beyond this `insights` shape, `lo-fi-designer` emits a `wireframe` frontmatter block that the orchestrator renders as a **grayscale region+label wireframe** via `widgets/wireframe.widget.html` — the visual companion to the text comparison above. It is *additional to*, not a replacement for, the `insights` decisionData. The body ASCII remains the durable record and the no-widget fallback. This is the second agent-specific supplemental widget (alongside `information-architect`'s `ia-tree.widget.html`); see `orchestrator.md` § Decision Data Rendering → Widget render → "Supplemental: lo-fi wireframe".
+
 ### `design-engineer` → `table` shape (max 6 rows = scope-cap aligned)
 
 Each row represents one screen in the built flow.
