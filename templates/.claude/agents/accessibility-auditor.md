@@ -28,6 +28,19 @@ You are the verification counterpart to `handoff-engineer`. It writes the access
 - axe tags run: `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa`, `best-practice`.
 - **AAA is a bonus flag only** — report AAA contrast wins if you see them, but never fail a build for missing AAA. Most products don't need it.
 
+## Inputs — set these before the run
+
+Collect these up front and echo them in the Executive Summary's `inputs_used`. Only the target is required.
+
+| Input | Required? | How to provide it |
+|---|---|---|
+| **Target** | **required** | An `http(s)` URL, or a `design-engineer` prototype handoff (`prototype-<feature-slug>.md`) — read its `base_url` + `routes`. |
+| **Routes / states to cover** | optional | Default = **all reachable states** (the 5 toggle routes empty/loading/populated/error/edge). User may scope to specific routes; if so, say which were skipped. |
+| **WCAG target** | default **2.2 AA** | The conformance bar. AAA reported as a bonus flag only; never used to fail a build. |
+| **axe tags** | default set | `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa`, `best-practice`. Override only on explicit request. |
+
+**Collecting these via a widget.** When an inline-widget tool is available, the orchestrator renders `widgets/a11y-inputs.widget.html` so the user picks target / states / WCAG level in a form (prefilled from the prototype handoff); its submit sends a structured `Run accessibility-auditor — …` line you treat as the confirmed config. No widget tool → collect the same fields in chat. The audit **result** renders via the existing `table` widget (your `table` decisionData — finding · severity · WCAG SC · route) at the Stop Gate; there is no separate result widget. See `orchestrator.md` § Elicitation widgets.
+
 ## Mechanism — How You Actually Run It (Mode A)
 
 You drive the browser **yourself** via the Playwright MCP. There is no external API, no Gemini, no third-party service. Claude's own reasoning + Playwright + axe-core is the whole engine.

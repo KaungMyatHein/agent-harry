@@ -182,6 +182,8 @@ Group by layer; the `small` description renders in italics in parentheses. The p
 | `critique-partner` | insights | Concerns (max 5); conf chip carries severity |
 | `orchestrator` | (skip) | Orchestrator itself never produces decisionData — it renders what the just-completed sub-agent produced |
 
+**Beyond the 4 shapes (v5.9):** two browser-driving agents have extra widgets documented in `orchestrator.md`, not here — `usability-tester` Mode C adds a supplemental **result** widget (`ut-result.widget.html`, the metrics scoreboard, on top of its `insights` findings), and both Mode C and `accessibility-auditor` have **pre-run elicitation** input widgets (`ut-inputs` / `a11y-inputs`) that collect run config via a form before the run. The a11y **result** uses the `table` shape above (no separate result widget). See `orchestrator.md` § "Supplemental: Mode C result" + § "Elicitation widgets".
+
 ## Field-to-Shape Mapping for v3.7 Agents
 
 The v3.7 split agents (`lo-fi-designer`, `design-engineer`) carry richer semantic data than the 4 existing shape types natively model. Rather than introducing a 5th shape type, we map the richer fields into the existing `insights` / `table` shapes' free-form slots.

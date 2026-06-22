@@ -4,6 +4,15 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-22 — v5.9.1: Mode C / a11y first-class Inputs + input & result widgets
+
+**Additive, non-breaking. Follow-up to v5.9 (cb12546).** The Mode C "main-flow" setup (Goal, Golden path, Persona, Variant, Max steps) was present but scattered across the run loop and metric table; golden-path was buried as a metric precondition only. Consolidated + surfaced as forms.
+
+1. **First-class Inputs blocks.** `usability-tester` Mode C and `accessibility-auditor` each got an "Inputs — set these before the run" table. Mode C: Goal (required) · Golden path (optional) · Persona(s) · Variant URL(s) · **Max steps (default 30, user-overridable)**. a11y: Target (required) · States/routes (default all 5) · WCAG target (default 2.2 AA) · axe tags.
+2. **Golden path made explicit — three methods.** (1) derive from the PRD `primary_journey` (no setup); (2) **reference pass** — user lists ideal steps, the agent runs them once as the baseline; (3) end-state URL/screenshot. Documented that the agent-driven Playwright session can't be clicked live by the user mid-run, so the reference pass is the closest equivalent to "setting it up in the browser."
+3. **Three new widgets** (`templates/widgets/`): `ut-inputs.widget.html` (Mode C input form → `sendPrompt` a structured config line), `ut-result.widget.html` (Mode C result scoreboard — success/steps/errors/rage/lostness/path-efficiency tiles + per-persona + A/B winner + findings; no satisfaction tile by design), `a11y-inputs.widget.html` (audit setup form). The a11y **result** reuses the existing `table` shape.
+4. **New widget kind — pre-run elicitation.** Until now widgets only rendered results at Stop Gates; these input widgets are shown *before* a run to collect config via a form, prefilled from the prototype handoff / fingerprint. Documented in `orchestrator.md` § "Elicitation widgets" + § "Supplemental: Mode C result"; cross-referenced in `DECISION_DATA_SHAPES.md`; both agents note the widget flow + the no-widget chat fallback.
+
 ## 2026-06-22 — v5.9: accessibility-auditor + usability-tester Mode C — AI-assisted, Claude-native, no Gemini
 
 **Additive, non-breaking. New agent (22nd) + new mode on an existing agent.** Agent Harry could *specify* accessibility intent (`handoff-engineer`) and *design* human usability tests (`usability-tester` Modes A/B), but nothing **measured** WCAG conformance or **ran** an automated usability pass against the built prototype. v5.9 closes both gaps by porting the mechanism from a Gemini+Puppeteer synthetic-usability tool and re-implementing it **Claude-native** — the agent drives the browser itself via the Playwright MCP; no Gemini API key, no hosted service. Decided via a 12-question `grill-me` pass; blueprint in memory `project_a11y_and_modec_plan.md`.

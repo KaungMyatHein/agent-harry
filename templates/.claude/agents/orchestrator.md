@@ -666,7 +666,24 @@ When a widget tool is available and the lo-fi handoff has a `flow` frontmatter b
 
 **Fallback:** no widget tool, or no `flow` block (Figjam-only userflow, `journey_structure_skipped`, older runs) → render the body's Mermaid/ASCII as a fenced block and surface the Figjam URL as a link (the existing lo-fi flow markdown path). This is a *visual companion* to the flow the agent already documents in the `.md`, never a replacement for it.
 
-These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe + lo-fi flow); other agents use the 4 shapes only.
+#### Supplemental: Mode C result scoreboard (v5.9)
+
+`usability-tester` **Mode C** has a supplemental widget — `widgets/ut-result.widget.html` — that renders the automated run's observed metrics (success / avg steps / error rate / rage clicks / lostness / path-efficiency), the per-persona cohort + A/B variant scoreboard, and the top findings. It is *additional to*, not a replacement for, Mode C's `insights` decisionData (the findings). Modes A/B do NOT use it.
+
+At the usability-tester Stop Gate, **only when the just-run mode was C** and a widget tool is available: read `widgets/ut-result.widget.html`, replace its `<script id="ut-result-data">` island from the handoff frontmatter — `goal`, `metrics.{successRate,avgSteps,errorRate,rageClicks,lostness,pathEfficiency}` (set `pathEfficiency: null` when no golden path was supplied → the tile reads "n/a"), `variants[]` (`label`/`successRate`/`avgSteps`/`winner`), `cohorts[]` (`persona`/`successRate`/`avgSteps`), `findings[]` (`title`/`severity`/`evidence`), plus `revisePrompt`/`pivotPrompt`. Render it after the metrics, before the findings text. **Never add a satisfaction/SUS/CSAT tile** — the widget deliberately has none. No widget tool → render the metrics as a markdown table + the findings as the usual `insights` block.
+
+### Elicitation widgets (v5.9 — pre-run INPUT forms)
+
+A new widget kind: shown **before** a run to collect its config, not after to render its result. Two exist, both for the browser-driving Deliver agents:
+
+| Widget | For | Island id | Submits (via `sendPrompt`) |
+|---|---|---|---|
+| `widgets/ut-inputs.widget.html` | `usability-tester` Mode C | `ut-inputs-data` | `Run usability-tester Mode C — goal: …; target: …; golden_path: …; personas: …; variant_b: …; max_steps: …` |
+| `widgets/a11y-inputs.widget.html` | `accessibility-auditor` | `a11y-inputs-data` | `Run accessibility-auditor — target: …; states: …; wcag: …` |
+
+When the user asks for a Mode C usability run or an accessibility audit AND a widget tool is available: instead of asking for the inputs in prose, **render the matching input widget** so they fill a form. Prefill the island from what you already know — `target_url` + `routes` from the `design-engineer` prototype handoff (`base_url`), persona defaults from `product-fingerprint-curator`, and `prd_journey_available: true` when a v4.3 PRD `primary_journey` exists for the feature. The widget's submit fires a structured `sendPrompt` line; treat that line as the user's confirmed config and invoke the agent with it. **No widget tool available → ask for the same fields in chat** (goal/golden-path/personas/variant/max-steps, or target/states/wcag) — never skip collecting them.
+
+These are the agent-specific supplemental widgets (IA sitemap + lo-fi wireframe + lo-fi flow + Mode C result) and the two pre-run elicitation widgets (Mode C inputs + a11y inputs); other agents use the 4 shapes only.
 
 ### TL;DR <-> Decision Data relationship
 

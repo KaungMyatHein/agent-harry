@@ -110,14 +110,31 @@ When the user wants a fast, cheap usability signal on a **running prototype or U
 
 This is a **probe, not a person.** An LLM agent has different priors, reading speed, and zero frustration. Mode C surfaces *where a goal-directed actor gets lost, stuck, or misled* — it does NOT measure how a human "felt." Treat its numbers as directional, and say so.
 
+### Inputs — set these before the run (the main-flow setup)
+
+Collect these up front and echo them in the Executive Summary's `inputs_used` so the run is reproducible. Goal is the only required one.
+
+| Input | Required? | How to provide it |
+|---|---|---|
+| **Goal** | **required** | One plain-English outcome — "sign up for a free trial", "find when a payout arrives". One goal per run; split multi-goal tests into separate runs. |
+| **Golden path** | optional | The ideal route to the goal — used only for the path-efficiency metric. Three ways, in priority order: **(1) derive from the PRD** — if a v4.3 PRD `primary_journey` exists for the feature, use its step sequence as the golden path automatically (no setup); **(2) user-listed ideal steps → reference pass** — the user lists the happy-path steps and you run ONE guided "reference pass" following them, recording the golden step count + end state (confirm it at the Stop Gate before the unguided runs); **(3) end-state only** — a success URL/route or an end-state screenshot, when only the destination matters. No golden path supplied → skip path-efficiency, report every other metric. |
+| **Persona(s)** | optional | Default = one neutral representative user. If personas exist (user-supplied, or from `product-fingerprint-curator`), run the goal once per persona as a cohort and report where they diverge. |
+| **Variant URL(s)** | optional | One URL = single run. Two or more = A/B: run the full goal × persona set against each variant and produce a per-metric winner scoreboard. |
+| **Max steps** | default **30** | Per-run step cap (matches the source tool). User-overridable per run (e.g. "max 50" for a long flow). The loop also ends early on `complete` or `cannot_proceed`. |
+
+**On "setting up the golden path in the browser":** the Playwright session is driven by *you*, the agent — the user does not click inside it live mid-run, and an agent turn can't hand the mouse to the user and resume. So a golden path is established by one of the three methods above, NOT by a live hand-off. Method (2), the reference pass, is the closest equivalent: the user dictates the ideal steps, you perform them once, and that recorded run becomes the baseline the unguided persona runs are measured against.
+
+**Collecting these inputs via a widget.** When an inline-widget tool is available, the orchestrator renders `widgets/ut-inputs.widget.html` so the user fills these fields in a form (prefilled from the prototype handoff + fingerprint personas); its submit sends a structured `Run usability-tester Mode C — …` line you treat as the confirmed config. No widget tool → collect the same fields in chat. At the Stop Gate, the orchestrator renders the run's metrics via `widgets/ut-result.widget.html` (the scoreboard) — so populate the handoff frontmatter `metrics` block fully (success_rate, step_count, error_rate, rage_clicks, lostness, path_efficiency-or-null), plus per-persona + per-variant breakdowns, so the widget has data to show. See `orchestrator.md` § Elicitation widgets + § Supplemental: Mode C result.
+
 ### The Run Loop
 
-1. **Resolve the target — read the prototype handoff first.** Take a goal in plain English ("sign up for a free trial"). When testing a `design-engineer` build, read `./design-workspace/<project-slug>/prototype-<feature-slug>.md` and take its `base_url`, `routes`, and run instructions as inputs — don't re-derive them. Otherwise take an `http(s)` URL directly. If the dev server isn't running, **check it isn't already running** (don't double-launch — `accessibility-auditor` may have started it), then start it via `Bash` (the handoff's run command) and wait until the URL responds.
+1. **Resolve the target — read the prototype handoff first.** Using the Goal + target from Inputs above: when testing a `design-engineer` build, read `./design-workspace/<project-slug>/prototype-<feature-slug>.md` and take its `base_url`, `routes`, and run instructions — don't re-derive them. Otherwise take an `http(s)` URL directly. If the dev server isn't running, **check it isn't already running** (don't double-launch — `accessibility-auditor` may have started it), then start it via `Bash` (the handoff's run command) and wait until the URL responds.
+1b. **Establish the golden path (if any), once, before the persona runs** — per the Inputs table: PRD-derived, a user-confirmed reference pass, or an end-state target. Record its step count + end state as the baseline.
 2. **Open it.** `browser_navigate` to the URL. Each step: take a `browser_take_screenshot` (the synthetic user's "eyes") AND a `browser_snapshot` (for reliable element refs).
 3. **Decide — vision-first.** Decide the single next action **from the screenshot**, as a user pursuing the goal would. Do NOT read hidden DOM labels / aria-text as "clarity" — a real user can't see them; deciding from the snapshot tree would let the probe cheat past confusing UI.
 4. **Act — via ref.** Execute the decided action with `browser_click` / `browser_type` / scroll, targeting the element by its **snapshot ref** (reliable), not by guessed pixel coordinates.
-5. **Loop** until the goal is reached (`complete`), the agent is genuinely stuck (`cannot_proceed` — only after trying to scroll/try another element), or a step cap (default 30) is hit.
-6. **Personas + variants.** Run the same goal as each provided **persona** (default: one neutral representative user; use `product-fingerprint-curator` personas if present). If two URLs are given (**A/B variant**), run the full set against each and produce a per-metric winner scoreboard.
+5. **Loop** until the goal is reached (`complete`), the agent is genuinely stuck (`cannot_proceed` — only after trying to scroll/try another element), or the **Max steps** cap (default 30, see Inputs) is hit.
+6. **Run the cohort + variants** per the Inputs table — the goal once per persona, and the full set against each A/B variant. Then aggregate the metrics below (and, for A/B, the per-metric winner scoreboard).
 
 ### Metrics — Observed Only (No Fiction)
 
