@@ -54,17 +54,22 @@
   <label class="uti-label" for="uti-golden">Golden path <span style="color:var(--color-text-secondary); font-weight:400;">(optional — enables path-efficiency)</span></label>
   <select class="uti-sel" id="uti-golden">
     <option value="none">None — skip path-efficiency</option>
-    <option value="prd">Derive from the PRD primary_journey</option>
+    <option value="target-image">Target example image — I'll attach the success screenshot</option>
     <option value="reference">Reference pass — I'll list the ideal steps</option>
     <option value="end-state">End-state only — a success URL/route</option>
+    <option value="prd">Derive from the PRD primary_journey</option>
   </select>
+  <div class="uti-cond" id="uti-golden-image">
+    <p style="margin:0 0 6px; font-size:12px; color:var(--color-text-secondary);">Attach the success-state screenshot to your <strong>next chat message</strong> — I'll compare each step against it with vision (this is the source tool's target-success-image, Claude-native). Optionally paste an image URL instead:</p>
+    <input class="uti-in" id="uti-image" type="text" placeholder="(optional) image URL of the success state">
+  </div>
   <div class="uti-cond" id="uti-golden-steps">
     <textarea class="uti-area" id="uti-steps" placeholder="List the ideal happy-path steps, one per line — I'll run them once as the baseline."></textarea>
   </div>
   <div class="uti-cond" id="uti-golden-end">
     <input class="uti-in" id="uti-end" type="text" placeholder="success URL or route, e.g. /confirmation">
   </div>
-  <p class="uti-hint" id="uti-golden-hint">The Playwright session is agent-driven — you can't click it live. The reference pass is the closest to "setting it up in the browser": you dictate the steps, I perform them once as the baseline.</p>
+  <p class="uti-hint" id="uti-golden-hint">Your example is authoritative — I won't invent a golden path when you give one. The Playwright session is agent-driven (no live clicking), so the target image or the reference pass is how you "set it up": you supply the example, I measure against it.</p>
 </div>
 
 <div class="uti-field">
@@ -118,9 +123,11 @@
     prdOpt.disabled = true;
   }
 
+  var imageBox = document.getElementById('uti-golden-image');
   var stepsBox = document.getElementById('uti-golden-steps');
   var endBox = document.getElementById('uti-golden-end');
   goldenSel.onchange = function () {
+    imageBox.style.display = goldenSel.value === 'target-image' ? 'block' : 'none';
     stepsBox.style.display = goldenSel.value === 'reference' ? 'block' : 'none';
     endBox.style.display = goldenSel.value === 'end-state' ? 'block' : 'none';
   };
@@ -134,6 +141,10 @@
     var target = document.getElementById('uti-target').value.trim() || data.target_url || '(from prototype handoff)';
     var golden = goldenSel.value;
     var goldenDetail = '';
+    if (golden === 'target-image') {
+      var imgUrl = document.getElementById('uti-image').value.trim();
+      goldenDetail = imgUrl ? ' [target-image url: ' + imgUrl + ']' : ' [target-image: attached in chat]';
+    }
     if (golden === 'reference') goldenDetail = ' [steps: ' + document.getElementById('uti-steps').value.trim().replace(/\n/g, ' | ') + ']';
     if (golden === 'end-state') goldenDetail = ' [end-state: ' + document.getElementById('uti-end').value.trim() + ']';
     var personas = document.getElementById('uti-personas').value.trim() || (data.personas_default || 'neutral user');
