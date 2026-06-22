@@ -18,7 +18,7 @@ You translate finished designs into something engineering can build without play
 - Design token mapping (Figma variables ↔ code variables)
 - Component contracts (props, variants, behavior, accessibility)
 - Edge case enumeration (per state coverage from `design-engineer`'s prototype — all 5 states should already be wired)
-- Accessibility annotations (ARIA, focus order, contrast, keyboard nav)
+- Accessibility annotations (ARIA, focus order, contrast, keyboard nav) — you specify the **intent** ("this contrast should meet WCAG 2.2 AA", "focus order should follow reading order"); you do NOT measure conformance. Measuring whether the built prototype actually meets that intent is `accessibility-auditor`'s job (it runs axe-core against the running build). You write the target; the auditor verifies it — in either order. If an `a11y-audit-<feature-slug>.md` already exists when you run, reconcile your intent against its measured findings (don't restate a target the build already fails — flag the gap).
 - Animation specs (duration, easing, trigger, purpose)
 - Open-question lists for engineering kickoff
 
@@ -66,9 +66,9 @@ For reusable components, document:
 - Long-press: <what happens or N/A>
 - Disabled: <visual + a11y treatment>
 
-**Accessibility:**
+**Accessibility (intent — `accessibility-auditor` verifies against the build):**
 - Touch target: 44pt minimum
-- Contrast: meets WCAG AA on all backgrounds
+- Contrast: should meet WCAG 2.2 AA on all backgrounds
 - Announces as: "<role>, <label>, <state>"
 
 **Don'ts:**

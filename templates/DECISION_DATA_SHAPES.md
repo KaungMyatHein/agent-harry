@@ -172,7 +172,9 @@ Group by layer; the `small` description renders in italics in parentheses. The p
 | `ideation-facilitator` | insights | 3–5 concept candidates with one-line tradeoff |
 | `lo-fi-designer` | insights | 3 layout alternatives (primary/alternative/risky) — text + DS-vs-new component count + confidence (max 3 items) |
 | `design-engineer` | table | Screens built: screen · states covered · DS components · new components · polish level (max 6 rows) |
-| `usability-tester` | insights | Findings (max 5) with severity in the conf chip |
+| `usability-tester` | insights | Findings (max 5) with severity in the conf chip. **Mode C (v5.9):** same `insights` findings; the behavioral metrics scoreboard (success / steps / errors / rage-clicks / lostness / path-efficiency) lives in handoff frontmatter + body, not in decisionData — findings are the decision surface, metrics are the evidence behind them |
+| `accessibility-auditor` (v5.9) | table | WCAG findings (max 8 rows): finding · severity · WCAG SC · route/state. `table` is used (not `insights`) so severity reads as its own column instead of being overloaded into the confidence chip |
+| `design-sync` (v5.8) | table | Mirror/diff scope: component/section · mapped? · gap kind · fidelity (max 8 rows) |
 | `handoff-engineer` | table | Spec scope: screens · component states · tokens · open dev questions |
 | `pm-strategist` | callout | The bet · falsification · tradeoffs |
 | `pm-launch-architect` | callout (flavor: launch) | Beachhead + ICP · meta has named accounts + motion + kill-switch |

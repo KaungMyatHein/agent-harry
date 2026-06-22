@@ -1,11 +1,11 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 20-subagent UX pipeline (orchestrator + critique-partner + 15 phase agents + 3 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2, brand-decoder v5.2) — including lo-fi-designer, figma-designer, design-engineer, prd-author, information-architect) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 22-subagent UX pipeline (orchestrator + critique-partner + 16 phase agents + pm-metrics-architect + 3 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2, brand-decoder v5.2) — including lo-fi-designer, figma-designer, design-engineer, design-sync (v5.8 Figma↔code mirror), usability-tester (v5.9 AI-assisted browser-driven testing), accessibility-auditor (v5.9 WCAG 2.2 AA via axe-core), prd-author, information-architect) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
-A personal Claude Code skill that bootstraps a 20-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
+A personal Claude Code skill that bootstraps a 22-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
 When invoked, decide which of three modes to run based on user intent:
 
@@ -52,7 +52,7 @@ Steps:
 Expected output:
 
 ```
-Installed 20 Agent Harry subagents + 6 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
+Installed 22 Agent Harry subagents + 6 slash commands + SHARED_CONTEXT.md + PM_SKILLS_MAP.md + DECISION_DATA_SHAPES.md + SUBAGENT_AUDIT_PROTOCOL.md + .gitignore (audit-ledger entry) into <project>/
 
 Try this:
 1. "/audit-pipeline" — confirm the project is set up correctly.
@@ -61,7 +61,7 @@ Try this:
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
 - Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, prd-author, information-architect (v5.2), lo-fi-designer (v3.7)
-- Deliver: design-engineer (v3.7), usability-tester, handoff-engineer, pm-launch-architect (all gated by Research-First + Success-Metrics checks)
+- Deliver: design-engineer (v3.7), design-sync (v5.8 — mirrors existing Figma↔code 1:1, gate-exempt), usability-tester (v5.9 — Mode C automated browser-driven run), accessibility-auditor (v5.9 — WCAG 2.2 AA via axe-core), handoff-engineer, pm-launch-architect (all gated by Research-First + Success-Metrics checks, except design-sync)
 - Cross-cutting: pm-metrics-architect, product-fingerprint-curator (v4.0), brand-decoder (v5.2), figma-component-bootstrapper (v4.2)
 - Meta: orchestrator (opus), critique-partner (opus)
 - Commands: /audit-pipeline · /agent-harry-notion-sync · /agent-harry-audit · /agent-harry-fingerprint · /agent-harry-cost
@@ -95,7 +95,7 @@ Patch method: use `view` + `str_replace` for targeted edits. Don't regenerate te
 Expected output:
 
 ```
-Installed 20 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
+Installed 22 Agent Harry subagents + SHARED_CONTEXT.md into <project>/
 
 Customizations applied:
 - Removed Mobbin MCP from <agents> — using Web Search fallback
@@ -233,6 +233,7 @@ templates/
     │   ├── lo-fi-designer.md       (sonnet) ← v3.7: split out of interaction-designer (define-phase)
     │   ├── design-engineer.md       (sonnet) ← v3.7: split out of interaction-designer (deliver-phase code prototype)
     │   ├── usability-tester.md      (sonnet)
+    │   ├── accessibility-auditor.md (sonnet)
     │   ├── handoff-engineer.md      (sonnet)
     │   ├── pm-strategist.md         (sonnet) ← v3: strategy / business model / vision / pricing
     │   ├── pm-launch-architect.md   (sonnet) ← v3: GTM / beachhead / ICP / growth loops

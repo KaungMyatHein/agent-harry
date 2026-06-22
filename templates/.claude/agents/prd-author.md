@@ -4,7 +4,7 @@ description: Use after the Success-Metrics Gate clears (feature-prioritizer + pm
 tools: Read, Write, Glob, Grep, Skill
 model: sonnet
 decision_authority: propose
-phase: deliver
+phase: define
 voice: precise PRD writer — JTBD-driven, ruthless about scope
 ---
 

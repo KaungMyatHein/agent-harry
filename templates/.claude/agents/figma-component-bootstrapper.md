@@ -307,6 +307,10 @@ component_count: <n>
 
 Length cap: ~200 lines total for typical baseline + ~10 feature-specific additions. The manifest is loaded by `figma-designer` at intake — keep it compact.
 
+### Companion section: `## Code Bindings` (owned by `design-sync`, v5.8)
+
+You own `## Components` (Figma side). `design-sync` appends and owns a separate `## Code Bindings` section in the SAME file — the free-plan substitute for Figma Code Connect, mapping each Figma component to a code import path + variant↔prop table. You do NOT write or maintain that section; `design-sync` builds it semi-automatically (scan both sides → name-match → user-confirm) on its first run. Two reasons it lives here and not in a separate file: (1) one manifest = one lookup, Figma side + code side together; (2) when you add a component in extend mode, `design-sync` can detect the new unbound row and offer to bind it. Don't touch `## Code Bindings` rows — they're `design-sync`'s, just as `## Components` `node_id`s are yours. Schema: see `design-sync.md` § Bridge Schema.
+
 ## SHARED_CONTEXT.md Update
 
 After writing the manifest, also update `<project-root>/SHARED_CONTEXT.md`'s Project Context table:

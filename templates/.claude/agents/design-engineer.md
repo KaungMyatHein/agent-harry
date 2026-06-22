@@ -450,6 +450,7 @@ Frontmatter MUST include these v4.0 fields:
 
 ```yaml
 polish_bar: D2 | D3
+base_url: <the runnable URL incl. port, e.g. http://localhost:3000/prototypes/checkout — v5.9, consumed by usability-tester Mode C + accessibility-auditor>
 routes: [<list of state-toggle routes>]
 mock_api_path: <relative path to mock API file>
 fingerprint_status: fresh | stale_proceeded | skipped

@@ -2,7 +2,7 @@
 
 Kaung Myat Hein's personal multi-agent product design skill for [Claude Code](https://claude.com/claude-code).
 
-Installs a 20-subagent UX pipeline (Discovery → Define → Deliver, plus embedded PM capabilities, a cross-feature information-architecture pass, a decoded brand concept, a project-level visual + composition fingerprint, and a Figma component-library bootstrapper) into any project, then keeps it in sync with this repo.
+Installs a 22-subagent UX pipeline (Discovery → Define → Deliver, plus embedded PM capabilities, a cross-feature information-architecture pass, a decoded brand concept, a project-level visual + composition fingerprint, a Figma component-library bootstrapper, a 1:1 Figma↔code mirror agent, AI-assisted browser-driven usability testing, and a WCAG 2.2 AA accessibility auditor) into any project, then keeps it in sync with this repo.
 
 ---
 
@@ -30,7 +30,7 @@ Inside any Claude Code project, the skill exposes three modes. Trigger them in p
 "design agent တွေ install လုပ်ပေး"
 ```
 
-Drops 20 agent files into `<project>/.claude/agents/` plus 6 slash commands into `<project>/.claude/commands/`, plus `SHARED_CONTEXT.md`, `PM_SKILLS_MAP.md`, `DECISION_DATA_SHAPES.md`, `SUBAGENT_AUDIT_PROTOCOL.md`, `README.md`, and a `.gitignore` entry for the audit ledger. Two sub-modes:
+Drops 22 agent files into `<project>/.claude/agents/` plus 6 slash commands into `<project>/.claude/commands/`, plus `SHARED_CONTEXT.md`, `PM_SKILLS_MAP.md`, `DECISION_DATA_SHAPES.md`, `SUBAGENT_AUDIT_PROTOCOL.md`, `README.md`, and a `.gitignore` entry for the audit ledger. Two sub-modes:
 
 - **Bundled** — default templates, no questions asked
 - **Generator** — answers a few scoping questions (design system, MCPs, PM scope) and patches the templates to fit the project
@@ -86,7 +86,8 @@ agent-harry/
         │   ├── lo-fi-designer.md                (sonnet) ← v3.7
         │   ├── figma-designer.md                (sonnet)
         │   ├── design-engineer.md               (sonnet) ← v3.7
-        │   ├── usability-tester.md              (sonnet)
+        │   ├── usability-tester.md              (sonnet) ← v5.9 (Mode C)
+        │   ├── accessibility-auditor.md         (sonnet) ← v5.9
         │   ├── handoff-engineer.md              (sonnet)
         │   ├── pm-launch-architect.md           (sonnet)
         │   ├── pm-metrics-architect.md          (sonnet)

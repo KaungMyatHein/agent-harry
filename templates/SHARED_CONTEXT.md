@@ -197,7 +197,7 @@ Full shape spec: `DECISION_DATA_SHAPES.md` (same project root). The orchestrator
 
 ## Research-First Gate (Hard Block)
 
-The Deliver phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`) AND the late-Define agent `lo-fi-designer` are **blocked from running** unless one of these conditions is met:
+The Deliver phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `accessibility-auditor`, `handoff-engineer`) AND the late-Define agent `lo-fi-designer` are **blocked from running** unless one of these conditions is met:
 
 1. A Discovery-phase handoff artifact exists in this project (any of: `discovery-researcher`, `competitive-analyst` Mode A or B output)
 2. A Define-phase handoff exists (any of: `product-positioner`, `feature-prioritizer`, `ideation-facilitator`)
@@ -215,12 +215,14 @@ The orchestrator enforces this gate. If a user requests Deliver work without Dis
 
 A second hard block, fires at the Define → Deliver boundary.
 
-The Deliver-phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
+The Deliver-phase agents (`design-engineer`, `figma-designer`, `usability-tester`, `accessibility-auditor`, `handoff-engineer`, `pm-launch-architect`) are **blocked from running** once Define artifacts exist UNLESS one of these is true:
 
 Note: `lo-fi-designer` is Define-phase and is NOT blocked by this gate — layout exploration can run before metrics are confirmed, and may inform metric selection.
 
 1. A `pm-metrics-architect` handoff artifact exists in `./design-workspace/<project-slug>/` AND its frontmatter carries a **non-empty `confirmed:` timestamp** (v5.2.1 — the durable signal). The orchestrator stamps `confirmed: <ISO 8601 UTC>` into that frontmatter when the user types `y` at the metrics Stop Gate, in the same step it logs `gate_clear`. `prd-author` and Deliver agents gate on this field, not on conversational memory — an existing-but-unconfirmed handoff (`confirmed:` empty) does NOT clear the gate.
 2. The user has explicitly opted out with: *"I have metrics already, skip the confirmation"* / *"skip metrics"* / *"Success metrics မလိုဘူး"* / equivalent phrasing.
+
+`prd-author` (Define-phase) is gated by this boundary too — it independently refuses unless the metrics handoff's `confirmed:` is non-empty. It's not in the "Deliver-phase agents" list above because it enforces the gate itself rather than being blocked by orchestrator routing; the effect is the same (no PRDs until metrics are confirmed).
 
 When Define artifacts exist but `pm-metrics-architect` hasn't run yet, the orchestrator's smallest-next-move MUST be `pm-metrics-architect` Mode A — not a Deliver agent. The Stop Gate after that run frames itself as a **confirmation** of success metrics: the TL;DR's open-question bullet becomes *"Confirm these metrics so Deliver can proceed? Type `y` to lock in; `revise — <delta>` to adjust before locking."*
 
@@ -399,6 +401,47 @@ A project-level artifact at `<project-root>/brand-concept.md` that **decodes an 
 
 ---
 
+## Browser-Driven Audits (v5.9 — Playwright MCP precondition)
+
+Two Deliver-phase capabilities drive a **real browser themselves** to test a running prototype or URL — no external API, no Gemini, no hosted service. Claude's own vision + the Playwright MCP + (for a11y) axe-core is the entire engine. The mechanism is ported from a Gemini+Puppeteer synthetic-usability tool, re-implemented Claude-native.
+
+| Capability | Agent | What it does |
+|---|---|---|
+| Automated behavioral usability run | `usability-tester` **Mode C** | Acts as a synthetic user pursuing a goal; logs observed behavior; reports success / steps / errors / rage-clicks / lostness / (optional) path-efficiency. No faked satisfaction scores. |
+| WCAG 2.2 AA accessibility audit | `accessibility-auditor` | Injects + runs axe-core in-page for measured contrast / alt / label / ARIA / heading-order findings; vision only for axe's blind spots. |
+
+### Precondition + degradation (the honesty contract)
+
+- **Both require a Playwright MCP connected** in the session. The install/refresh does not bundle an MCP — the user (or environment) provides one. The documented shorthand in agent `tools:` frontmatter is `mcp__playwright`. **Namespace caveat:** a connected Playwright MCP may be exposed under a different prefix (e.g. `mcp__plugin_ecc_playwright__browser_*`). The browser tool methods are the same (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_click`, `browser_type`, `browser_evaluate`); before degrading, an agent must check the actual connected namespace, not just the bare `mcp__playwright__*` name.
+- **If no Playwright MCP is connected:** neither agent fakes a run. `usability-tester` Mode C says it can't run and offers Mode A/B instead. `accessibility-auditor` falls back to a static markup/CSS review and states explicitly that contrast and runtime behavior are **unverified**. Never report a measured result that wasn't measured.
+- **axe-core** loads from CDN (cdnjs/jsDelivr) via `browser_evaluate`; vendored-source fallback if the CDN is blocked. If axe can't load, contrast/ARIA validity is marked **unverified**, not passing.
+
+### Run them SEQUENTIALLY, not concurrently (shared browser)
+
+A single Playwright MCP is **one stateful browser session**. If `usability-tester` Mode C and `accessibility-auditor` both drive it at once, each agent's `browser_navigate` / `browser_click` moves the page out from under the other — corrupting both the behavioral log and the axe run. They also must not both `Bash`-start the dev server (port conflict / double launch). So:
+
+- Run one, then the other, on the shared session (either order — they don't depend on each other's output).
+- The agent that needs the dev server **checks whether it's already running before starting it**; the second agent reuses the running server.
+- Only run them truly in parallel if **two separate Playwright contexts/MCPs** are available. Absent that, sequential is the rule. (`design-sync`'s Playwright use is screenshot-verification only and is never scheduled concurrently with these two.)
+
+### Reading the prototype handoff (inputs)
+
+When auditing/testing a `design-engineer` build, both agents read `./design-workspace/<project-slug>/prototype-<feature-slug>.md` for `base_url`, `routes` (the 5 state-toggle routes), and the run command — rather than re-deriving them. `design-engineer` emits `base_url` in that handoff for this purpose.
+
+### Shared severity scale
+
+Both agents (and `usability-tester` Modes A/B) map every finding to **Critical / High / Medium / Low**:
+
+- **Nielsen heuristic 1–4** → 4=Critical, 3=High, 2=Medium, 1=Low
+- **axe-core impact** → critical→Critical, serious→High, moderate→Medium, minor→Low
+- Every accessibility finding additionally tags its **WCAG success criterion** (e.g. `1.4.3 Contrast (Minimum)`).
+
+### Division of labor with handoff-engineer
+
+`handoff-engineer` writes accessibility **intent** (the target: "contrast should meet 2.2 AA"). `accessibility-auditor` **measures** whether the built prototype meets it. They must not contradict — a spec-says-AA / build-fails-AA gap is the auditor's headline finding.
+
+---
+
 ## PM Skills Map
 
 Agents are skill-aware. When the user has PM skill packs installed (`pm-execution`, `pm-market-research`, `pm-marketing-growth`, `pm-product-strategy`, `pm-go-to-market`, `pm-product-discovery`, `pm-toolkit`, `product-management`, `product-tracking-skills`), agents invoke specific skills via the Skill tool instead of re-deriving artifacts.
@@ -409,8 +452,8 @@ Agents are skill-aware. When the user has PM skill packs installed (`pm-executio
 
 ## File Conventions
 
-- All outputs land in `./design-workspace/<project-slug>/<phase>/`
-- File naming: `YYYY-MM-DD_<agent>_<short-topic>.md`
+- All outputs land under `./design-workspace/<project-slug>/`. Exploration artifacts (Discovery/Define research, positioning, prioritization) may be grouped in a `<phase>/` subfolder (e.g. `define/prioritization.md`). **Per-feature Deliver artifacts and project-level artifacts use the stable, slug-derived paths in the "Per-feature Deliver artifact paths" table below — they sit directly under `<project-slug>/`, NOT under a `<phase>/` segment.** When in doubt, the table is authoritative for any artifact it names.
+- File naming (for the non-tabled exploration artifacts): `YYYY-MM-DD_<agent>_<short-topic>.md`
 - Figma node IDs, Notion page IDs, and Mobbin URLs are recorded as **clickable links**, never naked IDs
 - Screenshots/exports go in `./design-workspace/<project-slug>/assets/`
 
@@ -421,8 +464,11 @@ The Deliver agents that build off a single lo-fi handoff use these stable, slug-
 | Agent | Artifact path | Frontmatter keys (in addition to standard) |
 |---|---|---|
 | `lo-fi-designer` | `./design-workspace/<project-slug>/lo-fi-<feature-slug>.md` | `entry_point` (object), `fingerprint_compliance` (per-variant), `fingerprint_status` (v4.0) |
-| `design-engineer` | `./design-workspace/<project-slug>/prototype-<feature-slug>.md` | `polish_bar`, `routes`, `mock_api_path`, `fingerprint_status`, `fingerprint_anchors_applied`, `discovered_code_paths` (v4.0) |
+| `design-engineer` | `./design-workspace/<project-slug>/prototype-<feature-slug>.md` | `polish_bar`, `base_url` (v5.9 — the runnable URL + port for usability/a11y audits), `routes`, `mock_api_path`, `fingerprint_status`, `fingerprint_anchors_applied`, `discovered_code_paths` (v4.0) |
 | `figma-designer` | `./design-workspace/<project-slug>/figma-hifi-<feature-slug>.md` | `figma_file_url`, `figma_screens` (per-screen + per-state node IDs + components_used + new_components), `ds_source`, `ds_status`, `fingerprint_status`, `fingerprint_anchors_applied` (v4.0) |
+| `design-sync` (v5.8) | `./design-workspace/<project-slug>/mirror-<feature-slug>.md` (mirror mode) or `diff-<feature-slug>.md` (diff mode) | `mode`, `figma_source_url`, `figma_source_node_id`, `target_path`, `bridge_status`, `gap_threshold`, `fidelity_forecast`, `gaps`, `verification`, `verification_verdict`, `visual_diffs`, `reverse_stale` |
+| `usability-tester` (Mode C, v5.9) | `./design-workspace/<project-slug>/usability-<feature-slug>.md` | `mode` (A/B/C), `target_url`, `goal`, `personas`, `variants`, `metrics` (success_rate, step_count, error_rate, rage_clicks, lostness, path_efficiency), `playwright_status` |
+| `accessibility-auditor` (v5.9) | `./design-workspace/<project-slug>/a11y-audit-<feature-slug>.md` | `mode` (A/B), `target_url`, `routes_covered`, `wcag_target` (`2.2-AA`), `axe_version`, `violations_by_severity`, `automated_vs_manual_split`, `playwright_status`, `axe_status` |
 | `handoff-engineer` | `./design-workspace/<project-slug>/spec-<feature-slug>.md` | `design_tokens_path`, `component_specs` |
 | `product-fingerprint-curator` (v4.0) | `<project-root>/product-fingerprint.md` (project-level — NOT under `design-workspace/`) | `last_validated` (ISO 8601 UTC), `curator_session`, per-entry `figma_node_last_modified_at_curation` (frozen ISO 8601 UTC). `feature_slug` is `null` in standard handoff frontmatter (cross-feature work) |
 
@@ -568,6 +614,11 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `prds_skipped` (v5.2) | `reason` (string — usually `"user-opted-out"`); written by `information-architect` when user types `proceed without prds` |
 | `brand_decoded` (v5.2) | `owner` (`"self"` / `"client"`), `sources_count` (int), `validated` (bool — true only after Validation Stop Gate passes) |
 | `brand_concept_skipped` (v5.2) | `reason` (string — usually `"user-opted-out"`); written by the consuming agent (`product-positioner` / `ideation-facilitator` / `information-architect` / `lo-fi-designer` / `design-engineer`) when user types `skip brand concept` |
+| `bridge_built` (v5.8) | `binding_count` (int), `unbound_count` (int — Figma components left without a code binding, which gap on mirror), `scan_roots` (string[] — code component dirs scanned); written by `design-sync` when it builds/extends the `## Code Bindings` bridge |
+| `mirror_run` (v5.8) | `mappable_pct` (int), `component_gaps` (int), `token_gaps` (int), `nonautolayout_gaps` (int), `verification` (`"screenshot"` / `"structural-only"`), `verification_verdict` (`"verified_1to1"` / `"diffs_found"` / `"not_confirmed"`); written by `design-sync` mirror mode |
+| `diff_run` (v5.8) | `forward_gaps` (int — Figma nodes absent/changed in code), `reverse_stale_count` (int — code spots drifted from Figma); written by `design-sync` diff mode |
+| `a11y_audit_run` (v5.9) | `routes_covered` (string[]), `violations_by_severity` (`{critical,high,medium,low}` int counts), `wcag_target` (string — e.g. `"2.2-AA"`), `axe_version` (string), `axe_status` (`"ran"` / `"cdn-blocked-vendored"` / `"unavailable"`), `playwright_status` (`"live"` / `"absent-static-fallback"`); written by `accessibility-auditor` |
+| `modec_run` (v5.9) | `success_rate` (int 0–100), `step_count` (number — avg), `error_rate` (number), `rage_clicks` (number), `lostness` (number), `path_efficiency` (number or `null`), `personas` (int — cohort count), `variants` (int — 1 unless A/B), `playwright_status` (`"live"` / `"absent"`); written by `usability-tester` Mode C |
 
 ### Events to log
 
@@ -598,6 +649,11 @@ Hidden dotfile. **Gitignored by default** (see `templates/.gitignore`). Contains
 | `prds_skipped` (v5.2) | User typed `proceed without prds` at `information-architect`'s PRD pre-intake check; structure derived from prioritization handoff only (degraded fidelity) |
 | `brand_decoded` (v5.2) | `brand-decoder` passed its Validation Stop Gate (decode confirmed as matching how the owner/client thinks) |
 | `brand_concept_skipped` (v5.2) | User typed `skip brand concept` at a consuming agent's brand pre-intake check |
+| `bridge_built` (v5.8) | `design-sync` built or extended the `## Code Bindings` bridge in `project-component-library.md` (semi-auto scan + user confirm) |
+| `mirror_run` (v5.8) | `design-sync` mirror mode completed — an existing Figma frame was mirrored into code, with a fidelity forecast + verification verdict |
+| `diff_run` (v5.8) | `design-sync` diff mode completed — a Figma↔code divergence report (forward gaps + reverse stale), no code written without a reconcile gate |
+| `a11y_audit_run` (v5.9) | `accessibility-auditor` completed an audit (live axe-core run or static fallback) |
+| `modec_run` (v5.9) | `usability-tester` completed a Mode C automated browser-driven behavioral run |
 
 ### Who writes the ledger — ownership by event type (v3.8 final)
 
@@ -618,6 +674,9 @@ The writer is determined by the event type, NOT by who's running. This avoids fr
 | `fingerprint_refreshed` (v4.0) | **`product-fingerprint-curator`** | Only the curator runs refresh mode |
 | `token_usage` (v4.1) | **`scripts/log-tokens.sh`** (post-hoc) | An agent can't introspect its own token usage mid-run — only the harness knows. The script reads Claude Code transcripts after the fact and appends authoritative measurements. |
 | `bootstrap_created` / `bootstrap_extended` / `bootstrap_recreated` / `bootstrap_with_defaults` (v4.2) | **`figma-component-bootstrapper`** | The agent owns mode-specific events for its own work. One mode event fires per run, in addition to the standard `stop_gate`. |
+| `bridge_built` / `mirror_run` / `diff_run` (v5.8) | **`design-sync`** | The agent owns its mode-specific events. `bridge_built` fires when it populates/extends the `## Code Bindings` bridge; `mirror_run` or `diff_run` fires once per run alongside the standard `stop_gate`. |
+| `a11y_audit_run` (v5.9) | **`accessibility-auditor`** | Fires once per audit run alongside the standard `stop_gate`, whether the live axe run succeeded or it degraded to a static fallback (`axe_status` / `playwright_status` record which). |
+| `modec_run` (v5.9) | **`usability-tester`** | Fires once per Mode C run alongside the standard `stop_gate`. Modes A/B fire only `stop_gate`. |
 | `bootstrap_skipped` (v4.2) | **`figma-designer`** | Fires when the user opts out of the bootstrapper at figma-designer's Pre-Intake Check #2. Logged before figma-designer proceeds with the frames+groups fallback. |
 | `journey_structure_inferred` (v4.3) | **Consumer agent** that read the old PRD (`lo-fi-designer` / `figma-designer` / `design-engineer`) | Informational event; no opt-in required. Fires once per agent run when an old-format PRD is loaded. Multiple events may fire for one feature as it moves through Discovery → Define → Deliver. |
 | `journey_structure_skipped` (v4.3) | **`lo-fi-designer`** | Fires when the user types `proceed without journey spec` at lo-fi-designer's Pre-Intake Check #2. Logged before lo-fi-designer proceeds with the legacy single-layout fallback. Downstream agents (figma-designer, design-engineer) will propagate the `journey_source: skipped` flag from the lo-fi handoff and won't re-fire this event. |
