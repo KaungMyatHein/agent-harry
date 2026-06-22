@@ -3,3 +3,12 @@
 
 # Claude Code session state
 .claude/worktrees/
+
+# Editor workspace
+.obsidian/
+
+# Secrets — never commit API keys (Gemini, etc.)
+.env
+*.env
+!*.env.example
+content/.env
