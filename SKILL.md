@@ -1,21 +1,22 @@
 ---
 name: agent-harry
-description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 22-subagent UX pipeline (orchestrator + critique-partner + 16 phase agents + pm-metrics-architect + 3 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2, brand-decoder v5.2) — including lo-fi-designer, figma-designer, design-engineer, design-sync (v5.8 Figma↔code mirror), usability-tester (v5.9 AI-assisted browser-driven testing), accessibility-auditor (v5.9 WCAG 2.2 AA via axe-core), prd-author, information-architect) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ").
+description: Agent Harry — Kaung Myat Hein's personal multi-agent product design system for Claude Code. Installs, refreshes, or updates a 22-subagent UX pipeline (orchestrator + critique-partner + 16 phase agents + pm-metrics-architect + 3 cross-cutting setup agents (product-fingerprint-curator v4.0, figma-component-bootstrapper v4.2, brand-decoder v5.2) — including lo-fi-designer, figma-designer, design-engineer, design-sync (v5.8 Figma↔code mirror), usability-tester (v5.9 AI-assisted browser-driven testing), accessibility-auditor (v5.9 WCAG 2.2 AA via axe-core), prd-author, information-architect) covering the Discovery → Define → Deliver lifecycle plus embedded PM capabilities (positioning, prioritization, competitive analysis, GTM, metrics). Trigger on any of these intents — brand, semantic, or Burmese. Install in a new project ("install Agent Harry", "set up Agent Harry agents", "install product designer agents", "install design subagents", "bootstrap UX multi-agent system", "Agent Harry ထည့်ပေး", "design agent တွေ install လုပ်ပေး", "product designer workflow ဆောက်ပေး"). Refresh an existing project's agents after the skill is updated ("refresh Agent Harry", "refresh design agents", "update agents in this project", "Agent Harry ပြန် refresh"). Pull the latest skill from GitHub ("update Agent Harry skill", "pull latest Agent Harry", "Agent Harry skill update လုပ်ပေး", "Git ကနေ ဆွဲ"). Export the roster for another agent host — Antigravity, Cursor, Codex, or Trae ("export Agent Harry for Cursor", "use Agent Harry in Codex/Trae/Antigravity", "Antigravity မှာ သုံးချင်", "Cursor ဆီ ထုတ်ပေး").
 ---
 
 # Agent Harry — Multi-Agent Product Design Skill
 
 A personal Claude Code skill that bootstraps a 22-agent product design subagent system into any project, then keeps it in sync with the upstream GitHub repo.
 
-When invoked, decide which of three modes to run based on user intent:
+When invoked, decide which of four modes to run based on user intent:
 
 | Intent signal | Mode |
 |---|---|
 | "install", "set up", "bootstrap", "add to this project" | **Install** (A = Bundled, or B = Generator) |
 | "refresh", "update agents", "pull latest into this project" | **Refresh** |
 | "update the skill", "pull latest from GitHub", "Git ကနေ ဆွဲ" | **Update** |
+| "export for Cursor/Codex/Trae/Antigravity", "use in another agent host" | **Export** |
 
-If ambiguous, ask one short question: *"Install fresh, refresh this project's agents, or pull the latest skill from GitHub?"*
+If ambiguous, ask one short question: *"Install fresh, refresh this project's agents, pull the latest skill from GitHub, or export for another host?"*
 
 ---
 
@@ -188,6 +189,34 @@ preserving your SHARED_CONTEXT.md.
 
 ---
 
+## Mode 4 — Export (other agent hosts)
+
+Use when the user wants Agent Harry usable in a **non-Claude-Code host** — Antigravity, Cursor, Codex, or Trae. Trigger phrases: "export for Cursor", "use this in Codex / Trae / Antigravity", "Antigravity မှာ သုံးချင်", "Cursor ဆီ ထုတ်ပေး".
+
+The Claude Code templates in `templates/.claude/agents/` stay the **single source of truth**. The exporter reads them and generates host-native bundles — never hand-edit the generated files; re-run the exporter after the source agents change.
+
+### What it does
+`exporters/export.mjs` parses every agent's frontmatter (`model`, `tools`, `phase`, `decision_authority`, `voice`) and body, then emits a per-host bundle:
+
+| Host | Layout it generates | Model mapping (opus / sonnet / light) |
+|---|---|---|
+| **Antigravity** | `.agents/agents.md` (team) + `.agents/skills/*.md` (bodies) + `.agents/workflows/*.md` (orchestrator + slash commands) + root `AGENTS.md` | `gemini-3-pro` / `gemini-3-pro` / `gemini-3-flash` |
+| **Cursor** | `.cursor/rules/*.mdc` (agent-requested) + `AGENTS.md` + `.cursor/mcp.json` | model picked in UI — `Claude Opus·GPT-5.5` / `Claude Sonnet·GPT-5` / `Haiku` |
+| **Codex** | lean `AGENTS.md` router (<32 KiB) + `.codex/agents/*.md` (bodies) + `.codex/config.toml` | one default in config.toml — `gpt-5.5`, `reasoning_effort=high` |
+| **Trae** | `.trae/rules/*.md` (frontmatter-gated) + overview rule + `.trae/mcp.json` | model set per agent in UI |
+
+### Steps
+1. Run `node exporters/export.mjs <host|all>` from the skill root. Default output is `dist/<host>/` (gitignored). Use `--out <dir>` to write elsewhere — e.g. straight into a target project root.
+2. Show the user the generated tree and the per-host `HARRY_README.md`.
+3. To install into a project, copy the host folder's contents (e.g. `dist/cursor/.cursor/` + `AGENTS.md`) into the project root, then connect the MCP servers listed in the bundle's config stub.
+
+### Be honest about the degradation
+Agent Harry's core is Claude Code's **native subagent delegation** — the orchestrator spawns each agent in its own isolated context with its own model, then synthesizes. **No other host has that exact primitive.** What ports cleanly: every agent prompt body (the design expertise), the phase/authority/MCP metadata, slash commands, and a recommended model per agent. What degrades: real parallel dispatch and per-agent model isolation. On every host the orchestrator becomes a **playbook the host's single agent follows turn-by-turn**, and Stop Gates become prose checkpoints. **Antigravity is the closest fit** (native `.agents/` team + workflows); Cursor and Trae render the roster as passive agent-requested rules; Codex as a router + on-demand briefs. Always state this when delivering an export — don't oversell it as a 1:1 port.
+
+To tune the model recommendations, edit `MODEL_MAP` / `LIGHT_AGENTS` at the top of `exporters/export.mjs`.
+
+---
+
 ## Decision Tree
 
 ```
@@ -197,7 +226,8 @@ User triggers skill
 │   ├─ customization signals → 1B Generator
 │   └─ ambiguous → ask "defaults or customize?"
 ├─ "refresh / update agents in this project" → Mode 2 (Refresh)
-└─ "update the skill / pull from GitHub" → Mode 3 (Update)
+├─ "update the skill / pull from GitHub" → Mode 3 (Update)
+└─ "export for Cursor/Codex/Trae/Antigravity" → Mode 4 (Export)
 ```
 
 ---
@@ -272,7 +302,7 @@ These are the source of truth. Don't regenerate — copy then patch.
 - Does not install MCPs (user does that separately in Claude Code settings)
 - Does not modify Claude Code's own config (settings.json, etc.)
 - Does not run the agents — that's the user's job after install
-- Does not handle the Claude.ai (non-Claude-Code) environment — these are Claude Code subagents, terminal-only
+- Does not handle the Claude.ai (non-Claude-Code) environment — the native subagents are Claude Code, terminal-only. (Mode 4 Export can render the roster for Antigravity/Cursor/Codex/Trae, but as a degraded playbook, not true subagent delegation.)
 
 ---
 

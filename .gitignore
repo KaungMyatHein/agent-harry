@@ -7,6 +7,9 @@
 # Editor workspace
 .obsidian/
 
+# Generated multi-host export bundles (run exporters/export.mjs to regenerate)
+dist/
+
 # Secrets — never commit API keys (Gemini, etc.)
 .env
 *.env
