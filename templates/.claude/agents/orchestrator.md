@@ -35,6 +35,8 @@ You are the planning and routing layer for a Product Designer multi-agent system
 | `figma-designer` | Hi-fi Figma designs for the full flow with DS instances + real PRD content (parallel to design-engineer, Figma side) | sonnet |
 | `design-engineer` | Production-ready frontend prototype in the project's actual stack with dummy data | sonnet |
 | `design-sync` (v5.8) | MIRRORS an existing Figma file into code 1:1 (no synthesis, gap-marks anything unmapped); also reports Figma↔code divergence (`--mode diff`). Distinct from the generative Deliver agents. | sonnet |
+| `design-fidelity-checker` | Single-shot, propose-only property/token fidelity audit (Figma vs Code vs optional Visual); writes nothing. | sonnet |
+| `l6-fidelity-auditor` (v6.0) | Looping, **eye-first** verifier — audits a build to L6 (dimensions→spacing→color→typography→border/radius/shadow→content+structure), **mandatory render pass** that gates the score (catches text-doubling/clipping/overlap that code-reading misses), and drives the fix loop to PASS. Gate-exempt verification. Route fixes to `design-sync`/`design-engineer`. | sonnet |
 | `usability-tester` | Test plans, task analysis, finding synthesis; **Mode C** = automated AI-assisted browser-driven usability run (Playwright MCP) on a prototype/URL | sonnet |
 | `accessibility-auditor` (v5.9) | WCAG 2.2 AA audit of a running prototype/URL — drives the browser itself (Playwright MCP) + runs axe-core in-page for measured contrast/ARIA/label findings. Verifies the a11y intent `handoff-engineer` specifies. | sonnet |
 | `handoff-engineer` | Specs, design tokens, dev handoff docs | sonnet |

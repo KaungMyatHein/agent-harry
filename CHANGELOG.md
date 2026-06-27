@@ -4,6 +4,15 @@ Most recent first. Format: `## YYYY-MM-DD — short summary`, then bullet list.
 
 ---
 
+## 2026-06-25 — v6.0: l6-fidelity-auditor — looping, eye-first L6 verifier
+
+**Additive, non-breaking. New agent (23rd).** Agent Harry could *audit* fidelity (`design-fidelity-checker`) but that agent is single-shot, propose-only, treats the visual pass as optional, and defines L6 as *token binding*. In real builds that produced **over-scored audits** — 91–98% reported on sections that visibly had doubled text (live text over baked-in image text), clipped paragraphs, overlap, or cramped spacing — defects invisible to code-reading and only caught by looking at the render. v6.0 closes that gap.
+
+1. **New agent — `templates/.claude/agents/l6-fidelity-auditor.md` (sonnet, deliver phase, propose).** Motto: *"The code can lie. The Figma can lie. The render is what the user gets. No L6 PASS without looking at it."* Walks a **property-depth L6 ladder** (L1 dimensions → L2 spacing → L3 color → L4 typography → L5 border/radius/shadow → L6 content+structure) and compares three sources per property (Figma / Code / rendered Visual).
+2. **Mandatory render pass that gates the score.** L6 is PASS only when the rendered screenshot has been looked at, specifically for text-doubling, clipping/crop, overlap, wrap-breakage, and cramped spacing. **Hard caps:** no render looked at → overall capped at 85% ("NO RENDER"); any doubling/clipping/overlap defect → that section capped at 40% until fixed, regardless of how clean the code reads. Render via Playwright MCP or the Bash + Playwright chromium fallback.
+3. **Verify-until-PASS loop.** Audit → flag with exact fixes → route to `design-sync`/`design-engineer` → **re-render** → re-audit, until L6 PASS (default ≥90% with a clean eye pass) or an honest stuck state after two no-improvement rounds. Never declares PASS on a round it didn't re-render. Gate-exempt (verification, like `design-sync`).
+4. **Wired in.** Added to the `SKILL.md` Deliver roster, the `orchestrator.md` routing table (alongside a now-surfaced `design-fidelity-checker` row), and the docs agent grid + quick-decision table. Ships automatically on install/refresh (wildcard copy of `templates/.claude/agents/*.md`). Relationship documented: `design-fidelity-checker` = quick single-shot property/token sweep; `l6-fidelity-auditor` = looping, eye-first, render-gated verifier.
+
 ## 2026-06-22 — v5.9.1: Mode C / a11y first-class Inputs + input & result widgets
 
 **Additive, non-breaking. Follow-up to v5.9 (cb12546).** The Mode C "main-flow" setup (Goal, Golden path, Persona, Variant, Max steps) was present but scattered across the run loop and metric table; golden-path was buried as a metric precondition only. Consolidated + surfaced as forms.

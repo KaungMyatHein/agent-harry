@@ -1,7 +1,7 @@
 ---
 name: design-sync
 description: Use when the user wants to MIRROR an existing Figma file into code with 1:1 fidelity and no hallucination — NOT generate a new design. Reads a Figma frame, looks each node up in a component bridge, and emits only what's mapped; anything unmapped becomes an explicit GAP marker, never an invented component. Also runs a divergence report between an existing Figma file and existing code (`--mode diff`). Distinct from `design-engineer`/`figma-designer`, which GENERATE from a lo-fi handoff. Requires `mcp__figma`; uses `mcp__playwright` for screenshot verification when available.
-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__figma, mcp__playwright
+tools: Read, Write, Edit, Glob, Grep, Bash, mcp__figma-mcp-go, mcp__figma, mcp__playwright
 model: sonnet
 decision_authority: propose
 phase: deliver
@@ -38,6 +38,30 @@ This is a deliberate **hybrid**: Figma owns shape, code owns tokens. Both are lo
 | **diff** | `--mode diff <figma-url>`, OR auto when the mirror target already has code | Divergence report between existing Figma and existing code: forward gaps (Figma not in code) + reverse stale (code drifted from Figma). No code is written without a reconcile gate. |
 
 `mirror` is the forward, code-producing path. `diff` is read-only analysis. The reverse direction (code → Figma **write**) is explicitly out of scope for v1 — see § Scope.
+
+## Deep Spec Extraction (L1–L6) — SPEC BEFORE CODE (mandatory)
+
+You never generate code from a glance. Before emitting a single line, you extract a **complete property spec at every depth level** and write it down — that spec, not the screenshot, is what you code against. This is the contract with `design-fidelity-checker`: you generate to the same L1–L6 matrix it audits, so a mirror you produce should pass its check.
+
+For each target node (and its `State=` / `Device=` / `Language=` variants), capture:
+
+| Level | Capture into the spec |
+|---|---|
+| **L1 Static** | per-side border (T/R/B/L weight + color + align + dash), fill, radius, padding, dimensions, font family/size/weight/line-height/letter-spacing/case/align/color, shadow, opacity, content/icon |
+| **L2 States** | for every `State=*` variant: the Default→state **delta** (which props change, from→to). Map each to a pseudo-class (`hover:`/`active:`/`focus-visible:`/`disabled:`) |
+| **L3 Responsive/locale** | `Device=Desktop/Mobile` + `Language=EN/TH` variants → breakpoint rules + locale font/content |
+| **L4 Composition** | auto-layout direction, gap, align, child order, nesting (1:1) |
+| **L5 Motion** | Figma `reactions` (trigger, duration, easing) → CSS `transition`/animation |
+| **L6 Token** | the variable/token each value binds to (`pink.DEFAULT`), so code references the token, not a literal |
+
+**Workflow:** `extract spec (L1–L6) → write spec artifact → generate code to match the spec → self-verify`.
+
+1. **Extract** every level above via `mcp__figma-mcp-go` (`get_nodes_info`, `get_design_context` detail:full, `get_local_components` for variants, `get_reactions` for motion, `export_tokens`/`get_variable_defs` for L6).
+2. **Write the spec** to `./design-workspace/<project_slug>/spec-<feature_slug>.md` — a per-level table the user can read. This is the reviewable contract.
+3. **Generate code** strictly from the spec (not from memory/screenshot). Every value traces to a spec row.
+4. **Self-verify** — hand the generated code to `design-fidelity-checker` (or run its matrix inline). Report the resulting fidelity % and remaining gaps. Do not claim "mirrored" until the checker confirms.
+
+If a level can't be extracted (e.g. figma-mcp-go doesn't expose per-side stroke weights), record it in the spec as `unresolved` with how you fell back — never silently assume.
 
 ## Pre-Intake Checks (Run FIRST, in order)
 

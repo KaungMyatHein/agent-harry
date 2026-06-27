@@ -62,7 +62,7 @@ Try this:
 Quick reference:
 - Discovery: discovery-researcher, competitive-analyst
 - Define: product-positioner, feature-prioritizer, ideation-facilitator, pm-strategist, prd-author, information-architect (v5.2), lo-fi-designer (v3.7)
-- Deliver: design-engineer (v3.7), design-sync (v5.8 — mirrors existing Figma↔code 1:1, gate-exempt), usability-tester (v5.9 — Mode C automated browser-driven run), accessibility-auditor (v5.9 — WCAG 2.2 AA via axe-core), handoff-engineer, pm-launch-architect (all gated by Research-First + Success-Metrics checks, except design-sync)
+- Deliver: design-engineer (v3.7), design-sync (v5.8 — mirrors existing Figma↔code 1:1, gate-exempt), design-fidelity-checker (single-shot property/token audit), l6-fidelity-auditor (v6.0 — looping eye-first verifier, mandatory render pass, audits to L6 and drives the fix loop to PASS; gate-exempt), usability-tester (v5.9 — Mode C automated browser-driven run), accessibility-auditor (v5.9 — WCAG 2.2 AA via axe-core), handoff-engineer, pm-launch-architect (all gated by Research-First + Success-Metrics checks, except design-sync)
 - Cross-cutting: pm-metrics-architect, product-fingerprint-curator (v4.0), brand-decoder (v5.2), figma-component-bootstrapper (v4.2)
 - Meta: orchestrator (opus), critique-partner (opus)
 - Commands: /audit-pipeline · /agent-harry-notion-sync · /agent-harry-audit · /agent-harry-fingerprint · /agent-harry-cost

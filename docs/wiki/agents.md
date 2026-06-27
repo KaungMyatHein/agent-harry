@@ -42,6 +42,8 @@ The sub-agents Agent Harry installs into your project. Each has its own page wit
 <div class="agent-grid">
 {% include agent-card.html slug='figma-designer' %}
 {% include agent-card.html slug='design-engineer' %}
+{% include agent-card.html slug='design-fidelity-checker' %}
+{% include agent-card.html slug='l6-fidelity-auditor' %}
 {% include agent-card.html slug='usability-tester' %}
 {% include agent-card.html slug='handoff-engineer' %}
 {% include agent-card.html slug='pm-launch-architect' %}
@@ -64,6 +66,8 @@ If you're not sure which agent to invoke:
 | Sketch layouts for a feature | `lo-fi-designer` |
 | Generate hi-fi Figma frames | `figma-designer` |
 | Build a runnable prototype | `design-engineer` |
+| Quick property/token fidelity sweep | `design-fidelity-checker` |
+| Verify a build to L6 honestly (mandatory render pass) + loop to PASS | `l6-fidelity-auditor` |
 | Plan a usability test | `usability-tester` |
 | Generate a dev spec | `handoff-engineer` |
 | Plan a launch | `pm-launch-architect` |
